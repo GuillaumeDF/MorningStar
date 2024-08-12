@@ -8,8 +8,6 @@
 import SwiftUI
 
 private enum Constants {
-    static let shadowOpacity: CGFloat = 0.2
-    static let shadowRadius: CGFloat = 5
     static let blurRadius: CGFloat = 2
     static let offsetLightButton: CGFloat = -60
     static let offsetDarkButton: CGFloat = 0
@@ -56,21 +54,15 @@ private struct MSThemeToggleButton: View {
             selectedThemeMode = themeMode
         }) {
             Label(themeMode.description, systemImage: themeMode.iconName)
-                .foregroundColor(Color.primaryText)
+                .foregroundColor(Color.primaryTextColor)
                 .padding(.horizontal, AppPadding.extraLarge)
                 .padding(.vertical, AppPadding.medium)
                 .background(Color.backgroundColor)
                 .clipShape(Capsule())
-                .shadow(
-                    color: .black.opacity(Constants.shadowOpacity),
-                    radius: Constants.shadowRadius,
-                    x: 0,
-                    y: 2
-                )
                 .overlay(
                     Capsule()
                         .stroke(
-                            Color.black,
+                            Color.primaryTextColor,
                             lineWidth: 1
                         )
                 )

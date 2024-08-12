@@ -21,6 +21,8 @@
 		F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */; };
 		F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053303E2C6A9E2C00F628C5 /* HeaderView.swift */; };
 		F05330422C6A9FF800F628C5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330412C6A9FF800F628C5 /* ContentView.swift */; };
+		F05330442C6AA58200F628C5 /* MSAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330432C6AA58200F628C5 /* MSAvatarView.swift */; };
+		F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */; };
 		F0AD076B2C68204700D0F2AD /* MSThemeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +62,8 @@
 		F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSTodayDateTitle.swift; sourceTree = "<group>"; };
 		F053303E2C6A9E2C00F628C5 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		F05330412C6A9FF800F628C5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F05330432C6AA58200F628C5 /* MSAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSAvatarView.swift; sourceTree = "<group>"; };
+		F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSVerticalSeparator.swift; sourceTree = "<group>"; };
 		F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeButtonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -269,6 +273,8 @@
 				F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */,
 				F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */,
 				F04A78B92C664A3000E8FB1C /* MSLogoView.swift */,
+				F05330432C6AA58200F628C5 /* MSAvatarView.swift */,
+				F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -405,6 +411,7 @@
 			files = (
 				F02581AF2C62C6F3006CB2E6 /* DashboardView.swift in Sources */,
 				F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */,
+				F05330442C6AA58200F628C5 /* MSAvatarView.swift in Sources */,
 				F02581862C62C292006CB2E6 /* Item.swift in Sources */,
 				F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */,
 				F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */,
@@ -413,6 +420,7 @@
 				F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */,
 				F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */,
 				F04A78BA2C664A3000E8FB1C /* MSLogoView.swift in Sources */,
+				F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

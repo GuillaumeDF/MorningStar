@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+private enum Constants {
+    static let headerHeight: CGFloat = 150
+    static let separatorHeight: CGFloat = 50
+}
+
 struct HeaderView: View {
     var body: some View {
         HStack {
@@ -23,13 +28,12 @@ struct HeaderView: View {
                 spacing: AppPadding.extraLarge
             ) {
                 MSThemeToggleView(initialTheme: .light)
-                Image(systemName: "person.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 25)
+                MSVerticalSeparator()
+                    .frame(height: Constants.separatorHeight)
+                MSAvatarView(imageName: "")
             }
         }
-        .frame(height: 150)
+        .frame(height: Constants.headerHeight)
     }
 }
 
