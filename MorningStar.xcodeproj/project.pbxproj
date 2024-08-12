@@ -1,0 +1,750 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581812C62C292006CB2E6 /* MorningStarApp.swift */; };
+		F02581862C62C292006CB2E6 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581852C62C292006CB2E6 /* Item.swift */; };
+		F02581882C62C293006CB2E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F02581872C62C293006CB2E6 /* Assets.xcassets */; };
+		F025818C2C62C293006CB2E6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F025818B2C62C293006CB2E6 /* Preview Assets.xcassets */; };
+		F02581962C62C293006CB2E6 /* MorningStarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581952C62C293006CB2E6 /* MorningStarTests.swift */; };
+		F02581A02C62C293006CB2E6 /* MorningStarUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F025819F2C62C293006CB2E6 /* MorningStarUITests.swift */; };
+		F02581A22C62C293006CB2E6 /* MorningStarUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581A12C62C293006CB2E6 /* MorningStarUITestsLaunchTests.swift */; };
+		F02581AF2C62C6F3006CB2E6 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581AE2C62C6F3006CB2E6 /* DashboardView.swift */; };
+		F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03AA6E02C6426F2003C1BB3 /* Color+Theme.swift */; };
+		F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B72C6647C100E8FB1C /* UIConstants.swift */; };
+		F04A78BA2C664A3000E8FB1C /* MSLogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B92C664A3000E8FB1C /* MSLogoView.swift */; };
+		F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */; };
+		F0AD076B2C68204700D0F2AD /* MSThemeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F02581922C62C293006CB2E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F02581762C62C292006CB2E6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F025817D2C62C292006CB2E6;
+			remoteInfo = MorningStar;
+		};
+		F025819C2C62C293006CB2E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F02581762C62C292006CB2E6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F025817D2C62C292006CB2E6;
+			remoteInfo = MorningStar;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F025817E2C62C292006CB2E6 /* MorningStar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorningStar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F02581812C62C292006CB2E6 /* MorningStarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningStarApp.swift; sourceTree = "<group>"; };
+		F02581852C62C292006CB2E6 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		F02581872C62C293006CB2E6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F02581892C62C293006CB2E6 /* MorningStar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorningStar.entitlements; sourceTree = "<group>"; };
+		F025818B2C62C293006CB2E6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F02581912C62C293006CB2E6 /* MorningStarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MorningStarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F02581952C62C293006CB2E6 /* MorningStarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningStarTests.swift; sourceTree = "<group>"; };
+		F025819B2C62C293006CB2E6 /* MorningStarUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MorningStarUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F025819F2C62C293006CB2E6 /* MorningStarUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningStarUITests.swift; sourceTree = "<group>"; };
+		F02581A12C62C293006CB2E6 /* MorningStarUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningStarUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		F02581AE2C62C6F3006CB2E6 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		F03AA6E02C6426F2003C1BB3 /* Color+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
+		F04A78B72C6647C100E8FB1C /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
+		F04A78B92C664A3000E8FB1C /* MSLogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLogoView.swift; sourceTree = "<group>"; };
+		F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSTodayDateTitle.swift; sourceTree = "<group>"; };
+		F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeButtonView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F025817B2C62C292006CB2E6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F025818E2C62C293006CB2E6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F02581982C62C293006CB2E6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F02581752C62C292006CB2E6 = {
+			isa = PBXGroup;
+			children = (
+				F02581802C62C292006CB2E6 /* MorningStar */,
+				F02581942C62C293006CB2E6 /* MorningStarTests */,
+				F025819E2C62C293006CB2E6 /* MorningStarUITests */,
+				F025817F2C62C292006CB2E6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F025817F2C62C292006CB2E6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F025817E2C62C292006CB2E6 /* MorningStar.app */,
+				F02581912C62C293006CB2E6 /* MorningStarTests.xctest */,
+				F025819B2C62C293006CB2E6 /* MorningStarUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F02581802C62C292006CB2E6 /* MorningStar */ = {
+			isa = PBXGroup;
+			children = (
+				F03AA6D32C6425E6003C1BB3 /* Models */,
+				F025818A2C62C293006CB2E6 /* Preview Content */,
+				F03AA6DE2C64269C003C1BB3 /* Resources */,
+				F03AA6DA2C642638003C1BB3 /* Services */,
+				F03AA6DC2C642682003C1BB3 /* Utilities */,
+				F03AA6D82C642629003C1BB3 /* ViewModels */,
+				F03AA6D62C642614003C1BB3 /* Views */,
+				F02581812C62C292006CB2E6 /* MorningStarApp.swift */,
+				F02581892C62C293006CB2E6 /* MorningStar.entitlements */,
+			);
+			path = MorningStar;
+			sourceTree = "<group>";
+		};
+		F025818A2C62C293006CB2E6 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				F025818B2C62C293006CB2E6 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F02581942C62C293006CB2E6 /* MorningStarTests */ = {
+			isa = PBXGroup;
+			children = (
+				F02581952C62C293006CB2E6 /* MorningStarTests.swift */,
+			);
+			path = MorningStarTests;
+			sourceTree = "<group>";
+		};
+		F025819E2C62C293006CB2E6 /* MorningStarUITests */ = {
+			isa = PBXGroup;
+			children = (
+				F025819F2C62C293006CB2E6 /* MorningStarUITests.swift */,
+				F02581A12C62C293006CB2E6 /* MorningStarUITestsLaunchTests.swift */,
+			);
+			path = MorningStarUITests;
+			sourceTree = "<group>";
+		};
+		F03AA6D32C6425E6003C1BB3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F03AA6D52C6425FF003C1BB3 /* Data */,
+				F03AA6D42C6425F3003C1BB3 /* Entities */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F03AA6D42C6425F3003C1BB3 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				F02581852C62C292006CB2E6 /* Item.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		F03AA6D52C6425FF003C1BB3 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		F03AA6D62C642614003C1BB3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F03AA6D72C64261E003C1BB3 /* Dashboard */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		F03AA6D72C64261E003C1BB3 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				F02581AE2C62C6F3006CB2E6 /* DashboardView.swift */,
+				F03AA6E22C642874003C1BB3 /* Components */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		F03AA6D82C642629003C1BB3 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				F03AA6D92C642630003C1BB3 /* Dashboard */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		F03AA6D92C642630003C1BB3 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		F03AA6DA2C642638003C1BB3 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				F03AA6DB2C64263F003C1BB3 /* Network */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		F03AA6DB2C64263F003C1BB3 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		F03AA6DC2C642682003C1BB3 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				F03AA6DD2C64268F003C1BB3 /* Extensions */,
+				F04A78B72C6647C100E8FB1C /* UIConstants.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		F03AA6DD2C64268F003C1BB3 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				F03AA6E02C6426F2003C1BB3 /* Color+Theme.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		F03AA6DE2C64269C003C1BB3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F02581872C62C293006CB2E6 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		F03AA6E22C642874003C1BB3 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F04A78B92C664A3000E8FB1C /* MSLogoView.swift */,
+				F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */,
+				F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F025817D2C62C292006CB2E6 /* MorningStar */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F02581A52C62C293006CB2E6 /* Build configuration list for PBXNativeTarget "MorningStar" */;
+			buildPhases = (
+				F025817A2C62C292006CB2E6 /* Sources */,
+				F025817B2C62C292006CB2E6 /* Frameworks */,
+				F025817C2C62C292006CB2E6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MorningStar;
+			productName = MorningStar;
+			productReference = F025817E2C62C292006CB2E6 /* MorningStar.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F02581902C62C293006CB2E6 /* MorningStarTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F02581A82C62C293006CB2E6 /* Build configuration list for PBXNativeTarget "MorningStarTests" */;
+			buildPhases = (
+				F025818D2C62C293006CB2E6 /* Sources */,
+				F025818E2C62C293006CB2E6 /* Frameworks */,
+				F025818F2C62C293006CB2E6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F02581932C62C293006CB2E6 /* PBXTargetDependency */,
+			);
+			name = MorningStarTests;
+			productName = MorningStarTests;
+			productReference = F02581912C62C293006CB2E6 /* MorningStarTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F025819A2C62C293006CB2E6 /* MorningStarUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F02581AB2C62C293006CB2E6 /* Build configuration list for PBXNativeTarget "MorningStarUITests" */;
+			buildPhases = (
+				F02581972C62C293006CB2E6 /* Sources */,
+				F02581982C62C293006CB2E6 /* Frameworks */,
+				F02581992C62C293006CB2E6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F025819D2C62C293006CB2E6 /* PBXTargetDependency */,
+			);
+			name = MorningStarUITests;
+			productName = MorningStarUITests;
+			productReference = F025819B2C62C293006CB2E6 /* MorningStarUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F02581762C62C292006CB2E6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					F025817D2C62C292006CB2E6 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					F02581902C62C293006CB2E6 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = F025817D2C62C292006CB2E6;
+					};
+					F025819A2C62C293006CB2E6 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = F025817D2C62C292006CB2E6;
+					};
+				};
+			};
+			buildConfigurationList = F02581792C62C292006CB2E6 /* Build configuration list for PBXProject "MorningStar" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F02581752C62C292006CB2E6;
+			productRefGroup = F025817F2C62C292006CB2E6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F025817D2C62C292006CB2E6 /* MorningStar */,
+				F02581902C62C293006CB2E6 /* MorningStarTests */,
+				F025819A2C62C293006CB2E6 /* MorningStarUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F025817C2C62C292006CB2E6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F025818C2C62C293006CB2E6 /* Preview Assets.xcassets in Resources */,
+				F02581882C62C293006CB2E6 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F025818F2C62C293006CB2E6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F02581992C62C293006CB2E6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F025817A2C62C292006CB2E6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F02581AF2C62C6F3006CB2E6 /* DashboardView.swift in Sources */,
+				F02581862C62C292006CB2E6 /* Item.swift in Sources */,
+				F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */,
+				F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */,
+				F0AD076B2C68204700D0F2AD /* MSThemeButtonView.swift in Sources */,
+				F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */,
+				F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */,
+				F04A78BA2C664A3000E8FB1C /* MSLogoView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F025818D2C62C293006CB2E6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F02581962C62C293006CB2E6 /* MorningStarTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F02581972C62C293006CB2E6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F02581A02C62C293006CB2E6 /* MorningStarUITests.swift in Sources */,
+				F02581A22C62C293006CB2E6 /* MorningStarUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F02581932C62C293006CB2E6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F025817D2C62C292006CB2E6 /* MorningStar */;
+			targetProxy = F02581922C62C293006CB2E6 /* PBXContainerItemProxy */;
+		};
+		F025819D2C62C293006CB2E6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F025817D2C62C292006CB2E6 /* MorningStar */;
+			targetProxy = F025819C2C62C293006CB2E6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F02581A32C62C293006CB2E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F02581A42C62C293006CB2E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		F02581A62C62C293006CB2E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MorningStar/MorningStar.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MorningStar/Preview Content\"";
+				DEVELOPMENT_TEAM = BB3PNSCUG7;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = guillaume.MorningStar;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F02581A72C62C293006CB2E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MorningStar/MorningStar.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MorningStar/Preview Content\"";
+				DEVELOPMENT_TEAM = BB3PNSCUG7;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = guillaume.MorningStar;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F02581A92C62C293006CB2E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BB3PNSCUG7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = guillaume.MorningStarTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MorningStar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MorningStar";
+			};
+			name = Debug;
+		};
+		F02581AA2C62C293006CB2E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BB3PNSCUG7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = guillaume.MorningStarTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MorningStar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MorningStar";
+			};
+			name = Release;
+		};
+		F02581AC2C62C293006CB2E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BB3PNSCUG7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = guillaume.MorningStarUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MorningStar;
+			};
+			name = Debug;
+		};
+		F02581AD2C62C293006CB2E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BB3PNSCUG7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = guillaume.MorningStarUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MorningStar;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F02581792C62C292006CB2E6 /* Build configuration list for PBXProject "MorningStar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F02581A32C62C293006CB2E6 /* Debug */,
+				F02581A42C62C293006CB2E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F02581A52C62C293006CB2E6 /* Build configuration list for PBXNativeTarget "MorningStar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F02581A62C62C293006CB2E6 /* Debug */,
+				F02581A72C62C293006CB2E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F02581A82C62C293006CB2E6 /* Build configuration list for PBXNativeTarget "MorningStarTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F02581A92C62C293006CB2E6 /* Debug */,
+				F02581AA2C62C293006CB2E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F02581AB2C62C293006CB2E6 /* Build configuration list for PBXNativeTarget "MorningStarUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F02581AC2C62C293006CB2E6 /* Debug */,
+				F02581AD2C62C293006CB2E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F02581762C62C292006CB2E6 /* Project object */;
+}
