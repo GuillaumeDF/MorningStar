@@ -19,6 +19,8 @@
 		F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B72C6647C100E8FB1C /* UIConstants.swift */; };
 		F04A78BA2C664A3000E8FB1C /* MSLogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B92C664A3000E8FB1C /* MSLogoView.swift */; };
 		F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */; };
+		F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053303E2C6A9E2C00F628C5 /* HeaderView.swift */; };
+		F05330422C6A9FF800F628C5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330412C6A9FF800F628C5 /* ContentView.swift */; };
 		F0AD076B2C68204700D0F2AD /* MSThemeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */; };
 /* End PBXBuildFile section */
 
@@ -56,6 +58,8 @@
 		F04A78B72C6647C100E8FB1C /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
 		F04A78B92C664A3000E8FB1C /* MSLogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLogoView.swift; sourceTree = "<group>"; };
 		F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSTodayDateTitle.swift; sourceTree = "<group>"; };
+		F053303E2C6A9E2C00F628C5 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
+		F05330412C6A9FF800F628C5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeButtonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -114,6 +118,7 @@
 				F03AA6DC2C642682003C1BB3 /* Utilities */,
 				F03AA6D82C642629003C1BB3 /* ViewModels */,
 				F03AA6D62C642614003C1BB3 /* Views */,
+				F05330412C6A9FF800F628C5 /* ContentView.swift */,
 				F02581812C62C292006CB2E6 /* MorningStarApp.swift */,
 				F02581892C62C293006CB2E6 /* MorningStar.entitlements */,
 			);
@@ -172,6 +177,7 @@
 		F03AA6D62C642614003C1BB3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F053303D2C6A9DF900F628C5 /* Header */,
 				F03AA6D72C64261E003C1BB3 /* Dashboard */,
 			);
 			path = Views;
@@ -244,9 +250,25 @@
 		F03AA6E22C642874003C1BB3 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				F04A78B92C664A3000E8FB1C /* MSLogoView.swift */,
-				F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		F053303D2C6A9DF900F628C5 /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				F053303E2C6A9E2C00F628C5 /* HeaderView.swift */,
+				F05330402C6A9E6200F628C5 /* Components */,
+			);
+			path = Header;
+			sourceTree = "<group>";
+		};
+		F05330402C6A9E6200F628C5 /* Components */ = {
+			isa = PBXGroup;
+			children = (
 				F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */,
+				F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */,
+				F04A78B92C664A3000E8FB1C /* MSLogoView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -382,10 +404,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				F02581AF2C62C6F3006CB2E6 /* DashboardView.swift in Sources */,
+				F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */,
 				F02581862C62C292006CB2E6 /* Item.swift in Sources */,
 				F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */,
 				F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */,
 				F0AD076B2C68204700D0F2AD /* MSThemeButtonView.swift in Sources */,
+				F05330422C6A9FF800F628C5 /* ContentView.swift in Sources */,
 				F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */,
 				F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */,
 				F04A78BA2C664A3000E8FB1C /* MSLogoView.swift in Sources */,

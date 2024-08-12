@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+private enum Constants {
+    static let shadowOpacity: CGFloat = 0.2
+    static let shadowRadius: CGFloat = 5
+    static let blurRadius: CGFloat = 2
+    static let offsetLightButton: CGFloat = -60
+    static let offsetDarkButton: CGFloat = 0
+}
+
 enum ThemeMode {
     case light
     case dark
@@ -49,19 +57,27 @@ private struct MSThemeToggleButton: View {
         }) {
             Label(themeMode.description, systemImage: themeMode.iconName)
                 .foregroundColor(Color.primaryText)
-                .padding(.horizontal, 30)
-                .padding(.vertical, 15)
+                .padding(.horizontal, AppPadding.extraLarge)
+                .padding(.vertical, AppPadding.medium)
                 .background(Color.backgroundColor)
                 .clipShape(Capsule())
-                .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
+                .shadow(
+                    color: .black.opacity(Constants.shadowOpacity),
+                    radius: Constants.shadowRadius,
+                    x: 0,
+                    y: 2
+                )
                 .overlay(
                     Capsule()
-                        .stroke(Color.black, lineWidth: 1)
+                        .stroke(
+                            Color.black,
+                            lineWidth: 1
+                        )
                 )
         }
-        .blur(radius: selectedThemeMode == themeMode ? 2 : 0)
+        .blur(radius: selectedThemeMode == themeMode ? Constants.blurRadius : 0)
         .zIndex(selectedThemeMode == themeMode ? 0 : 1)
-        .offset(x: themeMode == .light ? -60 : 0)
+        .offset(x: themeMode == .light ? Constants.offsetLightButton : 0)
         .accessibility(label: Text("Switch to \(themeMode.description) mode"))
     }
 }

@@ -25,11 +25,7 @@ struct MorningStarApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                Color.backgroundColor.edgesIgnoringSafeArea(.all)
-                DashboardView()
-                    //.preferredColorScheme(.dark)
-            }
+           ContentView()
         }
         .modelContainer(sharedModelContainer)
     }
