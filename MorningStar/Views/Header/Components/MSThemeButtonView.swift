@@ -13,16 +13,15 @@ private enum Constants {
     static let offsetDarkButton: CGFloat = 0
 }
 
-enum ThemeMode {
-    case light
-    case dark
-    
+extension ColorScheme {
     var description: String {
         switch self {
         case .light:
             return "Light"
         case .dark:
             return "Dark"
+        @unknown default:
+            return "Light"
         }
     }
     
@@ -32,22 +31,15 @@ enum ThemeMode {
             return "sun.max.fill"
         case .dark:
             return "moon.fill"
-        }
-    }
-    
-    var colorScheme: ColorScheme {
-        switch self {
-        case .light:
-            return .light
-        case .dark:
-            return .dark
+        @unknown default:
+            return "sun.max.fill"
         }
     }
 }
 
 private struct MSThemeToggleButton: View {
-    var themeMode: ThemeMode
-    @Binding var selectedThemeMode: ThemeMode
+    var themeMode: ColorScheme
+    @Binding var selectedThemeMode: ColorScheme
     
     var body: some View {
         Button(action: {
@@ -75,9 +67,9 @@ private struct MSThemeToggleButton: View {
 }
 
 struct MSThemeToggleView: View {
-    @State private var selectedThemeMode: ThemeMode
+    @State private var selectedThemeMode: ColorScheme
     
-    init(initialTheme: ThemeMode) {
+    init(initialTheme: ColorScheme) {
         _selectedThemeMode = State(initialValue: initialTheme)
     }
     
@@ -86,7 +78,7 @@ struct MSThemeToggleView: View {
             MSThemeToggleButton(themeMode: .light, selectedThemeMode: $selectedThemeMode)
             MSThemeToggleButton(themeMode: .dark, selectedThemeMode: $selectedThemeMode)
         }
-        .preferredColorScheme(selectedThemeMode.colorScheme)
+        .preferredColorScheme(selectedThemeMode)
     }
 }
 

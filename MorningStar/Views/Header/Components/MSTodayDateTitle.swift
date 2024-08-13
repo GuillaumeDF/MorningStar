@@ -11,7 +11,7 @@ struct MSTodayDateTitle: View {
     var body: some View {
         Text(todayDate())
             .font(.title)
-            .foregroundStyle(.secondaryText)
+            .foregroundStyle(Color.secondaryTextColor)
     }
 
     func todayDate() -> String {

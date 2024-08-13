@@ -13,6 +13,8 @@ private enum Constants {
 }
 
 struct HeaderView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
         HStack {
             MSLogoView(size: .medium)
@@ -20,14 +22,12 @@ struct HeaderView: View {
             VStack(alignment: .leading) {
                 Text("Hello, Guillaume")
                     .font(.largeTitle)
-                    .foregroundStyle(.primaryText)
+                    .foregroundStyle(Color.primaryTextColor)
                 MSTodayDateTitle()
             }
             Spacer()
-            HStack(
-                spacing: AppPadding.extraLarge
-            ) {
-                MSThemeToggleView(initialTheme: .light)
+            HStack(spacing: AppPadding.extraLarge) {
+                MSThemeToggleView(initialTheme: colorScheme)
                 MSVerticalSeparator()
                     .frame(height: Constants.separatorHeight)
                 MSAvatarView(imageName: "")
