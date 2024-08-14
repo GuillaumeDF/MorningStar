@@ -13,11 +13,13 @@ private enum Constants {
 
 struct MSAvatarView: View {
     var imageName: String
+    var padding: CGFloat = 0
     
     var body: some View {
         Image(imageName)
             .resizable()
             .scaledToFill()
+            .padding(padding)
             .clipShape(Circle())
             .overlay(
                 Circle()
