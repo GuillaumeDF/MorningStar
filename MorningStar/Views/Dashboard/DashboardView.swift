@@ -10,7 +10,7 @@ import SwiftUI
 struct DashboardView: View {
     var body: some View {
         VStack {
-            HStack(spacing: AppPadding.extraLarge) {
+            HStack(spacing: AppConstants.Padding.extraLarge) {
                 VStack(alignment: .leading) {
                     Text("My Analytics")
                         .font(.title)
@@ -32,9 +32,10 @@ struct DashboardView: View {
                 )
                 MSNewActivityButton()
             }
-            .padding(.bottom, AppPadding.extraLarge)
+            .padding(.bottom, AppConstants.Padding.extraLarge)
             HStack {
-                WidgetView(title: "Goal Sport Workout")
+                MSGoalSport()
+                    .frame(width: 500)
                 WidgetView(title: "Sport Workout Statistic")
             }
             HStack {

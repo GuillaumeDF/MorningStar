@@ -15,8 +15,7 @@ struct MSAvatarView: View {
     var imageName: String
     
     var body: some View {
-        //Image(imageName)
-        Image(systemName: "person.fill")
+        Image(imageName)
             .resizable()
             .scaledToFill()
             .clipShape(Circle())
@@ -33,5 +32,5 @@ struct MSAvatarView: View {
 }
 
 #Preview {
-    MSAvatarView(imageName: "")
+    MSAvatarView(imageName: "stepIcon")
 }

@@ -26,7 +26,7 @@ struct HeaderView: View {
                 MSTodayDateTitle()
             }
             Spacer()
-            HStack(spacing: AppPadding.extraLarge) {
+            HStack(spacing: AppConstants.Padding.extraLarge) {
                 MSThemeToggleView(initialTheme: colorScheme)
                 MSVerticalSeparator()
                     .frame(height: Constants.separatorHeight)

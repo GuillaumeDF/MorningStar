@@ -25,6 +25,10 @@
 		F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */; };
 		F053CF6D2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF6C2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift */; };
 		F053CF6F2C6B9C7B000E2EFD /* MSNewActivityButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF6E2C6B9C7B000E2EFD /* MSNewActivityButton.swift */; };
+		F053CF712C6BC7A3000E2EFD /* MSGoalSport.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF702C6BC7A3000E2EFD /* MSGoalSport.swift */; };
+		F053CF732C6CE6DE000E2EFD /* MSLabeledContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF722C6CE6DE000E2EFD /* MSLabeledContainer.swift */; };
+		F053CF752C6CE7CD000E2EFD /* MSAvatarProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF742C6CE7CD000E2EFD /* MSAvatarProgressView.swift */; };
+		F053CF772C6CE82B000E2EFD /* MSProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF762C6CE82B000E2EFD /* MSProgressBarView.swift */; };
 		F0AD076B2C68204700D0F2AD /* MSThemeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +72,10 @@
 		F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSVerticalSeparator.swift; sourceTree = "<group>"; };
 		F053CF6C2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSDashboardHeaderMetricView.swift; sourceTree = "<group>"; };
 		F053CF6E2C6B9C7B000E2EFD /* MSNewActivityButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSNewActivityButton.swift; sourceTree = "<group>"; };
+		F053CF702C6BC7A3000E2EFD /* MSGoalSport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSGoalSport.swift; sourceTree = "<group>"; };
+		F053CF722C6CE6DE000E2EFD /* MSLabeledContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLabeledContainer.swift; sourceTree = "<group>"; };
+		F053CF742C6CE7CD000E2EFD /* MSAvatarProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSAvatarProgressView.swift; sourceTree = "<group>"; };
+		F053CF762C6CE82B000E2EFD /* MSProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSProgressBarView.swift; sourceTree = "<group>"; };
 		F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeButtonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -260,6 +268,10 @@
 			children = (
 				F053CF6C2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift */,
 				F053CF6E2C6B9C7B000E2EFD /* MSNewActivityButton.swift */,
+				F053CF702C6BC7A3000E2EFD /* MSGoalSport.swift */,
+				F053CF722C6CE6DE000E2EFD /* MSLabeledContainer.swift */,
+				F053CF742C6CE7CD000E2EFD /* MSAvatarProgressView.swift */,
+				F053CF762C6CE82B000E2EFD /* MSProgressBarView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -424,11 +436,15 @@
 				F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */,
 				F0AD076B2C68204700D0F2AD /* MSThemeButtonView.swift in Sources */,
 				F05330422C6A9FF800F628C5 /* ContentView.swift in Sources */,
+				F053CF712C6BC7A3000E2EFD /* MSGoalSport.swift in Sources */,
 				F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */,
 				F053CF6D2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift in Sources */,
 				F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */,
+				F053CF752C6CE7CD000E2EFD /* MSAvatarProgressView.swift in Sources */,
 				F04A78BA2C664A3000E8FB1C /* MSLogoView.swift in Sources */,
 				F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */,
+				F053CF732C6CE6DE000E2EFD /* MSLabeledContainer.swift in Sources */,
+				F053CF772C6CE82B000E2EFD /* MSProgressBarView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

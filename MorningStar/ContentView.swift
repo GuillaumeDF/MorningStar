@@ -15,7 +15,7 @@ struct ContentView: View {
                 HeaderView()
                 DashboardView()
             }
-            .padding(.horizontal, AppPadding.extraLarge)
+            .padding(.horizontal, AppConstants.Padding.extraLarge)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
     }

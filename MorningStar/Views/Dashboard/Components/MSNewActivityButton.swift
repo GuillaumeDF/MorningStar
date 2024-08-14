@@ -15,7 +15,7 @@ struct MSNewActivityButton: View {
             Text("+ New activity")
                 .font(.title2)
                 .foregroundColor(Color.primaryTextColor)
-                .padding(AppPadding.medium)
+                .padding(AppConstants.Padding.medium)
                 .background(Color.primaryColor)
                 .clipShape(Capsule())
         }

@@ -47,8 +47,8 @@ private struct MSThemeToggleButton: View {
         }) {
             Label(themeMode.description, systemImage: themeMode.iconName)
                 .foregroundColor(Color.primaryTextColor)
-                .padding(.horizontal, AppPadding.extraLarge)
-                .padding(.vertical, AppPadding.medium)
+                .padding(.horizontal, AppConstants.Padding.extraLarge)
+                .padding(.vertical, AppConstants.Padding.medium)
                 .background(Color.backgroundColor)
                 .clipShape(Capsule())
                 .overlay(
