@@ -36,15 +36,14 @@ struct DashboardView: View {
             HStack {
                 MSGoalSport()
                     .frame(width: 400)
-                //WidgetView(title: "Sport Workout Statistic")
                 WorkoutIntensityView()
                 .frame(height: 400)
             }
             HStack {
-                WidgetView(title: "Active Minutes")
-                WidgetView(title: "Calories Burned")
-                WidgetView(title: "Steps Taken")
-                WidgetView(title: "Rings")
+                MSActivityChart()
+                MSCaloriesChart()
+                MSStepsChart()
+                MSRingsChart()
             }
         }
     }
