@@ -30,6 +30,8 @@
 		F053CF752C6CE7CD000E2EFD /* MSAvatarProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF742C6CE7CD000E2EFD /* MSAvatarProgressView.swift */; };
 		F053CF772C6CE82B000E2EFD /* MSProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF762C6CE82B000E2EFD /* MSProgressBarView.swift */; };
 		F0AD076B2C68204700D0F2AD /* MSThemeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */; };
+		F0D5E0142C6E66EA00EE647B /* WorkoutIntensityChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D5E0132C6E66EA00EE647B /* WorkoutIntensityChart.swift */; };
+		F0D5E0162C6E66F500EE647B /* WorkoutIntensityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D5E0152C6E66F500EE647B /* WorkoutIntensityView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +79,8 @@
 		F053CF742C6CE7CD000E2EFD /* MSAvatarProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSAvatarProgressView.swift; sourceTree = "<group>"; };
 		F053CF762C6CE82B000E2EFD /* MSProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSProgressBarView.swift; sourceTree = "<group>"; };
 		F0AD076A2C68204700D0F2AD /* MSThemeButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeButtonView.swift; sourceTree = "<group>"; };
+		F0D5E0132C6E66EA00EE647B /* WorkoutIntensityChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutIntensityChart.swift; sourceTree = "<group>"; };
+		F0D5E0152C6E66F500EE647B /* WorkoutIntensityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutIntensityView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -272,6 +276,8 @@
 				F053CF722C6CE6DE000E2EFD /* MSLabeledContainer.swift */,
 				F053CF742C6CE7CD000E2EFD /* MSAvatarProgressView.swift */,
 				F053CF762C6CE82B000E2EFD /* MSProgressBarView.swift */,
+				F0D5E0132C6E66EA00EE647B /* WorkoutIntensityChart.swift */,
+				F0D5E0152C6E66F500EE647B /* WorkoutIntensityView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -441,10 +447,12 @@
 				F053CF6D2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift in Sources */,
 				F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */,
 				F053CF752C6CE7CD000E2EFD /* MSAvatarProgressView.swift in Sources */,
+				F0D5E0162C6E66F500EE647B /* WorkoutIntensityView.swift in Sources */,
 				F04A78BA2C664A3000E8FB1C /* MSLogoView.swift in Sources */,
 				F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */,
 				F053CF732C6CE6DE000E2EFD /* MSLabeledContainer.swift in Sources */,
 				F053CF772C6CE82B000E2EFD /* MSProgressBarView.swift in Sources */,
+				F0D5E0142C6E66EA00EE647B /* WorkoutIntensityChart.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

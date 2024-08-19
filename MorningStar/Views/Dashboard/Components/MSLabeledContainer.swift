@@ -22,11 +22,11 @@ struct MSLabeledContainer<Content: View>: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             Text(title)
                 .font(.title2)
                 .fontWeight(.bold)
-                .padding([.top, .leading, .trailing], AppConstants.Padding.medium)
+                .padding(AppConstants.Padding.medium)
             content
         }
         .background(

@@ -9,7 +9,32 @@ import SwiftUI
 
 struct WorkoutIntensityView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        MSLabeledContainer(title: "Sport Workout Statistic", content: {
+            WorkoutIntensityChart(
+                data: [
+                    [
+                        IntensitySegment(time: 0.2, type: .lowIntensity),
+                        IntensitySegment(time: 0.3, type: .moderateIntensity),
+                        IntensitySegment(time: 0.4, type: .lowIntensity),
+                        IntensitySegment(time: 0.1, type: .highIntensity)
+                    ],
+                    [
+                        IntensitySegment(time: 0.5, type: .moderateIntensity),
+                        IntensitySegment(time: 0.2, type: .veryHighIntensity),
+                        IntensitySegment(time: 0.4, type: .highIntensity),
+                        IntensitySegment(time: 0.7, type: .lowIntensity)
+                    ],
+                    [
+                        IntensitySegment(time: 0.3, type: .lowIntensity),
+                        IntensitySegment(time: 0.1, type: .moderateIntensity),
+                        IntensitySegment(time: 0.4, type: .highIntensity),
+                        IntensitySegment(time: 0.6, type: .veryHighIntensity)
+                    ]
+                ]
+            )
+            .background(Color.cardBackgroundColor)
+            .cornerRadius(AppConstants.Radius.large)
+        })
     }
 }
 

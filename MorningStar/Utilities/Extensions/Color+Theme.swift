@@ -34,4 +34,10 @@ extension Color {
     
     // Color used for alerts or error messages
     static let alertColor = Color("AlertColor")
+    
+    // Color workout intensity
+    static let lowIntensityColor = Color("LowIntensityColor")
+    static let moderateIntensityColor = Color("ModerateIntensityColor")
+    static let highIntensityColor = Color("HighIntensityColor")
+    static let veryHighIntensityColor = Color("VeryHighIntensityColor")
 }

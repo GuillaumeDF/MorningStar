@@ -35,8 +35,10 @@ struct DashboardView: View {
             .padding(.bottom, AppConstants.Padding.extraLarge)
             HStack {
                 MSGoalSport()
-                    .frame(width: 500)
-                WidgetView(title: "Sport Workout Statistic")
+                    .frame(width: 400)
+                //WidgetView(title: "Sport Workout Statistic")
+                WorkoutIntensityView()
+                .frame(height: 400)
             }
             HStack {
                 WidgetView(title: "Active Minutes")
@@ -45,6 +47,36 @@ struct DashboardView: View {
                 WidgetView(title: "Rings")
             }
         }
+    }
+}
+
+struct StackedBarChart: View {
+    var data: [[Double]]
+    var colors: [Color]
+    var labels: [String]
+
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 16) {
+            ForEach(0..<data.count, id: \.self) { index in
+                VStack {
+                    Spacer()
+
+                    ForEach(0..<data[index].count, id: \.self) { subIndex in
+                        Rectangle()
+                            .fill(colors[subIndex])
+                            .frame(height: CGFloat(data[index][subIndex]))
+                    }
+                }
+                .frame(width: 40)
+                .overlay(
+                    Text(labels[index])
+                        .font(.caption)
+                        .padding(.top, 8),
+                    alignment: .top
+                )
+            }
+        }
+        .padding()
     }
 }
 
