@@ -60,7 +60,7 @@ struct MSActivityChart: View {
             }
         }
         .padding()
-        .background(Color.cardBackgroundColor)
+        .background(Color.secondaryColor)
         .cornerRadius(12)
         .shadow(radius: 4)
     }

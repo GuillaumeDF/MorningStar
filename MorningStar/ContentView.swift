@@ -14,9 +14,10 @@ struct ContentView: View {
             VStack {
                 HeaderView()
                 DashboardView()
+                    
             }
-            .padding(.horizontal, AppConstants.Padding.extraLarge)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .padding(AppConstants.Padding.extraLarge)
         }
     }
 }

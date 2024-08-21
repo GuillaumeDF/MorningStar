@@ -8,11 +8,11 @@
 import SwiftUI
 
 extension Color {
-    // Primary color used for main actions, buttons, and accents
-    static let primaryColor = Color("PrimaryColor")
+    // Utilisé pour les titres des cartes, les éléments interactifs (boutons, liens) et les accents visuels importants.
+    static let primaryColor = Color("MSPrimaryColor")
     
-    // Secondary color used for secondary actions or highlights
-    static let secondaryColor = Color("SecondaryColor")
+    // Utilisé pour les arrière-plans des cartes, créant un contraste doux avec les éléments de contenu.
+    static let secondaryColor = Color("MSSecondaryColor")
     
     // Color used to indicate success, progress, or positive status
     static let successColor = Color("SuccessColor")
@@ -20,17 +20,29 @@ extension Color {
     // Color used for warnings or important highlights
     static let warningColor = Color("WarningColor")
     
-    // Background color for main view and general backgrounds
-    static let backgroundColor = Color("BackgroundColor")
+    // Fond général du Dashboard pour un aspect propre et épuré.
+    static let backgroundColor = Color("MSBackgroundColor")
     
-    // Background color for cards and secondary sections
-    static let cardBackgroundColor = Color("CardBackgroundColor")
+    // Couleur principale pour le texte afin d'assurer une bonne lisibilité.
+    static let primaryTextColor = Color("MSPrimaryTextColor")
     
-    // Primary text color used for main content
-    static let primaryTextColor = Color("PrimaryTextColor")
+    // Pour les éléments secondaires, comme les textes explicatifs ou les diagrammes moins importants.
+    static let secondaryTextColor = Color("MSSecondaryText")
     
-    // Secondary text color used for less prominent text
-    static let secondaryTextColor = Color("SecondaryTextColor")
+    // Exclusif à la carte Calories, pour accentuer l’importance de cette métrique.
+    static let calorieColor = Color("MSCalorieColor")
+    
+    // Exclusif à la carte Entraînement, pour représenter l’activité physique de manière dynamique.
+    static let trainingColor = Color("MSTrainingColor")
+    
+    // Pour les cartes liées aux pas et aux tendances, signifiant l'énergie et le mouvement.
+    static let stepColor = Color("MSStepColor")
+    
+    // Utilisé pour la carte du poids, avec la flèche de tendance (hausse/baisse) dans une teinte plus sombre ou plus claire.
+    static let weightColor = Color("MSWeightColor")
+    
+    // Utilisé pour délimiter les cartes, créant une séparation subtile mais nette.
+    static let borderColor = Color("MSBorderColor")
     
     // Color used for alerts or error messages
     static let alertColor = Color("AlertColor")

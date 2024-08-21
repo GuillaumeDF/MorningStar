@@ -32,7 +32,7 @@ struct WorkoutIntensityView: View {
                     ]
                 ]
             )
-            .background(Color.cardBackgroundColor)
+            .background(Color.secondaryColor)
             .cornerRadius(AppConstants.Radius.large)
         })
     }

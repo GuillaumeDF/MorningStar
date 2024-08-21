@@ -33,65 +33,49 @@ struct DashboardView: View {
                 MSNewActivityButton()
             }
             .padding(.bottom, AppConstants.Padding.extraLarge)
-            HStack {
-                MSGoalSport()
-                    .frame(width: 400)
+            HStack(spacing: 50) {
+                MSMetricChart(
+                    imageName: "weightIcon",
+                    title: "Weight",
+                    valeur: "75",
+                    unity: "kg",
+                    arrowDirection: .up,
+                    backgroundColor: Color.weightColor
+                )
+                .frame(height: 400)
                 WorkoutIntensityView()
+                    .frame(width: 800, height: 400)
+            }
+            HStack(spacing: 50) {
+                MSMetricChart(
+                    imageName: "caloriesIcon",
+                    title: "Calorie burned",
+                    valeur: "500",
+                    unity: "kcal",
+                    arrowDirection: .up,
+                    backgroundColor: Color.calorieColor
+                )
+                .frame(height: 400)
+                MSMetricChart(
+                    imageName: "stepIcon",
+                    title: "Step",
+                    valeur: "10 000",
+                    unity: "step",
+                    arrowDirection: .up,
+                    backgroundColor: Color.stepColor
+                )
+                .frame(height: 400)
+                MSMetricChart(
+                    imageName: "weightIcon",
+                    title: "Sleep",
+                    valeur: "10",
+                    unity: "h",
+                    arrowDirection: .down,
+                    backgroundColor: Color.blue
+                )
                 .frame(height: 400)
             }
-            HStack {
-                MSActivityChart()
-                MSCaloriesChart()
-                MSStepsChart()
-                MSRingsChart()
-            }
         }
-    }
-}
-
-struct StackedBarChart: View {
-    var data: [[Double]]
-    var colors: [Color]
-    var labels: [String]
-
-    var body: some View {
-        HStack(alignment: .bottom, spacing: 16) {
-            ForEach(0..<data.count, id: \.self) { index in
-                VStack {
-                    Spacer()
-
-                    ForEach(0..<data[index].count, id: \.self) { subIndex in
-                        Rectangle()
-                            .fill(colors[subIndex])
-                            .frame(height: CGFloat(data[index][subIndex]))
-                    }
-                }
-                .frame(width: 40)
-                .overlay(
-                    Text(labels[index])
-                        .font(.caption)
-                        .padding(.top, 8),
-                    alignment: .top
-                )
-            }
-        }
-        .padding()
-    }
-}
-
-struct WidgetView: View {
-    let title: String
-    
-    var body: some View {
-        Rectangle()
-            .fill(Color.cardBackgroundColor)
-            .frame(height: 100)
-            .overlay(
-                Text(title)
-                    .foregroundColor(.primaryTextColor)
-                    .font(.headline)
-            )
-            .cornerRadius(10)
     }
 }
 

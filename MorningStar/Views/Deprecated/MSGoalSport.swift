@@ -18,7 +18,7 @@ struct MSGoalSport: View {
                 MSAvatarProgressView(title: "Poids", imageName: "weightIcon", progress: $progress)
             }
             .padding(AppConstants.Padding.large)
-            .background(Color.cardBackgroundColor)
+            .background(Color.secondaryColor)
             .cornerRadius(AppConstants.Radius.large)
         })
     }

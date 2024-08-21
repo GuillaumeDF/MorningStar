@@ -34,6 +34,9 @@
 		F0B7FFD52C73EFDD00F37CDC /* MSCaloriesChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B7FFD42C73EFDD00F37CDC /* MSCaloriesChart.swift */; };
 		F0B7FFD72C73F17E00F37CDC /* MSStepsChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B7FFD62C73F17E00F37CDC /* MSStepsChart.swift */; };
 		F0B7FFD92C73F54C00F37CDC /* MSRingsChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B7FFD82C73F54C00F37CDC /* MSRingsChart.swift */; };
+		F0CFA07D2C76368300B7FD7D /* ArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA07C2C76368300B7FD7D /* ArrowView.swift */; };
+		F0CFA07F2C765A5800B7FD7D /* MSMetricChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA07E2C765A5800B7FD7D /* MSMetricChart.swift */; };
+		F0CFA0812C765A6300B7FD7D /* MSWeightGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA0802C765A6300B7FD7D /* MSWeightGraph.swift */; };
 		F0D5E0142C6E66EA00EE647B /* WorkoutIntensityChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D5E0132C6E66EA00EE647B /* WorkoutIntensityChart.swift */; };
 		F0D5E0162C6E66F500EE647B /* WorkoutIntensityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D5E0152C6E66F500EE647B /* WorkoutIntensityView.swift */; };
 /* End PBXBuildFile section */
@@ -87,6 +90,9 @@
 		F0B7FFD42C73EFDD00F37CDC /* MSCaloriesChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSCaloriesChart.swift; sourceTree = "<group>"; };
 		F0B7FFD62C73F17E00F37CDC /* MSStepsChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSStepsChart.swift; sourceTree = "<group>"; };
 		F0B7FFD82C73F54C00F37CDC /* MSRingsChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSRingsChart.swift; sourceTree = "<group>"; };
+		F0CFA07C2C76368300B7FD7D /* ArrowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowView.swift; sourceTree = "<group>"; };
+		F0CFA07E2C765A5800B7FD7D /* MSMetricChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSMetricChart.swift; sourceTree = "<group>"; };
+		F0CFA0802C765A6300B7FD7D /* MSWeightGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSWeightGraph.swift; sourceTree = "<group>"; };
 		F0D5E0132C6E66EA00EE647B /* WorkoutIntensityChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutIntensityChart.swift; sourceTree = "<group>"; };
 		F0D5E0152C6E66F500EE647B /* WorkoutIntensityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutIntensityView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -205,6 +211,7 @@
 		F03AA6D62C642614003C1BB3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F0B7FFDA2C75412800F37CDC /* Deprecated */,
 				F053303D2C6A9DF900F628C5 /* Header */,
 				F03AA6D72C64261E003C1BB3 /* Dashboard */,
 			);
@@ -280,16 +287,16 @@
 			children = (
 				F053CF6C2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift */,
 				F053CF6E2C6B9C7B000E2EFD /* MSNewActivityButton.swift */,
-				F053CF702C6BC7A3000E2EFD /* MSGoalSport.swift */,
 				F053CF722C6CE6DE000E2EFD /* MSLabeledContainer.swift */,
-				F053CF742C6CE7CD000E2EFD /* MSAvatarProgressView.swift */,
-				F053CF762C6CE82B000E2EFD /* MSProgressBarView.swift */,
 				F0D5E0132C6E66EA00EE647B /* WorkoutIntensityChart.swift */,
 				F0D5E0152C6E66F500EE647B /* WorkoutIntensityView.swift */,
 				F0B7FFD22C73BC3100F37CDC /* MSActivityChart.swift */,
 				F0B7FFD42C73EFDD00F37CDC /* MSCaloriesChart.swift */,
 				F0B7FFD62C73F17E00F37CDC /* MSStepsChart.swift */,
 				F0B7FFD82C73F54C00F37CDC /* MSRingsChart.swift */,
+				F0CFA07C2C76368300B7FD7D /* ArrowView.swift */,
+				F0CFA07E2C765A5800B7FD7D /* MSMetricChart.swift */,
+				F0CFA0802C765A6300B7FD7D /* MSWeightGraph.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -313,6 +320,16 @@
 				F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		F0B7FFDA2C75412800F37CDC /* Deprecated */ = {
+			isa = PBXGroup;
+			children = (
+				F053CF702C6BC7A3000E2EFD /* MSGoalSport.swift */,
+				F053CF742C6CE7CD000E2EFD /* MSAvatarProgressView.swift */,
+				F053CF762C6CE82B000E2EFD /* MSProgressBarView.swift */,
+			);
+			path = Deprecated;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -449,6 +466,7 @@
 				F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */,
 				F0B7FFD52C73EFDD00F37CDC /* MSCaloriesChart.swift in Sources */,
 				F05330442C6AA58200F628C5 /* MSAvatarView.swift in Sources */,
+				F0CFA0812C765A6300B7FD7D /* MSWeightGraph.swift in Sources */,
 				F053CF6F2C6B9C7B000E2EFD /* MSNewActivityButton.swift in Sources */,
 				F02581862C62C292006CB2E6 /* Item.swift in Sources */,
 				F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */,
@@ -463,7 +481,9 @@
 				F053CF752C6CE7CD000E2EFD /* MSAvatarProgressView.swift in Sources */,
 				F0D5E0162C6E66F500EE647B /* WorkoutIntensityView.swift in Sources */,
 				F04A78BA2C664A3000E8FB1C /* MSLogoView.swift in Sources */,
+				F0CFA07F2C765A5800B7FD7D /* MSMetricChart.swift in Sources */,
 				F0B7FFD92C73F54C00F37CDC /* MSRingsChart.swift in Sources */,
+				F0CFA07D2C76368300B7FD7D /* ArrowView.swift in Sources */,
 				F0B7FFD72C73F17E00F37CDC /* MSStepsChart.swift in Sources */,
 				F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */,
 				F053CF732C6CE6DE000E2EFD /* MSLabeledContainer.swift in Sources */,
