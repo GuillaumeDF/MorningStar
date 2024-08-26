@@ -14,12 +14,6 @@ extension Color {
     // Utilisé pour les arrière-plans des cartes, créant un contraste doux avec les éléments de contenu.
     static let secondaryColor = Color("MSSecondaryColor")
     
-    // Color used to indicate success, progress, or positive status
-    static let successColor = Color("SuccessColor")
-    
-    // Color used for warnings or important highlights
-    static let warningColor = Color("WarningColor")
-    
     // Fond général du Dashboard pour un aspect propre et épuré.
     static let backgroundColor = Color("MSBackgroundColor")
     
@@ -43,6 +37,12 @@ extension Color {
     
     // Utilisé pour délimiter les cartes, créant une séparation subtile mais nette.
     static let borderColor = Color("MSBorderColor")
+    
+    // Color used to indicate success, progress, or positive status
+    static let successColor = Color("SuccessColor")
+    
+    // Color used for warnings or important highlights
+    static let warningColor = Color("WarningColor")
     
     // Color used for alerts or error messages
     static let alertColor = Color("AlertColor")

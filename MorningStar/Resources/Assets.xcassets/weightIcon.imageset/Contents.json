@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "echelle-de-poids.png",
+      "filename" : "weight-svgrepo-com.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "echelle-de-poids 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "echelle-de-poids 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

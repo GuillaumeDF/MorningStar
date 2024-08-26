@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "pas.png",
+      "filename" : "footprint-svgrepo-com.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "pas 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "pas 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -15,16 +15,17 @@ struct AppConstants {
         static let extraLarge: CGFloat = 32
     }
     
-    struct FontSize {
-        static let small: CGFloat = 12
-        static let medium: CGFloat = 16
-        static let large: CGFloat = 24
-    }
-    
     struct Radius {
         static let small: CGFloat = 5
         static let medium: CGFloat = 10
         static let large: CGFloat = 15
         static let extraLarge: CGFloat = 20
+    }
+    
+    struct Spacing {
+        static let small: CGFloat = 4
+        static let medium: CGFloat = 8
+        static let large: CGFloat = 16
+        static let extraLarge: CGFloat = 24
     }
 }

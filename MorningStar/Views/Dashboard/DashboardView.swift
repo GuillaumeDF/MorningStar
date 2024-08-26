@@ -9,7 +9,8 @@ import SwiftUI
 
 struct DashboardView: View {
     var body: some View {
-        VStack {
+        VStack(spacing: AppConstants.Padding.extraLarge) {
+            
             HStack(spacing: AppConstants.Padding.extraLarge) {
                 VStack(alignment: .leading) {
                     Text("My Analytics")
@@ -26,26 +27,24 @@ struct DashboardView: View {
                 )
                 MSVerticalSeparator()
                     .frame(height: 50)
-                MSDashboardHeaderMetricView(
-                    title: "Heart rate",
-                    value: "90 bpm"
-                )
                 MSNewActivityButton()
             }
-            .padding(.bottom, AppConstants.Padding.extraLarge)
-            HStack(spacing: 50) {
-                MSMetricChart(
-                    imageName: "weightIcon",
-                    title: "Weight",
-                    valeur: "75",
-                    unity: "kg",
-                    arrowDirection: .up,
-                    backgroundColor: Color.weightColor
-                )
-                .frame(height: 400)
-                WorkoutIntensityView()
-                    .frame(width: 800, height: 400)
+            
+            GeometryReader { geometry in
+                HStack(spacing: 50) {
+                    MSMetricChart(
+                        imageName: "weightIcon",
+                        title: "Weight",
+                        valeur: "75",
+                        unity: "kg",
+                        arrowDirection: .up,
+                        backgroundColor: Color.weightColor
+                    )
+                    .frame(width: (geometry.size.width - 100) / 3)
+                    WorkoutIntensityView()
+                }
             }
+            
             HStack(spacing: 50) {
                 MSMetricChart(
                     imageName: "caloriesIcon",
@@ -55,7 +54,6 @@ struct DashboardView: View {
                     arrowDirection: .up,
                     backgroundColor: Color.calorieColor
                 )
-                .frame(height: 400)
                 MSMetricChart(
                     imageName: "stepIcon",
                     title: "Step",
@@ -64,16 +62,14 @@ struct DashboardView: View {
                     arrowDirection: .up,
                     backgroundColor: Color.stepColor
                 )
-                .frame(height: 400)
                 MSMetricChart(
-                    imageName: "weightIcon",
+                    imageName: "sleepIcon",
                     title: "Sleep",
                     valeur: "10",
                     unity: "h",
                     arrowDirection: .down,
                     backgroundColor: Color.blue
                 )
-                .frame(height: 400)
             }
         }
     }

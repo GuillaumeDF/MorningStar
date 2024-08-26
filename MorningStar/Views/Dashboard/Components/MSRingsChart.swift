@@ -78,8 +78,8 @@ struct MSRingsChart: View {
         }
         .padding()
         .background(RoundedRectangle(cornerRadius: 20)
-                        .fill(Color(.systemBackground))
-                        .shadow(radius: 10))
+            .fill(Color.backgroundColor)
+            .shadow(radius: 10))
         .padding()
     }
 }
