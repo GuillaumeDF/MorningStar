@@ -7,37 +7,41 @@
 
 import SwiftUI
 
+struct IntensitySegment: Hashable {
+    var time: CGFloat
+    var type: IntensityType
+}
+
 struct MSStackedChartCardView: View {
     var body: some View {
-        MSLabeledContainer(title: "Sport Workout Statistic", content: {
-            MSStackedChart(
-                data: [
-                    [
-                        IntensitySegment(time: 0.2, type: .lowIntensity),
-                        IntensitySegment(time: 0.3, type: .moderateIntensity),
-                        IntensitySegment(time: 0.4, type: .lowIntensity),
-                        IntensitySegment(time: 0.1, type: .highIntensity)
-                    ],
-                    [
-                        IntensitySegment(time: 0.5, type: .moderateIntensity),
-                        IntensitySegment(time: 0.2, type: .veryHighIntensity),
-                        IntensitySegment(time: 0.4, type: .highIntensity),
-                        IntensitySegment(time: 0.7, type: .lowIntensity)
-                    ],
-                    [
-                        IntensitySegment(time: 0.3, type: .lowIntensity),
-                        IntensitySegment(time: 0.1, type: .moderateIntensity),
-                        IntensitySegment(time: 0.4, type: .highIntensity),
-                        IntensitySegment(time: 0.6, type: .veryHighIntensity)
-                    ]
+        MSStackedChart(
+            data: [
+                [
+                    IntensitySegment(time: 0.2, type: .lowIntensity),
+                    IntensitySegment(time: 0.3, type: .moderateIntensity),
+                    IntensitySegment(time: 0.4, type: .lowIntensity),
+                    IntensitySegment(time: 0.1, type: .highIntensity)
+                ],
+                [
+                    IntensitySegment(time: 0.5, type: .moderateIntensity),
+                    IntensitySegment(time: 0.2, type: .veryHighIntensity),
+                    IntensitySegment(time: 0.4, type: .highIntensity),
+                    IntensitySegment(time: 0.7, type: .lowIntensity)
+                ],
+                [
+                    IntensitySegment(time: 0.3, type: .lowIntensity),
+                    IntensitySegment(time: 0.1, type: .moderateIntensity),
+                    IntensitySegment(time: 0.4, type: .highIntensity),
+                    IntensitySegment(time: 0.6, type: .veryHighIntensity)
                 ]
-            )
-            .background(Color.secondaryColor)
-            .cornerRadius(AppConstants.Radius.large)
-        })
+            ]
+        )
+        .background(Color.trainingColor.opacity(0.5))
+        .cornerRadius(AppConstants.Radius.large)
     }
 }
 
 #Preview {
     MSStackedChartCardView()
+        .frame(height: 500)
 }

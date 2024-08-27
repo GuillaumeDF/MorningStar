@@ -25,22 +25,17 @@
 		F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */; };
 		F053CF6D2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF6C2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift */; };
 		F053CF6F2C6B9C7B000E2EFD /* MSNewActivityButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF6E2C6B9C7B000E2EFD /* MSNewActivityButton.swift */; };
-		F053CF712C6BC7A3000E2EFD /* MSGoalSport.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF702C6BC7A3000E2EFD /* MSGoalSport.swift */; };
-		F053CF732C6CE6DE000E2EFD /* MSLabeledContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF722C6CE6DE000E2EFD /* MSLabeledContainer.swift */; };
-		F053CF752C6CE7CD000E2EFD /* MSAvatarProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF742C6CE7CD000E2EFD /* MSAvatarProgressView.swift */; };
-		F053CF772C6CE82B000E2EFD /* MSProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF762C6CE82B000E2EFD /* MSProgressBarView.swift */; };
 		F076E42C2C7E37DF0080BA83 /* MSThemeToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E42B2C7E37DF0080BA83 /* MSThemeToggleView.swift */; };
 		F076E42F2C7E37F30080BA83 /* MSThemeToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E42E2C7E37F30080BA83 /* MSThemeToggleButton.swift */; };
 		F076E4312C7E386C0080BA83 /* ColorSheme+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */; };
-		F0B7FFD32C73BC3100F37CDC /* MSActivityChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B7FFD22C73BC3100F37CDC /* MSActivityChart.swift */; };
-		F0B7FFD52C73EFDD00F37CDC /* MSCaloriesChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B7FFD42C73EFDD00F37CDC /* MSCaloriesChart.swift */; };
-		F0B7FFD72C73F17E00F37CDC /* MSStepsChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B7FFD62C73F17E00F37CDC /* MSStepsChart.swift */; };
-		F0B7FFD92C73F54C00F37CDC /* MSRingsChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B7FFD82C73F54C00F37CDC /* MSRingsChart.swift */; };
 		F0CFA07D2C76368300B7FD7D /* MSUpDownArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */; };
 		F0CFA07F2C765A5800B7FD7D /* MSChartCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA07E2C765A5800B7FD7D /* MSChartCardView.swift */; };
 		F0CFA0812C765A6300B7FD7D /* MSLineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA0802C765A6300B7FD7D /* MSLineChart.swift */; };
 		F0D5E0142C6E66EA00EE647B /* MSStackedChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D5E0132C6E66EA00EE647B /* MSStackedChart.swift */; };
 		F0D5E0162C6E66F500EE647B /* MSStackedChartCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D5E0152C6E66F500EE647B /* MSStackedChartCardView.swift */; };
+		F0FF79D12C7E958D00DA3A54 /* XAxisLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FF79D02C7E958D00DA3A54 /* XAxisLabels.swift */; };
+		F0FF79D32C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FF79D22C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift */; };
+		F0FF79D52C7E973000DA3A54 /* IntensityStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FF79D42C7E973000DA3A54 /* IntensityStack.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,22 +78,17 @@
 		F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSVerticalSeparator.swift; sourceTree = "<group>"; };
 		F053CF6C2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSDashboardHeaderMetricView.swift; sourceTree = "<group>"; };
 		F053CF6E2C6B9C7B000E2EFD /* MSNewActivityButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSNewActivityButton.swift; sourceTree = "<group>"; };
-		F053CF702C6BC7A3000E2EFD /* MSGoalSport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSGoalSport.swift; sourceTree = "<group>"; };
-		F053CF722C6CE6DE000E2EFD /* MSLabeledContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLabeledContainer.swift; sourceTree = "<group>"; };
-		F053CF742C6CE7CD000E2EFD /* MSAvatarProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSAvatarProgressView.swift; sourceTree = "<group>"; };
-		F053CF762C6CE82B000E2EFD /* MSProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSProgressBarView.swift; sourceTree = "<group>"; };
 		F076E42B2C7E37DF0080BA83 /* MSThemeToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeToggleView.swift; sourceTree = "<group>"; };
 		F076E42E2C7E37F30080BA83 /* MSThemeToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeToggleButton.swift; sourceTree = "<group>"; };
 		F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ColorSheme+Theme.swift"; sourceTree = "<group>"; };
-		F0B7FFD22C73BC3100F37CDC /* MSActivityChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSActivityChart.swift; sourceTree = "<group>"; };
-		F0B7FFD42C73EFDD00F37CDC /* MSCaloriesChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSCaloriesChart.swift; sourceTree = "<group>"; };
-		F0B7FFD62C73F17E00F37CDC /* MSStepsChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSStepsChart.swift; sourceTree = "<group>"; };
-		F0B7FFD82C73F54C00F37CDC /* MSRingsChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSRingsChart.swift; sourceTree = "<group>"; };
 		F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSUpDownArrow.swift; sourceTree = "<group>"; };
 		F0CFA07E2C765A5800B7FD7D /* MSChartCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSChartCardView.swift; sourceTree = "<group>"; };
 		F0CFA0802C765A6300B7FD7D /* MSLineChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLineChart.swift; sourceTree = "<group>"; };
 		F0D5E0132C6E66EA00EE647B /* MSStackedChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSStackedChart.swift; sourceTree = "<group>"; };
 		F0D5E0152C6E66F500EE647B /* MSStackedChartCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSStackedChartCardView.swift; sourceTree = "<group>"; };
+		F0FF79D02C7E958D00DA3A54 /* XAxisLabels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XAxisLabels.swift; sourceTree = "<group>"; };
+		F0FF79D22C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YAxisLabelsAndGridLines.swift; sourceTree = "<group>"; };
+		F0FF79D42C7E973000DA3A54 /* IntensityStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntensityStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -355,14 +345,6 @@
 		F0B7FFDA2C75412800F37CDC /* Deprecated */ = {
 			isa = PBXGroup;
 			children = (
-				F0B7FFD22C73BC3100F37CDC /* MSActivityChart.swift */,
-				F0B7FFD82C73F54C00F37CDC /* MSRingsChart.swift */,
-				F0B7FFD42C73EFDD00F37CDC /* MSCaloriesChart.swift */,
-				F0B7FFD62C73F17E00F37CDC /* MSStepsChart.swift */,
-				F053CF722C6CE6DE000E2EFD /* MSLabeledContainer.swift */,
-				F053CF702C6BC7A3000E2EFD /* MSGoalSport.swift */,
-				F053CF742C6CE7CD000E2EFD /* MSAvatarProgressView.swift */,
-				F053CF762C6CE82B000E2EFD /* MSProgressBarView.swift */,
 			);
 			path = Deprecated;
 			sourceTree = "<group>";
@@ -398,6 +380,9 @@
 			isa = PBXGroup;
 			children = (
 				F0D5E0132C6E66EA00EE647B /* MSStackedChart.swift */,
+				F0FF79D02C7E958D00DA3A54 /* XAxisLabels.swift */,
+				F0FF79D22C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift */,
+				F0FF79D42C7E973000DA3A54 /* IntensityStack.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -535,30 +520,25 @@
 				F02581AF2C62C6F3006CB2E6 /* DashboardView.swift in Sources */,
 				F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */,
 				F076E42C2C7E37DF0080BA83 /* MSThemeToggleView.swift in Sources */,
-				F0B7FFD52C73EFDD00F37CDC /* MSCaloriesChart.swift in Sources */,
+				F0FF79D12C7E958D00DA3A54 /* XAxisLabels.swift in Sources */,
 				F05330442C6AA58200F628C5 /* MSRoundImage.swift in Sources */,
 				F0CFA0812C765A6300B7FD7D /* MSLineChart.swift in Sources */,
 				F053CF6F2C6B9C7B000E2EFD /* MSNewActivityButton.swift in Sources */,
 				F02581862C62C292006CB2E6 /* Item.swift in Sources */,
 				F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */,
-				F0B7FFD32C73BC3100F37CDC /* MSActivityChart.swift in Sources */,
 				F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */,
+				F0FF79D52C7E973000DA3A54 /* IntensityStack.swift in Sources */,
 				F05330422C6A9FF800F628C5 /* ContentView.swift in Sources */,
-				F053CF712C6BC7A3000E2EFD /* MSGoalSport.swift in Sources */,
+				F0FF79D32C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift in Sources */,
 				F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */,
 				F053CF6D2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift in Sources */,
 				F076E4312C7E386C0080BA83 /* ColorSheme+Theme.swift in Sources */,
 				F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */,
-				F053CF752C6CE7CD000E2EFD /* MSAvatarProgressView.swift in Sources */,
 				F0D5E0162C6E66F500EE647B /* MSStackedChartCardView.swift in Sources */,
 				F04A78BA2C664A3000E8FB1C /* MSLogo.swift in Sources */,
 				F0CFA07F2C765A5800B7FD7D /* MSChartCardView.swift in Sources */,
-				F0B7FFD92C73F54C00F37CDC /* MSRingsChart.swift in Sources */,
 				F0CFA07D2C76368300B7FD7D /* MSUpDownArrow.swift in Sources */,
-				F0B7FFD72C73F17E00F37CDC /* MSStepsChart.swift in Sources */,
 				F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */,
-				F053CF732C6CE6DE000E2EFD /* MSLabeledContainer.swift in Sources */,
-				F053CF772C6CE82B000E2EFD /* MSProgressBarView.swift in Sources */,
 				F0D5E0142C6E66EA00EE647B /* MSStackedChart.swift in Sources */,
 				F076E42F2C7E37F30080BA83 /* MSThemeToggleButton.swift in Sources */,
 			);
