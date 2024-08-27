@@ -7,11 +7,17 @@
 
 import SwiftUI
 
+private enum Constants {
+    static let borderWidth: CGFloat = 1
+}
+
 struct MSVerticalSeparator: View {
+    var borderWidth: CGFloat = Constants.borderWidth
+    
     var body: some View {
         Rectangle()
             .fill(Color.primaryTextColor)
-            .frame(width: 1)
+            .frame(width: borderWidth)
     }
 }
 

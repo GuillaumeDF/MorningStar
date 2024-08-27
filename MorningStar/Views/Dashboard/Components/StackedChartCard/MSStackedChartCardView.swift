@@ -1,5 +1,5 @@
 //
-//  WorkoutIntensityView.swift
+//  MSStackedChartCardView.swift
 //  MorningStar
 //
 //  Created by Guillaume Djaider Fornari on 15/08/2024.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct WorkoutIntensityView: View {
+struct MSStackedChartCardView: View {
     var body: some View {
         MSLabeledContainer(title: "Sport Workout Statistic", content: {
-            WorkoutIntensityChart(
+            MSStackedChart(
                 data: [
                     [
                         IntensitySegment(time: 0.2, type: .lowIntensity),
@@ -39,5 +39,5 @@ struct WorkoutIntensityView: View {
 }
 
 #Preview {
-    WorkoutIntensityView()
+    MSStackedChartCardView()
 }

@@ -1,5 +1,5 @@
 //
-//  ArrowView.swift
+//  MSUpDownArrow.swift
 //  MorningStar
 //
 //  Created by Guillaume Djaider Fornari on 21/08/2024.
@@ -12,7 +12,7 @@ enum ArrowDirection {
     case down
 }
 
-struct ArrowView: View {
+struct MSUpDownArrow: View {
     var direction: ArrowDirection
     
     var body: some View {
@@ -22,5 +22,5 @@ struct ArrowView: View {
 }
 
 #Preview {
-    ArrowView(direction: .down)
+    MSUpDownArrow(direction: .down)
 }

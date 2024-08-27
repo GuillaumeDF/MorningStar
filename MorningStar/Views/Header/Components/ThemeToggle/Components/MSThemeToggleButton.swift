@@ -1,8 +1,8 @@
 //
-//  MSThemeButtonView.swift
+//  MSThemeToggleButton.swift
 //  MorningStar
 //
-//  Created by Guillaume Djaider Fornari on 11/08/2024.
+//  Created by Guillaume Djaider Fornari on 27/08/2024.
 //
 
 import SwiftUI
@@ -10,34 +10,9 @@ import SwiftUI
 private enum Constants {
     static let blurRadius: CGFloat = 2
     static let offsetLightButton: CGFloat = -60
-    static let offsetDarkButton: CGFloat = 0
 }
 
-extension ColorScheme {
-    var description: String {
-        switch self {
-        case .light:
-            return "Light"
-        case .dark:
-            return "Dark"
-        @unknown default:
-            return "Light"
-        }
-    }
-    
-    var iconName: String {
-        switch self {
-        case .light:
-            return "sun.max.fill"
-        case .dark:
-            return "moon.fill"
-        @unknown default:
-            return "sun.max.fill"
-        }
-    }
-}
-
-private struct MSThemeToggleButton: View {
+struct MSThemeToggleButton: View {
     var themeMode: ColorScheme
     @Binding var selectedThemeMode: ColorScheme
     
@@ -66,22 +41,6 @@ private struct MSThemeToggleButton: View {
     }
 }
 
-struct MSThemeToggleView: View {
-    @State private var selectedThemeMode: ColorScheme
-    
-    init(initialTheme: ColorScheme) {
-        _selectedThemeMode = State(initialValue: initialTheme)
-    }
-    
-    var body: some View {
-        ZStack {
-            MSThemeToggleButton(themeMode: .light, selectedThemeMode: $selectedThemeMode)
-            MSThemeToggleButton(themeMode: .dark, selectedThemeMode: $selectedThemeMode)
-        }
-        .preferredColorScheme(selectedThemeMode)
-    }
-}
-
 #Preview {
-    MSThemeToggleView(initialTheme: .light)
+    MSThemeToggleButton(themeMode: .light, selectedThemeMode: .constant(.dark))
 }

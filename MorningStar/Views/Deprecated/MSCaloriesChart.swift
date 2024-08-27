@@ -40,7 +40,7 @@ struct MSCaloriesChart: View {
     var body: some View {
         VStack {
             HStack() {
-                MSAvatarView(imageName: "caloriesIcon")
+                MSRoundImage(imageName: "caloriesIcon")
                 Spacer()
             }
             

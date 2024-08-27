@@ -32,7 +32,7 @@ struct DashboardView: View {
             
             GeometryReader { geometry in
                 HStack(spacing: 50) {
-                    MSMetricChart(
+                    MSLineChartCardView(
                         imageName: "weightIcon",
                         title: "Weight",
                         valeur: "75",
@@ -41,12 +41,12 @@ struct DashboardView: View {
                         backgroundColor: Color.weightColor
                     )
                     .frame(width: (geometry.size.width - 100) / 3)
-                    WorkoutIntensityView()
+                    MSStackedChartCardView()
                 }
             }
             
             HStack(spacing: 50) {
-                MSMetricChart(
+                MSLineChartCardView(
                     imageName: "caloriesIcon",
                     title: "Calorie burned",
                     valeur: "500",
@@ -54,7 +54,7 @@ struct DashboardView: View {
                     arrowDirection: .up,
                     backgroundColor: Color.calorieColor
                 )
-                MSMetricChart(
+                MSLineChartCardView(
                     imageName: "stepIcon",
                     title: "Step",
                     valeur: "10 000",
@@ -62,7 +62,7 @@ struct DashboardView: View {
                     arrowDirection: .up,
                     backgroundColor: Color.stepColor
                 )
-                MSMetricChart(
+                MSLineChartCardView(
                     imageName: "sleepIcon",
                     title: "Sleep",
                     valeur: "10",

@@ -40,7 +40,7 @@ struct MSStepsChart: View {
     var body: some View {
         VStack {
             HStack() {
-                MSAvatarView(imageName: "stepIcon")
+                MSRoundImage(imageName: "stepIcon")
                 Spacer()
             }
             

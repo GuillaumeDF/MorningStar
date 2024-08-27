@@ -1,5 +1,5 @@
 //
-//  MSWeightGraph.swift
+//  MSLineChart.swift
 //  MorningStar
 //
 //  Created by Guillaume Djaider Fornari on 21/08/2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MSWeightGraph: View {
+struct MSLineChart: View {
     let backgroundColor: Color // Couleur de fond du graphique
     @State private var sliderPosition: CGFloat = 0.5  // Position du curseur, initialisée à 50%
     @State private var value: Int = 0  // Nombre de calories à afficher
@@ -158,5 +158,5 @@ struct MSWeightGraph: View {
 //        70   // 23:00 - 00:00 (début du sommeil)
 //    ]
     
-    MSWeightGraph(backgroundColor: Color.weightColor)
+    MSLineChart(backgroundColor: Color.weightColor)
 }

@@ -1,5 +1,5 @@
 //
-//  MSAvatarView.swift
+//  MSRoundImage.swift
 //  MorningStar
 //
 //  Created by Guillaume Djaider Fornari on 12/08/2024.
@@ -8,12 +8,14 @@
 import SwiftUI
 
 private enum Constants {
-    static let avatarHeight: CGFloat = 50
+    static let padding: CGFloat = AppConstants.Padding.small
+    static let borderWidth: CGFloat = 1
 }
 
-struct MSAvatarView: View {
+struct MSRoundImage: View {
     var imageName: String
-    var padding: CGFloat = 0
+    var padding: CGFloat = Constants.padding
+    var borderWidth: CGFloat = Constants.borderWidth
     
     var body: some View {
         Image(imageName)
@@ -24,15 +26,14 @@ struct MSAvatarView: View {
             .overlay(
                 Circle()
                     .stroke(
-                        Color.primaryTextColor,
-                        lineWidth: 1
+                        Color.borderColor,
+                        lineWidth: borderWidth
                     )
             )
             .aspectRatio(contentMode: .fit)
-            .frame(maxHeight: Constants.avatarHeight)
     }
 }
 
 #Preview {
-    MSAvatarView(imageName: "stepIcon")
+    MSRoundImage(imageName: "stepIcon")
 }

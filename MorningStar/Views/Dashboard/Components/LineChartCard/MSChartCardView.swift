@@ -1,5 +1,5 @@
 //
-//  MSMetricChart.swift
+//  MSLineChartCardView.swift
 //  MorningStar
 //
 //  Created by Guillaume Djaider Fornari on 21/08/2024.
@@ -7,7 +7,11 @@
 
 import SwiftUI
 
-struct MSMetricChart: View {
+private enum Constants {
+    static let imageHeight: CGFloat = 25
+}
+
+struct MSLineChartCardView: View {
     let imageName: String
     let title: String
     let valeur: String
@@ -19,13 +23,13 @@ struct MSMetricChart: View {
         VStack(spacing: 8) {
             VStack(alignment: .leading, spacing: AppConstants.Padding.extraLarge) {
                 HStack {
-                    MSAvatarView(imageName: imageName, padding: AppConstants.Padding.small)
-                        .frame(width: 25, height: 25)
+                    MSRoundImage(imageName: imageName)
+                        .frame(height: Constants.imageHeight)
                     Text(title)
                         .font(.headline)
                         .foregroundStyle(Color.primaryTextColor)
                     Spacer()
-                    ArrowView(direction: arrowDirection)
+                    MSUpDownArrow(direction: arrowDirection)
                 }
                 Text("\(valeur) \(unity)")
                     .font(.title)
@@ -33,7 +37,7 @@ struct MSMetricChart: View {
             }
             .padding(AppConstants.Padding.medium)
             
-            MSWeightGraph(backgroundColor: backgroundColor)
+            MSLineChart(backgroundColor: backgroundColor)
         }
         .background(backgroundColor.opacity(0.3))
         .cornerRadius(15)
@@ -45,7 +49,7 @@ struct MSMetricChart: View {
 }
 
 #Preview {
-    MSMetricChart(
+    MSLineChartCardView(
         imageName: "weightIcon",
         title: "Weight",
         valeur: "75",

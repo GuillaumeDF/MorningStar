@@ -14,7 +14,7 @@ struct MSAvatarProgressView: View {
 
     var body: some View {
         HStack(spacing: AppConstants.Padding.large) {
-            MSAvatarView(imageName: imageName, padding: AppConstants.Padding.small)
+            MSRoundImage(imageName: imageName)
             MSProgressBarView(title: title, progress: $progress)
         }
     }

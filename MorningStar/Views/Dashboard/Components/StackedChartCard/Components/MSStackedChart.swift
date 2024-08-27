@@ -1,5 +1,5 @@
 //
-//  WorkoutIntensityChart.swift
+//  MSStackedChart.swift
 //  MorningStar
 //
 //  Created by Guillaume Djaider Fornari on 15/08/2024.
@@ -38,7 +38,7 @@ struct IntensitySegment: Hashable {
     var type: IntensityType
 }
 
-struct WorkoutIntensityChart: View {
+struct MSStackedChart: View {
     var data: [[IntensitySegment]]
     
     var body: some View {
@@ -121,7 +121,7 @@ struct WorkoutIntensityChart: View {
 }
 
 #Preview {
-    WorkoutIntensityChart(
+    MSStackedChart(
         data: [
             [
                 IntensitySegment(time: 0.2, type: .lowIntensity),
