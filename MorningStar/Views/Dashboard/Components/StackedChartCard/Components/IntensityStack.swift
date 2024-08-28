@@ -12,10 +12,10 @@ enum IntensityType: Hashable {
 
     var color: Color {
         switch self {
-        case .lowIntensity: return .blue
-        case .moderateIntensity: return .green
-        case .highIntensity: return .orange
-        case .veryHighIntensity: return .red
+        case .lowIntensity: return Color.lowIntensity
+        case .moderateIntensity: return Color.moderateIntensity
+        case .highIntensity: return Color.highIntensity
+        case .veryHighIntensity: return Color.veryHighIntensity
         }
     }
 }
@@ -32,7 +32,7 @@ struct IntensityStack: View {
                     Rectangle()
                         .fill(segment.type.color)
                         .frame(height: calculateHeight(for: segment, with: geometry))
-                        .cornerRadius(AppConstants.Radius.small)
+                        .cornerRadius(AppConstants.Radius.extraSmall)
                 }
             }
         }
@@ -45,7 +45,7 @@ struct IntensityStack: View {
 
 #Preview {
     IntensityStack(segments: [
-        IntensitySegment(time: 0.2, type: .lowIntensity),
+        IntensitySegment(time: 0.2, type: .veryHighIntensity),
         IntensitySegment(time: 0.3, type: .moderateIntensity),
         IntensitySegment(time: 0.4, type: .lowIntensity),
         IntensitySegment(time: 0.1, type: .highIntensity)

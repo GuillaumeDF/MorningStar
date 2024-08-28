@@ -8,7 +8,7 @@
 import SwiftUI
 
 private enum Constants {
-    static let padding: CGFloat = AppConstants.Padding.small
+    static let padding: CGFloat = AppConstants.Padding.extraSmall
     static let borderWidth: CGFloat = 1
 }
 
@@ -26,11 +26,12 @@ struct MSRoundImage: View {
             .overlay(
                 Circle()
                     .stroke(
-                        Color.borderColor,
+                        Color.primaryTextColor,
                         lineWidth: borderWidth
                     )
             )
             .aspectRatio(contentMode: .fit)
+            .foregroundColor(Color.primaryTextColor)
     }
 }
 

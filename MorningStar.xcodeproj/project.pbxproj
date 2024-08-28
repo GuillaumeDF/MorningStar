@@ -15,6 +15,8 @@
 		F02581A02C62C293006CB2E6 /* MorningStarUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F025819F2C62C293006CB2E6 /* MorningStarUITests.swift */; };
 		F02581A22C62C293006CB2E6 /* MorningStarUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581A12C62C293006CB2E6 /* MorningStarUITestsLaunchTests.swift */; };
 		F02581AF2C62C6F3006CB2E6 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581AE2C62C6F3006CB2E6 /* DashboardView.swift */; };
+		F03599872C7FD1B3008715FF /* MSRoundImageWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03599862C7FD1B3008715FF /* MSRoundImageWithTitle.swift */; };
+		F03599892C7FD2E4008715FF /* LegendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03599882C7FD2E4008715FF /* LegendView.swift */; };
 		F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03AA6E02C6426F2003C1BB3 /* Color+Theme.swift */; };
 		F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B72C6647C100E8FB1C /* UIConstants.swift */; };
 		F04A78BA2C664A3000E8FB1C /* MSLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B92C664A3000E8FB1C /* MSLogo.swift */; };
@@ -68,6 +70,8 @@
 		F025819F2C62C293006CB2E6 /* MorningStarUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningStarUITests.swift; sourceTree = "<group>"; };
 		F02581A12C62C293006CB2E6 /* MorningStarUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningStarUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		F02581AE2C62C6F3006CB2E6 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		F03599862C7FD1B3008715FF /* MSRoundImageWithTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSRoundImageWithTitle.swift; sourceTree = "<group>"; };
+		F03599882C7FD2E4008715FF /* LegendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegendView.swift; sourceTree = "<group>"; };
 		F03AA6E02C6426F2003C1BB3 /* Color+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
 		F04A78B72C6647C100E8FB1C /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
 		F04A78B92C664A3000E8FB1C /* MSLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLogo.swift; sourceTree = "<group>"; };
@@ -314,6 +318,7 @@
 			children = (
 				F05330432C6AA58200F628C5 /* MSRoundImage.swift */,
 				F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */,
+				F03599862C7FD1B3008715FF /* MSRoundImageWithTitle.swift */,
 			);
 			path = Commun;
 			sourceTree = "<group>";
@@ -383,6 +388,7 @@
 				F0FF79D02C7E958D00DA3A54 /* XAxisLabels.swift */,
 				F0FF79D22C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift */,
 				F0FF79D42C7E973000DA3A54 /* IntensityStack.swift */,
+				F03599882C7FD2E4008715FF /* LegendView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -520,6 +526,7 @@
 				F02581AF2C62C6F3006CB2E6 /* DashboardView.swift in Sources */,
 				F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */,
 				F076E42C2C7E37DF0080BA83 /* MSThemeToggleView.swift in Sources */,
+				F03599892C7FD2E4008715FF /* LegendView.swift in Sources */,
 				F0FF79D12C7E958D00DA3A54 /* XAxisLabels.swift in Sources */,
 				F05330442C6AA58200F628C5 /* MSRoundImage.swift in Sources */,
 				F0CFA0812C765A6300B7FD7D /* MSLineChart.swift in Sources */,
@@ -528,6 +535,7 @@
 				F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */,
 				F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */,
 				F0FF79D52C7E973000DA3A54 /* IntensityStack.swift in Sources */,
+				F03599872C7FD1B3008715FF /* MSRoundImageWithTitle.swift in Sources */,
 				F05330422C6A9FF800F628C5 /* ContentView.swift in Sources */,
 				F0FF79D32C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift in Sources */,
 				F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */,

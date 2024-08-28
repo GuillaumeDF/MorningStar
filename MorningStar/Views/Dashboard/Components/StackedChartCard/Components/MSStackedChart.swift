@@ -8,7 +8,7 @@
 import SwiftUI
 
 private enum Constants {
-    static let stackSpacingHorizontaly: CGFloat = 30.0
+    static let stackSpacingHorizontaly: CGFloat = 50.0
     static let stackWidth: CGFloat = 25.0
     static let textXHeight: CGFloat = 25.0
 }
@@ -21,8 +21,11 @@ struct MSStackedChart: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            YAxisLabelsAndGridLines(maxTime: Int(maxTime))
-                .padding(.bottom, Constants.textXHeight)
+            YAxisLabelsAndGridLines(
+                maxTime: Int(maxTime),
+                gridLineStartX: Constants.stackSpacingHorizontaly
+            )
+            .padding(.bottom, Constants.textXHeight)
             
             HStack(spacing: Constants.stackSpacingHorizontaly) {
                 ForEach(data, id: \.self) { segments in
@@ -33,14 +36,18 @@ struct MSStackedChart: View {
             .padding(.leading, Constants.stackSpacingHorizontaly)
             .padding(.bottom, Constants.textXHeight)
             
-            XAxisLabels(dataCount: data.count, textWidth: stackWidth)
+            XAxisLabels(
+                dataCount: data.count,
+                textWidth: stackWidth,
+                labelStartX: Constants.stackSpacingHorizontaly
+            )
         }
         .padding([.top, .leading], AppConstants.Padding.medium)
         .onAppear {
             maxTime = findMaxSumTime(from: data) * 10
         }
     }
-
+    
     private func findMaxSumTime(from arrays: [[IntensitySegment]]) -> CGFloat {
         arrays.map { $0.reduce(0) { $0 + $1.time } }.max() ?? 0
     }

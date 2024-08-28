@@ -23,11 +23,10 @@ struct MSLineChartCardView: View {
         VStack(spacing: 8) {
             VStack(alignment: .leading, spacing: AppConstants.Padding.extraLarge) {
                 HStack {
-                    MSRoundImage(imageName: imageName)
-                        .frame(height: Constants.imageHeight)
-                    Text(title)
-                        .font(.headline)
-                        .foregroundStyle(Color.primaryTextColor)
+                    MSRoundImageWithTitle(
+                        title: title,
+                        imageName: imageName
+                    )
                     Spacer()
                     MSUpDownArrow(direction: arrowDirection)
                 }
