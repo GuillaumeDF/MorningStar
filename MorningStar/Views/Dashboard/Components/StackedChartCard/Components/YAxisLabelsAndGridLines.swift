@@ -8,52 +8,48 @@
 import SwiftUI
 
 private enum Constants {
-    static let startXIntensityStack: CGFloat = 30.0
-    static let paddingBottom: CGFloat = 30.0
-    static let gridLineOffset: CGFloat = 10.0
-    static let yInterval: Int = 20
+    static let gridLineStartX: CGFloat = 30.0
+    static let labelOffsetX: CGFloat = 10.0
+    static let labelIntervalY: Int = 2
 }
 
 struct YAxisLabelsAndGridLines: View {
-    let maxTime: CGFloat
+    let maxTime: Int
 
     var body: some View {
         GeometryReader { geometry in
+            let xPosition = geometry.size.width
+            let yInterval = geometry.size.height / CGFloat(maxTime)
+            
             ZStack(alignment: .leading) {
-                ForEach(0...Int(maxTime * 10), id: \.self) { i in
-                    if i % Constants.yInterval == 0 {
-                        gridLineWithLabel(for: i, in: geometry)
+                ForEach(0...Int(maxTime), id: \.self) { i in
+                    let reversedIndex = Int(maxTime) - i
+                    
+                    if i % Constants.labelIntervalY == 0 {
+                        let yPosition = yInterval * CGFloat(i)
+                        
+                        yAxisLabel(title: "\(reversedIndex * 10)", yPosition: yPosition)
+                        gridLine(xPosition: xPosition, yPosition: yPosition)
                     }
                 }
             }
         }
     }
 
-    private func gridLineWithLabel(for i: Int, in geometry: GeometryProxy) -> some View {
-        ZStack(alignment: .leading) {
-            gridLine(for: i, in: geometry)
-            yAxisLabel(for: i, in: geometry)
-        }
-    }
-
-    private func yAxisLabel(for i: Int, in geometry: GeometryProxy) -> some View {
-        Text("\(i)")
+    private func yAxisLabel(title: String, yPosition: CGFloat) -> some View {
+        Text(title)
             .font(.caption)
             .foregroundColor(.gray)
-            .frame(width: Constants.startXIntensityStack, alignment: .leading)
-            .position(x: Constants.gridLineOffset, y: yPosition(for: i, in: geometry))
+            .frame(width: Constants.gridLineStartX, alignment: .center)
+            .position(x: Constants.labelOffsetX, y: yPosition)
     }
 
-    private func gridLine(for i: Int, in geometry: GeometryProxy) -> some View {
+    private func gridLine(xPosition: CGFloat, yPosition: CGFloat) -> some View {
         Path { path in
-            path.move(to: CGPoint(x: Constants.startXIntensityStack, y: yPosition(for: i, in: geometry)))
-            path.addLine(to: CGPoint(x: geometry.size.width, y: yPosition(for: i, in: geometry)))
+            path.move(to: CGPoint(x: Constants.gridLineStartX, y: yPosition))
+            path.addLine(to: CGPoint(x: xPosition, y: yPosition))
         }
         .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-    }
-
-    private func yPosition(for i: Int, in geometry: GeometryProxy) -> CGFloat {
-        geometry.size.height - ((geometry.size.height - Constants.paddingBottom) / CGFloat(maxTime * 10)) * CGFloat(i) - Constants.paddingBottom
     }
 }
 

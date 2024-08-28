@@ -8,32 +8,31 @@
 import SwiftUI
 
 private enum Constants {
-    static let intensityStackSpacing: CGFloat = 30.0
-    static let intensityStackWidth: CGFloat = 50.0
-    static let paddingBottom: CGFloat = 30.0
+    static let stackSpacing: CGFloat = 30.0
+    static let textHeight: CGFloat = 30.0
 }
 
 struct XAxisLabels: View {
     let dataCount: Int
+    let textWidth: CGFloat
 
     var body: some View {
         GeometryReader { geometry in
-            HStack(spacing: Constants.intensityStackSpacing) {
+            HStack(spacing: Constants.stackSpacing) {
                 ForEach(0..<dataCount, id: \.self) { index in
-                    let xPosition = Constants.intensityStackSpacing + (Constants.intensityStackWidth / 2)
+                    let xPosition = Constants.stackSpacing + (textWidth / 2)
                     
                     Text("Day \(index + 1)")
                         .font(.caption)
                         .foregroundColor(.gray)
-                        .position(x: xPosition, y: geometry.size.height - (Constants.paddingBottom / 2))
-                        .frame(width: Constants.intensityStackWidth, height: Constants.paddingBottom)
+                        .position(x: xPosition, y: geometry.size.height - (Constants.textHeight / 2))
+                        .frame(width: textWidth, height: Constants.textHeight)
                 }
             }
-            .padding(.bottom)
         }
     }
 }
 
 #Preview {
-    XAxisLabels(dataCount: 10)
+    XAxisLabels(dataCount: 10, textWidth: 25)
 }

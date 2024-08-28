@@ -8,36 +8,34 @@
 import SwiftUI
 
 private enum Constants {
-    static let intensityStackSpacing: CGFloat = 30.0
-    static let intensityStackWidth: CGFloat = 50.0
-    static let startXIntensityStack: CGFloat = 30.0
-    static let paddingBottom: CGFloat = 30.0
+    static let stackSpacingHorizontaly: CGFloat = 30.0
+    static let stackWidth: CGFloat = 25.0
+    static let textXHeight: CGFloat = 25.0
 }
 
 struct MSStackedChart: View {
-    var data: [[IntensitySegment]]
-    var intensityStackWidth: CGFloat = Constants.intensityStackWidth
+    let data: [[IntensitySegment]]
+    let stackWidth: CGFloat = Constants.stackWidth
     
     @State private var maxTime: CGFloat = 0
     
     var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .bottomLeading) {
-                YAxisLabelsAndGridLines(maxTime: maxTime)
-                
-                HStack(alignment: .bottom, spacing: Constants.intensityStackSpacing) {
-                    ForEach(data, id: \.self) { segments in
-                        IntensityStack(segments: segments, maxTime: maxTime, geometry: geometry)
-                            .frame(width: intensityStackWidth)
-                    }
+        ZStack(alignment: .topLeading) {
+            YAxisLabelsAndGridLines(maxTime: Int(maxTime))
+                .padding(.bottom, Constants.textXHeight)
+            
+            HStack(spacing: Constants.stackSpacingHorizontaly) {
+                ForEach(data, id: \.self) { segments in
+                    IntensityStack(segments: segments, maxTime: maxTime)
+                        .frame(width: stackWidth)
                 }
-                .padding(.leading, Constants.startXIntensityStack)
-                .padding(.bottom, Constants.paddingBottom)
-                
-                XAxisLabels(dataCount: data.count)
             }
-            .padding([.top, .leading], AppConstants.Padding.medium)
+            .padding(.leading, Constants.stackSpacingHorizontaly)
+            .padding(.bottom, Constants.textXHeight)
+            
+            XAxisLabels(dataCount: data.count, textWidth: stackWidth)
         }
+        .padding([.top, .leading], AppConstants.Padding.medium)
         .onAppear {
             maxTime = findMaxSumTime(from: data) * 10
         }
@@ -69,8 +67,7 @@ struct MSStackedChart: View {
                 IntensitySegment(time: 0.4, type: .highIntensity),
                 IntensitySegment(time: 0.6, type: .veryHighIntensity)
             ],
-        ],
-        intensityStackWidth: 20
+        ]
     )
     .frame(height: 400)
 }
