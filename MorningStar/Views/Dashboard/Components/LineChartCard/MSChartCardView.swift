@@ -19,6 +19,13 @@ struct MSLineChartCardView: View {
     let arrowDirection: ArrowDirection
     let backgroundColor: Color
     
+    @State private var sliderPosition: CGFloat = 0.5
+    
+    let sampleData = [
+        65, 60, 60, 60, 60, 65, 90, 150, 110, 100, 100, 120,
+        180, 130, 100, 110, 120, 200, 350, 250, 120, 90, 80, 70
+    ]
+    
     var body: some View {
         VStack(spacing: 8) {
             VStack(alignment: .leading, spacing: AppConstants.Padding.extraLarge) {
@@ -36,7 +43,12 @@ struct MSLineChartCardView: View {
             }
             .padding(AppConstants.Padding.medium)
             
-            MSLineChart(backgroundColor: backgroundColor)
+            MSLineChartView(
+                backgroundColor: backgroundColor,
+                sliderPosition: $sliderPosition,
+                data: sampleData,
+                yAxisLabel: unity
+            )
         }
         .background(backgroundColor.opacity(0.3))
         .cornerRadius(15)

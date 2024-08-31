@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F0076F3E2C83709500156E37 /* ValueDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0076F3D2C83709500156E37 /* ValueDisplay.swift */; };
+		F0076F402C83710500156E37 /* IntersectionPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0076F3F2C83710500156E37 /* IntersectionPoint.swift */; };
+		F0076F422C83716900156E37 /* SliderBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0076F412C83716900156E37 /* SliderBar.swift */; };
+		F0076F462C83728300156E37 /* MSLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0076F452C83728300156E37 /* MSLineChartView.swift */; };
+		F0076F482C83730500156E37 /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0076F472C83730500156E37 /* LineChart.swift */; };
 		F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581812C62C292006CB2E6 /* MorningStarApp.swift */; };
 		F02581862C62C292006CB2E6 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581852C62C292006CB2E6 /* Item.swift */; };
 		F02581882C62C293006CB2E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F02581872C62C293006CB2E6 /* Assets.xcassets */; };
@@ -32,7 +37,6 @@
 		F076E4312C7E386C0080BA83 /* ColorSheme+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */; };
 		F0CFA07D2C76368300B7FD7D /* MSUpDownArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */; };
 		F0CFA07F2C765A5800B7FD7D /* MSChartCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA07E2C765A5800B7FD7D /* MSChartCardView.swift */; };
-		F0CFA0812C765A6300B7FD7D /* MSLineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA0802C765A6300B7FD7D /* MSLineChart.swift */; };
 		F0D5E0142C6E66EA00EE647B /* MSStackedChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D5E0132C6E66EA00EE647B /* MSStackedChart.swift */; };
 		F0D5E0162C6E66F500EE647B /* MSStackedChartCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D5E0152C6E66F500EE647B /* MSStackedChartCardView.swift */; };
 		F0FF79D12C7E958D00DA3A54 /* XAxisLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FF79D02C7E958D00DA3A54 /* XAxisLabels.swift */; };
@@ -58,6 +62,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F0076F3D2C83709500156E37 /* ValueDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueDisplay.swift; sourceTree = "<group>"; };
+		F0076F3F2C83710500156E37 /* IntersectionPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntersectionPoint.swift; sourceTree = "<group>"; };
+		F0076F412C83716900156E37 /* SliderBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderBar.swift; sourceTree = "<group>"; };
+		F0076F452C83728300156E37 /* MSLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLineChartView.swift; sourceTree = "<group>"; };
+		F0076F472C83730500156E37 /* LineChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChart.swift; sourceTree = "<group>"; };
 		F025817E2C62C292006CB2E6 /* MorningStar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorningStar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F02581812C62C292006CB2E6 /* MorningStarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningStarApp.swift; sourceTree = "<group>"; };
 		F02581852C62C292006CB2E6 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
@@ -87,7 +96,6 @@
 		F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ColorSheme+Theme.swift"; sourceTree = "<group>"; };
 		F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSUpDownArrow.swift; sourceTree = "<group>"; };
 		F0CFA07E2C765A5800B7FD7D /* MSChartCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSChartCardView.swift; sourceTree = "<group>"; };
-		F0CFA0802C765A6300B7FD7D /* MSLineChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLineChart.swift; sourceTree = "<group>"; };
 		F0D5E0132C6E66EA00EE647B /* MSStackedChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSStackedChart.swift; sourceTree = "<group>"; };
 		F0D5E0152C6E66F500EE647B /* MSStackedChartCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSStackedChartCardView.swift; sourceTree = "<group>"; };
 		F0FF79D02C7E958D00DA3A54 /* XAxisLabels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XAxisLabels.swift; sourceTree = "<group>"; };
@@ -120,6 +128,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F0076F432C83726B00156E37 /* LineChart */ = {
+			isa = PBXGroup;
+			children = (
+				F0076F452C83728300156E37 /* MSLineChartView.swift */,
+				F0076F442C83727600156E37 /* Components */,
+			);
+			path = LineChart;
+			sourceTree = "<group>";
+		};
+		F0076F442C83727600156E37 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F0076F3F2C83710500156E37 /* IntersectionPoint.swift */,
+				F0076F3D2C83709500156E37 /* ValueDisplay.swift */,
+				F0076F412C83716900156E37 /* SliderBar.swift */,
+				F0076F472C83730500156E37 /* LineChart.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		F02581752C62C292006CB2E6 = {
 			isa = PBXGroup;
 			children = (
@@ -358,6 +386,7 @@
 			isa = PBXGroup;
 			children = (
 				F0CFA07E2C765A5800B7FD7D /* MSChartCardView.swift */,
+				F0076F432C83726B00156E37 /* LineChart */,
 				F0FF79CB2C7E427000DA3A54 /* Components */,
 			);
 			path = LineChartCard;
@@ -366,7 +395,6 @@
 		F0FF79CB2C7E427000DA3A54 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				F0CFA0802C765A6300B7FD7D /* MSLineChart.swift */,
 				F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */,
 			);
 			path = Components;
@@ -526,12 +554,14 @@
 				F02581AF2C62C6F3006CB2E6 /* DashboardView.swift in Sources */,
 				F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */,
 				F076E42C2C7E37DF0080BA83 /* MSThemeToggleView.swift in Sources */,
+				F0076F462C83728300156E37 /* MSLineChartView.swift in Sources */,
+				F0076F402C83710500156E37 /* IntersectionPoint.swift in Sources */,
 				F03599892C7FD2E4008715FF /* LegendView.swift in Sources */,
 				F0FF79D12C7E958D00DA3A54 /* XAxisLabels.swift in Sources */,
 				F05330442C6AA58200F628C5 /* MSRoundImage.swift in Sources */,
-				F0CFA0812C765A6300B7FD7D /* MSLineChart.swift in Sources */,
 				F053CF6F2C6B9C7B000E2EFD /* MSNewActivityButton.swift in Sources */,
 				F02581862C62C292006CB2E6 /* Item.swift in Sources */,
+				F0076F482C83730500156E37 /* LineChart.swift in Sources */,
 				F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */,
 				F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */,
 				F0FF79D52C7E973000DA3A54 /* IntensityStack.swift in Sources */,
@@ -540,9 +570,11 @@
 				F0FF79D32C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift in Sources */,
 				F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */,
 				F053CF6D2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift in Sources */,
+				F0076F3E2C83709500156E37 /* ValueDisplay.swift in Sources */,
 				F076E4312C7E386C0080BA83 /* ColorSheme+Theme.swift in Sources */,
 				F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */,
 				F0D5E0162C6E66F500EE647B /* MSStackedChartCardView.swift in Sources */,
+				F0076F422C83716900156E37 /* SliderBar.swift in Sources */,
 				F04A78BA2C664A3000E8FB1C /* MSLogo.swift in Sources */,
 				F0CFA07F2C765A5800B7FD7D /* MSChartCardView.swift in Sources */,
 				F0CFA07D2C76368300B7FD7D /* MSUpDownArrow.swift in Sources */,
