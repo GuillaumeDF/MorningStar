@@ -19,6 +19,11 @@ struct MSStackedChart: View {
     
     @State private var maxTime: CGFloat = 0
     
+    init(data: [[IntensitySegment]]) {
+        self.data = data
+        _maxTime = State(initialValue: findMaxSumTime(from: data) * 10)
+    }
+    
     var body: some View {
         ZStack(alignment: .topLeading) {
             YAxisLabelsAndGridLines(
@@ -43,9 +48,6 @@ struct MSStackedChart: View {
             )
         }
         .padding([.top, .leading], AppConstants.Padding.medium)
-        .onAppear {
-            maxTime = findMaxSumTime(from: data) * 10
-        }
     }
     
     private func findMaxSumTime(from arrays: [[IntensitySegment]]) -> CGFloat {

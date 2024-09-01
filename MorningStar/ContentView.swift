@@ -13,20 +13,30 @@ private enum Constants {
 }
 
 struct ContentView: View {
+    @StateObject private var viewModel = HealthViewModel()
+    
     var body: some View {
         ZStack {
-            Color.backgroundColor.edgesIgnoringSafeArea(.all)
-            GeometryReader { geometry in
-                VStack {
-                    HeaderView()
-                        .frame(height: geometry.size.height * Constants.headerHeight)
-                    
-                    DashboardView()
-                        .frame(height: geometry.size.height * Constants.dashboardHeight)
+            if viewModel.authorizationStatus {
+                Color.backgroundColor.edgesIgnoringSafeArea(.all)
+                GeometryReader { geometry in
+                    VStack {
+                        HeaderView()
+                            .frame(height: geometry.size.height * Constants.headerHeight)
+                        
+                        DashboardView()
+                            .frame(height: geometry.size.height * Constants.dashboardHeight)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .padding(AppConstants.Padding.extraLarge)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .padding(AppConstants.Padding.extraLarge)
+            } else {
+                Text("Autorisation HealthKit refusée ou non accordée")
+                    .padding()
             }
+        }
+        .onAppear {
+            viewModel.fetchStepCount()
         }
     }
 }

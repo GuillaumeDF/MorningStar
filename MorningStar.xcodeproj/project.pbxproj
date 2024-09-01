@@ -7,11 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F0076F3E2C83709500156E37 /* ValueDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0076F3D2C83709500156E37 /* ValueDisplay.swift */; };
-		F0076F402C83710500156E37 /* IntersectionPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0076F3F2C83710500156E37 /* IntersectionPoint.swift */; };
-		F0076F422C83716900156E37 /* SliderBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0076F412C83716900156E37 /* SliderBar.swift */; };
-		F0076F462C83728300156E37 /* MSLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0076F452C83728300156E37 /* MSLineChartView.swift */; };
-		F0076F482C83730500156E37 /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0076F472C83730500156E37 /* LineChart.swift */; };
 		F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581812C62C292006CB2E6 /* MorningStarApp.swift */; };
 		F02581862C62C292006CB2E6 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581852C62C292006CB2E6 /* Item.swift */; };
 		F02581882C62C293006CB2E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F02581872C62C293006CB2E6 /* Assets.xcassets */; };
@@ -26,6 +21,13 @@
 		F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B72C6647C100E8FB1C /* UIConstants.swift */; };
 		F04A78BA2C664A3000E8FB1C /* MSLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B92C664A3000E8FB1C /* MSLogo.swift */; };
 		F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */; };
+		F0512F052C85107900FA033F /* HealthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F042C85107900FA033F /* HealthData.swift */; };
+		F0512F072C85109A00FA033F /* HealthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F062C85109A00FA033F /* HealthViewModel.swift */; };
+		F0512F0F2C8513D100FA033F /* IntersectionPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F082C8513D100FA033F /* IntersectionPoint.swift */; };
+		F0512F102C8513D100FA033F /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F092C8513D100FA033F /* LineChart.swift */; };
+		F0512F112C8513D100FA033F /* SliderBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F0A2C8513D100FA033F /* SliderBar.swift */; };
+		F0512F122C8513D100FA033F /* ValueDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F0B2C8513D100FA033F /* ValueDisplay.swift */; };
+		F0512F132C8513D100FA033F /* MSLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F0D2C8513D100FA033F /* MSLineChartView.swift */; };
 		F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053303E2C6A9E2C00F628C5 /* HeaderView.swift */; };
 		F05330422C6A9FF800F628C5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330412C6A9FF800F628C5 /* ContentView.swift */; };
 		F05330442C6AA58200F628C5 /* MSRoundImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330432C6AA58200F628C5 /* MSRoundImage.swift */; };
@@ -62,11 +64,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		F0076F3D2C83709500156E37 /* ValueDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueDisplay.swift; sourceTree = "<group>"; };
-		F0076F3F2C83710500156E37 /* IntersectionPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntersectionPoint.swift; sourceTree = "<group>"; };
-		F0076F412C83716900156E37 /* SliderBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderBar.swift; sourceTree = "<group>"; };
-		F0076F452C83728300156E37 /* MSLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLineChartView.swift; sourceTree = "<group>"; };
-		F0076F472C83730500156E37 /* LineChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChart.swift; sourceTree = "<group>"; };
 		F025817E2C62C292006CB2E6 /* MorningStar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorningStar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F02581812C62C292006CB2E6 /* MorningStarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningStarApp.swift; sourceTree = "<group>"; };
 		F02581852C62C292006CB2E6 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
@@ -85,6 +82,13 @@
 		F04A78B72C6647C100E8FB1C /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
 		F04A78B92C664A3000E8FB1C /* MSLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLogo.swift; sourceTree = "<group>"; };
 		F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSTodayDateTitle.swift; sourceTree = "<group>"; };
+		F0512F042C85107900FA033F /* HealthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthData.swift; sourceTree = "<group>"; };
+		F0512F062C85109A00FA033F /* HealthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthViewModel.swift; sourceTree = "<group>"; };
+		F0512F082C8513D100FA033F /* IntersectionPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntersectionPoint.swift; sourceTree = "<group>"; };
+		F0512F092C8513D100FA033F /* LineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChart.swift; sourceTree = "<group>"; };
+		F0512F0A2C8513D100FA033F /* SliderBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderBar.swift; sourceTree = "<group>"; };
+		F0512F0B2C8513D100FA033F /* ValueDisplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueDisplay.swift; sourceTree = "<group>"; };
+		F0512F0D2C8513D100FA033F /* MSLineChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSLineChartView.swift; sourceTree = "<group>"; };
 		F053303E2C6A9E2C00F628C5 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		F05330412C6A9FF800F628C5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F05330432C6AA58200F628C5 /* MSRoundImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSRoundImage.swift; sourceTree = "<group>"; };
@@ -128,26 +132,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F0076F432C83726B00156E37 /* LineChart */ = {
-			isa = PBXGroup;
-			children = (
-				F0076F452C83728300156E37 /* MSLineChartView.swift */,
-				F0076F442C83727600156E37 /* Components */,
-			);
-			path = LineChart;
-			sourceTree = "<group>";
-		};
-		F0076F442C83727600156E37 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				F0076F3F2C83710500156E37 /* IntersectionPoint.swift */,
-				F0076F3D2C83709500156E37 /* ValueDisplay.swift */,
-				F0076F412C83716900156E37 /* SliderBar.swift */,
-				F0076F472C83730500156E37 /* LineChart.swift */,
-			);
-			path = Components;
-			sourceTree = "<group>";
-		};
 		F02581752C62C292006CB2E6 = {
 			isa = PBXGroup;
 			children = (
@@ -230,6 +214,7 @@
 		F03AA6D52C6425FF003C1BB3 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				F0512F042C85107900FA033F /* HealthData.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -259,6 +244,7 @@
 			isa = PBXGroup;
 			children = (
 				F03AA6D92C642630003C1BB3 /* Dashboard */,
+				F0512F062C85109A00FA033F /* HealthViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -320,6 +306,26 @@
 				F053CF6E2C6B9C7B000E2EFD /* MSNewActivityButton.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		F0512F0C2C8513D100FA033F /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F0512F082C8513D100FA033F /* IntersectionPoint.swift */,
+				F0512F092C8513D100FA033F /* LineChart.swift */,
+				F0512F0A2C8513D100FA033F /* SliderBar.swift */,
+				F0512F0B2C8513D100FA033F /* ValueDisplay.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		F0512F0E2C8513D100FA033F /* LineChart */ = {
+			isa = PBXGroup;
+			children = (
+				F0512F0D2C8513D100FA033F /* MSLineChartView.swift */,
+				F0512F0C2C8513D100FA033F /* Components */,
+			);
+			path = LineChart;
 			sourceTree = "<group>";
 		};
 		F053303D2C6A9DF900F628C5 /* Header */ = {
@@ -386,7 +392,6 @@
 			isa = PBXGroup;
 			children = (
 				F0CFA07E2C765A5800B7FD7D /* MSChartCardView.swift */,
-				F0076F432C83726B00156E37 /* LineChart */,
 				F0FF79CB2C7E427000DA3A54 /* Components */,
 			);
 			path = LineChartCard;
@@ -395,6 +400,7 @@
 		F0FF79CB2C7E427000DA3A54 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				F0512F0E2C8513D100FA033F /* LineChart */,
 				F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */,
 			);
 			path = Components;
@@ -554,14 +560,15 @@
 				F02581AF2C62C6F3006CB2E6 /* DashboardView.swift in Sources */,
 				F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */,
 				F076E42C2C7E37DF0080BA83 /* MSThemeToggleView.swift in Sources */,
-				F0076F462C83728300156E37 /* MSLineChartView.swift in Sources */,
-				F0076F402C83710500156E37 /* IntersectionPoint.swift in Sources */,
+				F0512F0F2C8513D100FA033F /* IntersectionPoint.swift in Sources */,
+				F0512F112C8513D100FA033F /* SliderBar.swift in Sources */,
+				F0512F132C8513D100FA033F /* MSLineChartView.swift in Sources */,
 				F03599892C7FD2E4008715FF /* LegendView.swift in Sources */,
+				F0512F102C8513D100FA033F /* LineChart.swift in Sources */,
 				F0FF79D12C7E958D00DA3A54 /* XAxisLabels.swift in Sources */,
 				F05330442C6AA58200F628C5 /* MSRoundImage.swift in Sources */,
 				F053CF6F2C6B9C7B000E2EFD /* MSNewActivityButton.swift in Sources */,
 				F02581862C62C292006CB2E6 /* Item.swift in Sources */,
-				F0076F482C83730500156E37 /* LineChart.swift in Sources */,
 				F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */,
 				F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */,
 				F0FF79D52C7E973000DA3A54 /* IntensityStack.swift in Sources */,
@@ -569,16 +576,17 @@
 				F05330422C6A9FF800F628C5 /* ContentView.swift in Sources */,
 				F0FF79D32C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift in Sources */,
 				F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */,
+				F0512F072C85109A00FA033F /* HealthViewModel.swift in Sources */,
 				F053CF6D2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift in Sources */,
-				F0076F3E2C83709500156E37 /* ValueDisplay.swift in Sources */,
 				F076E4312C7E386C0080BA83 /* ColorSheme+Theme.swift in Sources */,
 				F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */,
 				F0D5E0162C6E66F500EE647B /* MSStackedChartCardView.swift in Sources */,
-				F0076F422C83716900156E37 /* SliderBar.swift in Sources */,
 				F04A78BA2C664A3000E8FB1C /* MSLogo.swift in Sources */,
+				F0512F122C8513D100FA033F /* ValueDisplay.swift in Sources */,
 				F0CFA07F2C765A5800B7FD7D /* MSChartCardView.swift in Sources */,
 				F0CFA07D2C76368300B7FD7D /* MSUpDownArrow.swift in Sources */,
 				F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */,
+				F0512F052C85107900FA033F /* HealthData.swift in Sources */,
 				F0D5E0142C6E66EA00EE647B /* MSStackedChart.swift in Sources */,
 				F076E42F2C7E37F30080BA83 /* MSThemeToggleButton.swift in Sources */,
 			);
