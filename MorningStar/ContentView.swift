@@ -24,7 +24,7 @@ struct ContentView: View {
                         HeaderView()
                             .frame(height: geometry.size.height * Constants.headerHeight)
                         
-                        DashboardView()
+                        DashboardView(healthData: $viewModel.healthData)
                             .frame(height: geometry.size.height * Constants.dashboardHeight)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -36,7 +36,7 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            viewModel.fetchStepCount()
+            viewModel.fetchAllHealthData()
         }
     }
 }

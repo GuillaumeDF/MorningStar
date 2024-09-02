@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct DashboardView: View {
+    @Binding var healthData: HealthData
+    
     var body: some View {
         VStack(spacing: AppConstants.Padding.extraLarge) {
             
@@ -76,5 +78,5 @@ struct DashboardView: View {
 }
 
 #Preview {
-    DashboardView()
+    DashboardView(healthData: .constant(HealthData()))
 }
