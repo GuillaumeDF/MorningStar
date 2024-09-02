@@ -17,7 +17,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            if viewModel.authorizationStatus {
+            if viewModel.authorizationStatus == .authorized {
                 Color.backgroundColor.edgesIgnoringSafeArea(.all)
                 GeometryReader { geometry in
                     VStack {

@@ -5,7 +5,28 @@
 //  Created by Guillaume Djaider Fornari on 01/09/2024.
 //
 
+import SwiftUI
 import HealthKit
+
+/*
+ MSLineChartCardView(
+     imageName: "weightIcon",
+     title: "Weight",
+     valeur: "75",
+     unity: "kg",
+     arrowDirection: .up,
+     backgroundColor: Color.weightColor
+ )
+ */
+
+protocol HealthDataItem: Identifiable {
+    var id: UUID { get }
+    var date: Date { get }
+    var title: String { get }
+    var unity: String { get }
+    var arrowDirection: ArrowDirection { get }
+    var color: Color { get }
+}
 
 struct HealthData {
     struct WeightEntry: Identifiable {
@@ -14,10 +35,11 @@ struct HealthData {
         let value: Double
     }
     
-    struct DailyActivityEntry: Identifiable {
+    struct HourlyActivityEntry: Identifiable {
         let id = UUID()
-        let date: Date
-        let values: [Double]
+        let start: Date
+        let end: Date
+        let value: Double
     }
     
     struct SleepEntry: Identifiable {
@@ -28,8 +50,19 @@ struct HealthData {
         let quality: HKCategoryValueSleepAnalysis
     }
     
+    struct WorkoutEntry: Identifiable {
+        let id = UUID()
+        let startDate: Date
+        let endDate: Date
+        let duration: TimeInterval
+        let energyBurned: Double?
+        let distance: Double?
+        let workoutActivityType: HKWorkoutActivityType
+    }
+    
     var weightHistory: [WeightEntry] = []
-    var stepCountHistory: [DailyActivityEntry] = []
-    var calorieBurnHistory: [DailyActivityEntry] = []
+    var stepCountHistory: [Date: [HourlyActivityEntry]] = [:]
+    var calorieBurnHistory: [Date: [HourlyActivityEntry]] = [:]
     var sleepHistory: [Date: [SleepEntry]] = [:]
+    var workoutHistory: [Date: [HourlyActivityEntry]] = [:]
 }
