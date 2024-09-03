@@ -92,20 +92,18 @@ class HealthViewModel: ObservableObject {
         }
     }
 
-    private func fetchHourlyActivityHistory(for identifier: HKQuantityTypeIdentifier, unit: HKUnit, completion: @escaping ([Date: [HealthData.HourlyActivityEntry]]) -> Void) {
+    private func fetchHourlyActivityHistory(for identifier: HKQuantityTypeIdentifier, unit: HKUnit, completion: @escaping ([(date: Date, activity: [HealthData.HourlyActivityEntry])]) -> Void) {
         guard let activityType = HKQuantityType.quantityType(forIdentifier: identifier) else {
             print("Invalid activity type identifier")
             return
         }
-        
+
         let calendar = Calendar.current
-        
-        // Ancre de date ajustée pour couvrir tout l'historique
         let startDate = calendar.date(byAdding: .year, value: -10, to: Date()) ?? Date.distantPast
         let anchorDate = calendar.startOfDay(for: startDate)
-        
+
         let hourlyInterval = DateComponents(hour: 1)
-        
+
         let query = HKStatisticsCollectionQuery(
             quantityType: activityType,
             quantitySamplePredicate: nil,
@@ -113,35 +111,36 @@ class HealthViewModel: ObservableObject {
             anchorDate: anchorDate,
             intervalComponents: hourlyInterval
         )
-        
+
         query.initialResultsHandler = { _, results, error in
             guard let results = results, error == nil else {
                 print("Error fetching hourly activity data: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
-            
-            var activityEntries: [Date: [HealthData.HourlyActivityEntry]] = [:]
-            
+
+            var activityEntries: [(date: Date, activity: [HealthData.HourlyActivityEntry])] = []
+
             results.enumerateStatistics(from: startDate, to: Date()) { statistics, _ in
                 let startDate = statistics.startDate
                 let endDate = statistics.endDate
                 let value = statistics.sumQuantity()?.doubleValue(for: unit) ?? 0.0
-                
+
                 let entry = HealthData.HourlyActivityEntry(start: startDate, end: endDate, value: value)
-                
+
                 let day = calendar.startOfDay(for: startDate)
-                if activityEntries[day] != nil {
-                    activityEntries[day]?.append(entry)
+                
+                if let index = activityEntries.firstIndex(where: { $0.date == day }) {
+                    activityEntries[index].activity.append(entry)
                 } else {
-                    activityEntries[day] = [entry]
+                    activityEntries.append((date: day, activity: [entry]))
                 }
             }
-            
+
             DispatchQueue.main.async {
                 completion(activityEntries)
             }
         }
-        
+
         healthStore.execute(query)
     }
 

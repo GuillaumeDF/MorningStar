@@ -61,8 +61,8 @@ struct HealthData {
     }
     
     var weightHistory: [WeightEntry] = []
-    var stepCountHistory: [Date: [HourlyActivityEntry]] = [:]
-    var calorieBurnHistory: [Date: [HourlyActivityEntry]] = [:]
+    var stepCountHistory: [(date: Date, activity: [HourlyActivityEntry])] = [(Date(), [])]
+    var calorieBurnHistory: [(date: Date, activity: [HourlyActivityEntry])] = [(Date(), [])]
     var sleepHistory: [Date: [SleepEntry]] = [:]
-    var workoutHistory: [Date: [HourlyActivityEntry]] = [:]
+    var workoutHistory: [(date: Date, activity: [HourlyActivityEntry])] = [(Date(), [])]
 }
