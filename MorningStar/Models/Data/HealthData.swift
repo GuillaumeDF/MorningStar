@@ -8,17 +8,6 @@
 import Foundation
 import HealthKit
 
-//enum HealthUnit: String, Codable {
-//    case kilogram = "kg"
-//    case steps = "steps"
-//    case calories = "kcal"
-//    case hours = "hours"
-//    case meters = "m"
-//    // Ajoutez d'autres unités au besoin
-//}
-
-
-// Protocole général pour toutes les entrées de santé avec des dates et des valeurs
 protocol HealthEntry: Identifiable {
     var start: Date { get }
     var end: Date? { get }
@@ -26,13 +15,11 @@ protocol HealthEntry: Identifiable {
     var unit: HKUnit? { get }
 }
 
-// Structure générique de mesure
 struct Measurement<T: Numeric & Comparable> {
     let value: T
     let unit: HKUnit
 }
 
-// Structure générique de DailyActivity pour tous les types d'activités
 struct DailyActivity<T: HealthEntry>: Identifiable {
     let id = UUID()
     var activities: [T]
@@ -44,19 +31,8 @@ struct DailyActivity<T: HealthEntry>: Identifiable {
     var total: Double {
         activities.compactMap { $0.value }.reduce(0, +)
     }
-    
-//    func merged(with other: DailyActivity<T>) -> DailyActivity<T> {
-//        DailyActivity(id: UUID(), activities: self.activities + other.activities)
-//    }
-//    
-//    func filtered(from: Date, to: Date) -> DailyActivity<T> {
-//        let filteredActivities = activities.filter { $0.start >= from && $0.start <= to }
-//        return DailyActivity(id: UUID(), activities: filteredActivities)
-//    }
 }
 
-
-// HealthData contient différents types d'entrées
 struct HealthData {
     struct WeightEntry: HealthEntry {
         let id = UUID()
@@ -86,7 +62,7 @@ struct HealthData {
         let duration: TimeInterval
         let quality: HKCategoryValueSleepAnalysis
         
-        var value: Double { duration } // Conversion en heures
+        var value: Double { duration }
         var unit: HKUnit? { .hour() }
     }
     
@@ -99,12 +75,10 @@ struct HealthData {
         let distance: Measurement<Double>?
         let workoutActivityType: HKWorkoutActivityType
         
-        // Conformité à HealthEntry
         var value: Double { energyBurned?.value ?? 0 }
         var unit: HKUnit? { energyBurned?.unit }
     }
     
-    // Historique de différentes activités
     var weightHistory: [DailyActivity<WeightEntry>]
     var stepCountHistory: [DailyActivity<ActivityEntry>]
     var calorieBurnHistory: [DailyActivity<ActivityEntry>]
