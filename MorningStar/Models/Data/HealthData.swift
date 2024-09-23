@@ -5,64 +5,117 @@
 //  Created by Guillaume Djaider Fornari on 01/09/2024.
 //
 
-import SwiftUI
+import Foundation
 import HealthKit
 
-/*
- MSLineChartCardView(
-     imageName: "weightIcon",
-     title: "Weight",
-     valeur: "75",
-     unity: "kg",
-     arrowDirection: .up,
-     backgroundColor: Color.weightColor
- )
- */
+//enum HealthUnit: String, Codable {
+//    case kilogram = "kg"
+//    case steps = "steps"
+//    case calories = "kcal"
+//    case hours = "hours"
+//    case meters = "m"
+//    // Ajoutez d'autres unités au besoin
+//}
 
-protocol HealthDataItem: Identifiable {
-    var id: UUID { get }
-    var date: Date { get }
-    var title: String { get }
-    var unity: String { get }
-    var arrowDirection: ArrowDirection { get }
-    var color: Color { get }
+
+// Protocole général pour toutes les entrées de santé avec des dates et des valeurs
+protocol HealthEntry: Identifiable {
+    var start: Date { get }
+    var end: Date? { get }
+    var value: Double { get }
+    var unit: HKUnit? { get }
 }
 
+// Structure générique de mesure
+struct Measurement<T: Numeric & Comparable> {
+    let value: T
+    let unit: HKUnit
+}
+
+// Structure générique de DailyActivity pour tous les types d'activités
+struct DailyActivity<T: HealthEntry>: Identifiable {
+    let id = UUID()
+    var activities: [T]
+    
+    var date: Date? {
+        activities.first?.start
+    }
+    
+    var total: Double {
+        activities.compactMap { $0.value }.reduce(0, +)
+    }
+    
+//    func merged(with other: DailyActivity<T>) -> DailyActivity<T> {
+//        DailyActivity(id: UUID(), activities: self.activities + other.activities)
+//    }
+//    
+//    func filtered(from: Date, to: Date) -> DailyActivity<T> {
+//        let filteredActivities = activities.filter { $0.start >= from && $0.start <= to }
+//        return DailyActivity(id: UUID(), activities: filteredActivities)
+//    }
+}
+
+
+// HealthData contient différents types d'entrées
 struct HealthData {
-    struct WeightEntry: Identifiable {
+    struct WeightEntry: HealthEntry {
         let id = UUID()
         let date: Date
-        let value: Double
+        let weight: Measurement<Double>
+        
+        var start: Date { date }
+        var end: Date? { nil }
+        var value: Double { weight.value }
+        var unit: HKUnit? { weight.unit }
     }
     
-    struct HourlyActivityEntry: Identifiable {
+    struct ActivityEntry: HealthEntry {
         let id = UUID()
         let start: Date
-        let end: Date
-        let value: Double
+        let end: Date?
+        let measurement: Measurement<Double>
+        
+        var value: Double { measurement.value }
+        var unit: HKUnit? { measurement.unit }
     }
     
-    struct SleepEntry: Identifiable {
+    struct SleepEntry: HealthEntry {
         let id = UUID()
         let start: Date
-        let end: Date
+        let end: Date?
         let duration: TimeInterval
         let quality: HKCategoryValueSleepAnalysis
+        
+        var value: Double { duration } // Conversion en heures
+        var unit: HKUnit? { .hour() }
     }
     
-    struct WorkoutEntry: Identifiable {
+    struct WorkoutEntry: HealthEntry {
         let id = UUID()
-        let startDate: Date
-        let endDate: Date
+        let start: Date
+        let end: Date?
         let duration: TimeInterval
-        let energyBurned: Double?
-        let distance: Double?
+        let energyBurned: Measurement<Double>?
+        let distance: Measurement<Double>?
         let workoutActivityType: HKWorkoutActivityType
+        
+        // Conformité à HealthEntry
+        var value: Double { energyBurned?.value ?? 0 }
+        var unit: HKUnit? { energyBurned?.unit }
     }
     
-    var weightHistory: [WeightEntry] = []
-    var stepCountHistory: [(date: Date, activity: [HourlyActivityEntry])] = [(Date(), [])]
-    var calorieBurnHistory: [(date: Date, activity: [HourlyActivityEntry])] = [(Date(), [])]
-    var sleepHistory: [Date: [SleepEntry]] = [:]
-    var workoutHistory: [(date: Date, activity: [HourlyActivityEntry])] = [(Date(), [])]
+    // Historique de différentes activités
+    var weightHistory: [DailyActivity<WeightEntry>]
+    var stepCountHistory: [DailyActivity<ActivityEntry>]
+    var calorieBurnHistory: [DailyActivity<ActivityEntry>]
+    var sleepHistory: [DailyActivity<SleepEntry>]
+    var workoutHistory: [DailyActivity<WorkoutEntry>]
+    
+    init() {
+        self.weightHistory = []
+        self.stepCountHistory = []
+        self.calorieBurnHistory = []
+        self.sleepHistory = []
+        self.workoutHistory = []
+    }
 }

@@ -11,22 +11,18 @@ private enum Constants {
     static let imageHeight: CGFloat = 25
 }
 
-struct MSLineChartCardView: View {
+struct MSLineChartCardView<T: HealthEntry>: View {
     let imageName: String
     let title: String
-    let valeur: String
-    let unity: String
+    let dailyActivity: [DailyActivity<T>]
     let arrowDirection: ArrowDirection
     let backgroundColor: Color
     
     @State private var sliderPosition: CGFloat = 0.5
     
-    let sampleData = [
-        65, 60, 60, 60, 60, 65, 90, 150, 110, 100, 100, 120,
-        180, 130, 100, 110, 120, 200, 350, 250, 120, 90, 80, 70
-    ]
-    
     var body: some View {
+        let activities = dailyActivity.last?.activities ?? []
+        
         VStack(spacing: 8) {
             VStack(alignment: .leading, spacing: AppConstants.Padding.extraLarge) {
                 HStack {
@@ -37,17 +33,23 @@ struct MSLineChartCardView: View {
                     Spacer()
                     MSUpDownArrow(direction: arrowDirection)
                 }
-                Text("\(valeur) \(unity)")
-                    .font(.title)
-                    .foregroundStyle(Color.primaryTextColor)
+                if let lastActivity = activities.last {
+                    Text("\(Int(dailyActivity.last?.total ?? 0)) \(lastActivity.unit)")
+                        .font(.title)
+                        .foregroundStyle(Color.primaryTextColor)
+                } else {
+                    Text("Aucune activité disponible")
+                        .font(.title)
+                        .foregroundStyle(Color.primaryTextColor)
+                }
             }
             .padding(AppConstants.Padding.medium)
             
             MSLineChartView(
                 backgroundColor: backgroundColor,
                 sliderPosition: $sliderPosition,
-                data: sampleData,
-                yAxisLabel: unity
+                entries: activities,
+                yAxisLabel: "unity"
             )
         }
         .background(backgroundColor.opacity(0.3))
@@ -59,14 +61,47 @@ struct MSLineChartCardView: View {
     }
 }
 
-#Preview {
-    MSLineChartCardView(
-        imageName: "weightIcon",
-        title: "Weight",
-        valeur: "75",
-        unity: "kg",
-        arrowDirection: .up,
-        backgroundColor: Color.weightColor
-    )
-    .frame(width: 250, height: 400)
-}
+//struct MSLineChartCardViewPreview: View {
+//    let dailyActivities: [HealthData.DailyActivity<HealthData.ActivityEntry>]
+//    
+//    init() {
+//        let activity1 = HealthData.ActivityEntry(
+//            start: Date().addingTimeInterval(-3600),
+//            end: Date(),
+//            measurement: Measurement(value: 10000, unit: "steps")
+//        )
+//        
+//        let activity2 = HealthData.ActivityEntry(
+//            start: Date().addingTimeInterval(-7200),
+//            end: Date().addingTimeInterval(-3600),
+//            measurement: Measurement(value: 500, unit: "calories")
+//        )
+//        
+//        let activity3 = HealthData.ActivityEntry(
+//            start: Date().addingTimeInterval(-10800),
+//            end: Date().addingTimeInterval(-7200),
+//            measurement: Measurement(value: 12000, unit: "steps")
+//        )
+//        
+//        self.dailyActivities = [
+//            HealthData.DailyActivity(activities: [activity1]),
+//            HealthData.DailyActivity(activities: [activity2]),
+//            HealthData.DailyActivity(activities: [activity3])
+//        ]
+//    }
+//    
+//    var body: some View {
+//        MSLineChartCardView(
+//            imageName: "weightIcon",
+//            title: "Weight",
+//            dailyActivity: dailyActivities,
+//            arrowDirection: .up,
+//            backgroundColor: Color.weightColor
+//        )
+//    }
+//}
+//
+//#Preview {
+//    MSLineChartCardViewPreview()
+//        .frame(width: 250, height: 400)
+//}

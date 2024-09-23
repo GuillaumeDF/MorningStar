@@ -11,67 +11,66 @@ struct DashboardView: View {
     @Binding var healthData: HealthData
     
     var body: some View {
-        VStack(spacing: AppConstants.Padding.extraLarge) {
+        if !healthData.stepCountHistory.isEmpty && !healthData.calorieBurnHistory.isEmpty && !healthData.weightHistory.isEmpty {
             
-            HStack(spacing: AppConstants.Padding.extraLarge) {
-                VStack(alignment: .leading) {
-                    Text("My Analytics")
-                        .font(.title)
-                        .foregroundStyle(Color.primaryTextColor)
-                    Text("Information designed to accurate insights")
-                        .font(.subheadline)
-                        .foregroundStyle(Color.secondaryTextColor)
+            VStack(spacing: AppConstants.Padding.extraLarge) {
+                
+                HStack(spacing: AppConstants.Padding.extraLarge) {
+                    VStack(alignment: .leading) {
+                        Text("My Analytics")
+                            .font(.title)
+                            .foregroundStyle(Color.primaryTextColor)
+                        Text("Information designed to accurate insights")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.secondaryTextColor)
+                    }
+                    Spacer()
+                    MSDashboardHeaderMetricView(
+                        title: "Total workout this week",
+                        value: "3457 hours"
+                    )
+                    MSVerticalSeparator()
+                        .frame(height: 50)
+                    MSNewActivityButton()
                 }
-                Spacer()
-                MSDashboardHeaderMetricView(
-                    title: "Total workout this week",
-                    value: "3457 hours"
-                )
-                MSVerticalSeparator()
-                    .frame(height: 50)
-                MSNewActivityButton()
-            }
-            
-            GeometryReader { geometry in
+                
+                GeometryReader { geometry in
+                    HStack(spacing: 50) {
+                        MSLineChartCardView(
+                            imageName: "weightIcon",
+                            title: "Weight",
+                            dailyActivity: healthData.weightHistory,
+                            arrowDirection: .up,
+                            backgroundColor: Color.weightColor
+                        )
+                        .frame(width: (geometry.size.width - 100) / 3)
+                        MSStackedChartCardView()
+                    }
+                }
+                
                 HStack(spacing: 50) {
                     MSLineChartCardView(
-                        imageName: "weightIcon",
-                        title: "Weight",
-                        valeur: "75",
-                        unity: "kg",
+                        imageName: "caloriesIcon",
+                        title: "Calorie burned",
+                        dailyActivity: healthData.calorieBurnHistory,
                         arrowDirection: .up,
-                        backgroundColor: Color.weightColor
+                        backgroundColor: Color.calorieColor
                     )
-                    .frame(width: (geometry.size.width - 100) / 3)
-                    MSStackedChartCardView()
+                    MSLineChartCardView(
+                        imageName: "stepIcon",
+                        title: "Step",
+                        dailyActivity: healthData.stepCountHistory,
+                        arrowDirection: .up,
+                        backgroundColor: Color.stepColor
+                    )
+                    MSLineChartCardView(
+                        imageName: "sleepIcon",
+                        title: "Sleep",
+                        dailyActivity: healthData.stepCountHistory,
+                        arrowDirection: .down,
+                        backgroundColor: Color.blue
+                    )
                 }
-            }
-            
-            HStack(spacing: 50) {
-                MSLineChartCardView(
-                    imageName: "caloriesIcon",
-                    title: "Calorie burned",
-                    valeur: "500",
-                    unity: "kcal",
-                    arrowDirection: .up,
-                    backgroundColor: Color.calorieColor
-                )
-                MSLineChartCardView(
-                    imageName: "stepIcon",
-                    title: "Step",
-                    valeur: "10 000",
-                    unity: "step",
-                    arrowDirection: .up,
-                    backgroundColor: Color.stepColor
-                )
-                MSLineChartCardView(
-                    imageName: "sleepIcon",
-                    title: "Sleep",
-                    valeur: "10",
-                    unity: "h",
-                    arrowDirection: .down,
-                    backgroundColor: Color.blue
-                )
             }
         }
     }
