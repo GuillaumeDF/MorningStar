@@ -7,25 +7,25 @@
 
 import SwiftUI
 
-// struct MSLineChartView<T: DateRangeEntry>: View {
-struct MSLineChartView<T: HealthEntry>: View {
-    let backgroundColor: Color
-    @Binding var sliderPosition: CGFloat
-    let entries: [T]
-    let yAxisLabel: String
-    
+struct MSLineChartView: View {
     @State private var value: Int = 0
     @State private var intersectionPoint: CGPoint = .zero
+    
+    @Binding var sliderPosition: CGFloat
+    
+    let backgroundColor: Color
+    let data: [Double]
+    let yAxisLabel: String
 
     private var maxValue: Double {
-        entries.map { $0.value }.max() ?? 0
+        data.map { $0 }.max() ?? 0
     }
     
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 LineChart(
-                    entries: entries,
+                    data: data,
                     maxValue: maxValue,
                     backgroundColor: backgroundColor,
                     size: geometry.size
@@ -63,13 +63,13 @@ struct MSLineChartView<T: HealthEntry>: View {
 
         let scaleFactor = height / CGFloat(maxValue)
 
-        let floatIndex = position * CGFloat(entries.count - 1)
+        let floatIndex = position * CGFloat(data.count - 1)
         let lowerIndex = Int(floatIndex)
-        let upperIndex = min(lowerIndex + 1, entries.count - 1)
+        let upperIndex = min(lowerIndex + 1, data.count - 1)
         let fraction = floatIndex - CGFloat(lowerIndex)
 
-        let lowerValue = CGFloat(entries[lowerIndex].value)
-        let upperValue = CGFloat(entries[upperIndex].value)
+        let lowerValue = CGFloat(data[lowerIndex])
+        let upperValue = CGFloat(data[upperIndex])
         let interpolatedValue = lowerValue + (upperValue - lowerValue) * fraction
 
         let y = height - interpolatedValue * scaleFactor

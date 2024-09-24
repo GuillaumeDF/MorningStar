@@ -12,12 +12,12 @@ protocol HealthEntry: Identifiable {
     var start: Date { get }
     var end: Date? { get }
     var value: Double { get }
-    var unit: HKUnit? { get }
+    var unit: String { get }
 }
 
 struct Measurement<T: Numeric & Comparable> {
     let value: T
-    let unit: HKUnit
+    let unit: String
 }
 
 struct DailyActivity<T: HealthEntry>: Identifiable {
@@ -31,6 +31,10 @@ struct DailyActivity<T: HealthEntry>: Identifiable {
     var total: Double {
         activities.compactMap { $0.value }.reduce(0, +)
     }
+    
+    var values: [Double] {
+        activities.map { $0.value }
+    }
 }
 
 struct HealthData {
@@ -42,7 +46,7 @@ struct HealthData {
         var start: Date { date }
         var end: Date? { nil }
         var value: Double { weight.value }
-        var unit: HKUnit? { weight.unit }
+        var unit: String { weight.unit }
     }
     
     struct ActivityEntry: HealthEntry {
@@ -52,7 +56,7 @@ struct HealthData {
         let measurement: Measurement<Double>
         
         var value: Double { measurement.value }
-        var unit: HKUnit? { measurement.unit }
+        var unit: String { measurement.unit }
     }
     
     struct SleepEntry: HealthEntry {
@@ -63,7 +67,7 @@ struct HealthData {
         let quality: HKCategoryValueSleepAnalysis
         
         var value: Double { duration }
-        var unit: HKUnit? { .hour() }
+        var unit: String { HKUnit.hour().unitString }
     }
     
     struct WorkoutEntry: HealthEntry {
@@ -76,7 +80,7 @@ struct HealthData {
         let workoutActivityType: HKWorkoutActivityType
         
         var value: Double { energyBurned?.value ?? 0 }
-        var unit: HKUnit? { energyBurned?.unit }
+        var unit: String { energyBurned?.unit ?? "none" }
     }
     
     var weightHistory: [DailyActivity<WeightEntry>]

@@ -14,14 +14,14 @@ private enum Constants {
 struct MSLineChartCardView<T: HealthEntry>: View {
     let imageName: String
     let title: String
-    let dailyActivity: [DailyActivity<T>]
+    let dailyActivities: [DailyActivity<T>]
     let arrowDirection: ArrowDirection
     let backgroundColor: Color
     
     @State private var sliderPosition: CGFloat = 0.5
     
     var body: some View {
-        let activities = dailyActivity.last?.activities ?? []
+        let lastDay = dailyActivities.last?.activities ?? []
         
         VStack(spacing: 8) {
             VStack(alignment: .leading, spacing: AppConstants.Padding.extraLarge) {
@@ -33,8 +33,8 @@ struct MSLineChartCardView<T: HealthEntry>: View {
                     Spacer()
                     MSUpDownArrow(direction: arrowDirection)
                 }
-                if let lastActivity = activities.last {
-                    Text("\(Int(dailyActivity.last?.total ?? 0)) \(lastActivity.unit)")
+                if let lastActivity = lastDay.last {
+                    Text("\(Int(dailyActivities.last?.total ?? 0)) \(lastActivity.unit)")
                         .font(.title)
                         .foregroundStyle(Color.primaryTextColor)
                 } else {
@@ -46,9 +46,9 @@ struct MSLineChartCardView<T: HealthEntry>: View {
             .padding(AppConstants.Padding.medium)
             
             MSLineChartView(
-                backgroundColor: backgroundColor,
                 sliderPosition: $sliderPosition,
-                entries: activities,
+                backgroundColor: backgroundColor,
+                data: dailyActivities.last?.values ?? [],
                 yAxisLabel: "unity"
             )
         }

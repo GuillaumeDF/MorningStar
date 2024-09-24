@@ -66,7 +66,7 @@ class HealthViewModel: ObservableObject {
                     date: quantitySample.startDate,
                     weight: Measurement(
                         value: quantitySample.quantity.doubleValue(for: .gramUnit(with: .kilo)),
-                        unit: .kilocalorie()
+                        unit: HKUnit.kilocalorie().unitString
                     )
                 )
             }
@@ -160,7 +160,7 @@ class HealthViewModel: ObservableObject {
                 end: statistics.endDate,
                 measurement: Measurement(
                     value: statistics.sumQuantity()?.doubleValue(for: unit) ?? 0.0,
-                    unit: unit
+                    unit: unit.unitString
                 )
             )
             currentDayActivities.append(entry)

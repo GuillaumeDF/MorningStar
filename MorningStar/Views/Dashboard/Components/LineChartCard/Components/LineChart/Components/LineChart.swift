@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct LineChart<T: HealthEntry>: View {
-    let entries: [T]
+struct LineChart: View {
+    let data: [Double]
     let maxValue: Double
     let backgroundColor: Color
     let size: CGSize
@@ -16,15 +16,15 @@ struct LineChart<T: HealthEntry>: View {
     var body: some View {
         Path { path in
             let scaleFactor = size.height / maxValue
-            path.move(to: CGPoint(x: 0, y: size.height - CGFloat(entries[0].value) * scaleFactor))
+            path.move(to: CGPoint(x: 0, y: size.height - CGFloat(data[0]) * scaleFactor))
             
-            for (index, value) in entries.enumerated() {
-                let x = size.width * CGFloat(index) / CGFloat(entries.count - 1)
-                let y = size.height - CGFloat(value.value) * scaleFactor
+            for (index, value) in data.enumerated() {
+                let x = size.width * CGFloat(index) / CGFloat(data.count - 1)
+                let y = size.height - CGFloat(value) * scaleFactor
                 
                 if index > 0 {
-                    let prevX = size.width * CGFloat(index - 1) / CGFloat(entries.count - 1)
-                    let prevY = size.height - CGFloat(entries[index - 1].value) * scaleFactor
+                    let prevX = size.width * CGFloat(index - 1) / CGFloat(data.count - 1)
+                    let prevY = size.height - CGFloat(data[index - 1]) * scaleFactor
                     let controlX = (x + prevX) / 2
                     
                     path.addCurve(to: CGPoint(x: x, y: y),

@@ -39,7 +39,7 @@ struct DashboardView: View {
                         MSLineChartCardView(
                             imageName: "weightIcon",
                             title: "Weight",
-                            dailyActivity: healthData.weightHistory,
+                            dailyActivities: healthData.weightHistory,
                             arrowDirection: .up,
                             backgroundColor: Color.weightColor
                         )
@@ -52,21 +52,21 @@ struct DashboardView: View {
                     MSLineChartCardView(
                         imageName: "caloriesIcon",
                         title: "Calorie burned",
-                        dailyActivity: healthData.calorieBurnHistory,
+                        dailyActivities: healthData.calorieBurnHistory,
                         arrowDirection: .up,
                         backgroundColor: Color.calorieColor
                     )
                     MSLineChartCardView(
                         imageName: "stepIcon",
                         title: "Step",
-                        dailyActivity: healthData.stepCountHistory,
+                        dailyActivities: healthData.stepCountHistory,
                         arrowDirection: .up,
                         backgroundColor: Color.stepColor
                     )
                     MSLineChartCardView(
                         imageName: "sleepIcon",
                         title: "Sleep",
-                        dailyActivity: healthData.stepCountHistory,
+                        dailyActivities: healthData.stepCountHistory,
                         arrowDirection: .down,
                         backgroundColor: Color.blue
                     )
