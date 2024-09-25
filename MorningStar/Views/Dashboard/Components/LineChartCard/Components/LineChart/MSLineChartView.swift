@@ -79,15 +79,15 @@ struct MSLineChartView: View {
     }
 }
 
-//#Preview {
-//    MSLineChartView(
-//        backgroundColor: Color.stepColor,
-//        sliderPosition: .constant(0.4),
-//        data:
-//            [
-//                65, 60, 60, 60, 60, 65, 90, 150, 110, 100, 100, 120,
-//                180, 130, 100, 110, 120, 200, 350, 250, 120, 90, 80, 70
-//            ],
-//        yAxisLabel: "Label"
-//    )
-//}
+#Preview {
+    MSLineChartView(
+        sliderPosition: .constant(0.4),
+        backgroundColor: Color.stepColor,
+        data:
+            [
+                65, 60, 60, 60, 60, 65, 90, 150, 110, 100, 100, 120,
+                180, 130, 100, 110, 120, 200, 350, 250, 120, 90, 80, 70
+            ],
+        yAxisLabel: "Label"
+    )
+}

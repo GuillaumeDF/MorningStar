@@ -61,47 +61,13 @@ struct MSLineChartCardView<T: HealthEntry>: View {
     }
 }
 
-//struct MSLineChartCardViewPreview: View {
-//    let dailyActivities: [HealthData.DailyActivity<HealthData.ActivityEntry>]
-//    
-//    init() {
-//        let activity1 = HealthData.ActivityEntry(
-//            start: Date().addingTimeInterval(-3600),
-//            end: Date(),
-//            measurement: Measurement(value: 10000, unit: "steps")
-//        )
-//        
-//        let activity2 = HealthData.ActivityEntry(
-//            start: Date().addingTimeInterval(-7200),
-//            end: Date().addingTimeInterval(-3600),
-//            measurement: Measurement(value: 500, unit: "calories")
-//        )
-//        
-//        let activity3 = HealthData.ActivityEntry(
-//            start: Date().addingTimeInterval(-10800),
-//            end: Date().addingTimeInterval(-7200),
-//            measurement: Measurement(value: 12000, unit: "steps")
-//        )
-//        
-//        self.dailyActivities = [
-//            HealthData.DailyActivity(activities: [activity1]),
-//            HealthData.DailyActivity(activities: [activity2]),
-//            HealthData.DailyActivity(activities: [activity3])
-//        ]
-//    }
-//    
-//    var body: some View {
-//        MSLineChartCardView(
-//            imageName: "weightIcon",
-//            title: "Weight",
-//            dailyActivity: dailyActivities,
-//            arrowDirection: .up,
-//            backgroundColor: Color.weightColor
-//        )
-//    }
-//}
-//
-//#Preview {
-//    MSLineChartCardViewPreview()
-//        .frame(width: 250, height: 400)
-//}
+#Preview {
+    MSLineChartCardView(
+        imageName: "weightIcon",
+        title: "Weight",
+        dailyActivities: HealthData.fakeStepCountHistory(),
+        arrowDirection: .up,
+        backgroundColor: Color.weightColor
+    )
+    .frame(width: 250, height: 400)
+}

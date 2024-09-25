@@ -48,13 +48,14 @@ struct LineChart: View {
     }
 }
 
-//#Preview {
-//    LineChart(
-//        data:  [
-//            65, 60, 60, 60, 60, 65, 90, 150, 110, 100, 100, 120,
-//            180, 130, 100, 110, 120, 200, 350, 250, 120, 90, 80, 70
-//        ],
-//        backgroundColor: Color.stepColor,
-//        size: CGSize(width: 500, height: 500)
-//    )
-//}
+#Preview {
+    LineChart(
+        data:  [
+            65, 60, 60, 60, 60, 65, 90, 150, 110, 100, 100, 120,
+            180, 130, 100, 110, 120, 200, 350, 250, 120, 90, 80, 70
+        ],
+        maxValue: 350,
+        backgroundColor: Color.stepColor,
+        size: CGSize(width: 500, height: 500)
+    )
+}

@@ -37,6 +37,7 @@
 		F076E42C2C7E37DF0080BA83 /* MSThemeToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E42B2C7E37DF0080BA83 /* MSThemeToggleView.swift */; };
 		F076E42F2C7E37F30080BA83 /* MSThemeToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E42E2C7E37F30080BA83 /* MSThemeToggleButton.swift */; };
 		F076E4312C7E386C0080BA83 /* ColorSheme+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */; };
+		F08576522CA4180C003B2252 /* HealthData+Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08576512CA4180C003B2252 /* HealthData+Generator.swift */; };
 		F0CFA07D2C76368300B7FD7D /* MSUpDownArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */; };
 		F0CFA07F2C765A5800B7FD7D /* MSChartCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA07E2C765A5800B7FD7D /* MSChartCardView.swift */; };
 		F0D5E0142C6E66EA00EE647B /* MSStackedChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D5E0132C6E66EA00EE647B /* MSStackedChart.swift */; };
@@ -98,6 +99,7 @@
 		F076E42B2C7E37DF0080BA83 /* MSThemeToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeToggleView.swift; sourceTree = "<group>"; };
 		F076E42E2C7E37F30080BA83 /* MSThemeToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeToggleButton.swift; sourceTree = "<group>"; };
 		F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ColorSheme+Theme.swift"; sourceTree = "<group>"; };
+		F08576512CA4180C003B2252 /* HealthData+Generator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HealthData+Generator.swift"; sourceTree = "<group>"; };
 		F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSUpDownArrow.swift; sourceTree = "<group>"; };
 		F0CFA07E2C765A5800B7FD7D /* MSChartCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSChartCardView.swift; sourceTree = "<group>"; };
 		F0D5E0132C6E66EA00EE647B /* MSStackedChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSStackedChart.swift; sourceTree = "<group>"; };
@@ -223,7 +225,6 @@
 			isa = PBXGroup;
 			children = (
 				F076E4292C7E318A0080BA83 /* Share */,
-				F0B7FFDA2C75412800F37CDC /* Deprecated */,
 				F076E4282C7E31140080BA83 /* Commun */,
 				F053303D2C6A9DF900F628C5 /* Header */,
 				F03AA6D72C64261E003C1BB3 /* Dashboard */,
@@ -285,6 +286,7 @@
 			children = (
 				F03AA6E02C6426F2003C1BB3 /* Color+Theme.swift */,
 				F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */,
+				F08576512CA4180C003B2252 /* HealthData+Generator.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -379,13 +381,6 @@
 				F076E42E2C7E37F30080BA83 /* MSThemeToggleButton.swift */,
 			);
 			path = Components;
-			sourceTree = "<group>";
-		};
-		F0B7FFDA2C75412800F37CDC /* Deprecated */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Deprecated;
 			sourceTree = "<group>";
 		};
 		F0FF79CA2C7E426A00DA3A54 /* LineChartCard */ = {
@@ -584,6 +579,7 @@
 				F04A78BA2C664A3000E8FB1C /* MSLogo.swift in Sources */,
 				F0512F122C8513D100FA033F /* ValueDisplay.swift in Sources */,
 				F0CFA07F2C765A5800B7FD7D /* MSChartCardView.swift in Sources */,
+				F08576522CA4180C003B2252 /* HealthData+Generator.swift in Sources */,
 				F0CFA07D2C76368300B7FD7D /* MSUpDownArrow.swift in Sources */,
 				F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */,
 				F0512F052C85107900FA033F /* HealthData.swift in Sources */,
