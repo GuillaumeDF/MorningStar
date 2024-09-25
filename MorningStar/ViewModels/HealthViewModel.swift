@@ -66,7 +66,7 @@ class HealthViewModel: ObservableObject {
                     date: quantitySample.startDate,
                     weight: Measurement(
                         value: quantitySample.quantity.doubleValue(for: .gramUnit(with: .kilo)),
-                        unit: HKUnit.kilocalorie().unitString
+                        unit: HKUnit.gramUnit(with: .kilo).unitString
                     )
                 )
             }

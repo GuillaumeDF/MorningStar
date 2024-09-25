@@ -21,7 +21,7 @@ struct MSLineChartCardView<T: HealthEntry>: View {
     @State private var sliderPosition: CGFloat = 0.5
     
     var body: some View {
-        let lastDay = dailyActivities.last?.activities ?? []
+        let lastDayActivities = dailyActivities.last?.activities ?? []
         
         VStack(spacing: 8) {
             VStack(alignment: .leading, spacing: AppConstants.Padding.extraLarge) {
@@ -33,8 +33,8 @@ struct MSLineChartCardView<T: HealthEntry>: View {
                     Spacer()
                     MSUpDownArrow(direction: arrowDirection)
                 }
-                if let lastActivity = lastDay.last {
-                    Text("\(Int(dailyActivities.last?.total ?? 0)) \(lastActivity.unit)")
+                if let lastActivity = lastDayActivities.last {
+                    Text("\(Int(dailyActivities.last?.mainValue ?? 0)) \(lastActivity.unit)")
                         .font(.title)
                         .foregroundStyle(Color.primaryTextColor)
                 } else {
@@ -49,7 +49,7 @@ struct MSLineChartCardView<T: HealthEntry>: View {
                 sliderPosition: $sliderPosition,
                 backgroundColor: backgroundColor,
                 data: dailyActivities.last?.values ?? [],
-                yAxisLabel: "unity"
+                yAxisLabel: lastDayActivities.last?.unit ?? "none"
             )
         }
         .background(backgroundColor.opacity(0.3))

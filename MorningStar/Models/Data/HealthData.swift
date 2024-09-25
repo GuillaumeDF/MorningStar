@@ -35,6 +35,14 @@ struct DailyActivity<T: HealthEntry>: Identifiable {
     var values: [Double] {
         activities.map { $0.value }
     }
+    
+    var mainValue: Double {
+        if let _ = T.self as? HealthData.WeightEntry.Type {
+            return activities.last?.value ?? 0
+        } else {
+            return total
+        }
+    }
 }
 
 struct HealthData {
