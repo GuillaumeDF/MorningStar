@@ -8,7 +8,7 @@
 import SwiftUI
 
 private enum Constants {
-    static let imageHeight: CGFloat = 35
+    static let imageHeight: CGFloat = 25
 }
 
 struct MSRoundImageWithTitle: View {

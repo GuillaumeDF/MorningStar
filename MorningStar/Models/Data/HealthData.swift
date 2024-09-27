@@ -20,29 +20,9 @@ struct Measurement<T: Numeric & Comparable> {
     let unit: String
 }
 
-struct DailyActivity<T: HealthEntry>: Identifiable {
+struct PeriodActivity<T: HealthEntry>: Identifiable {
     let id = UUID()
     var activities: [T]
-    
-    var date: Date? {
-        activities.first?.start
-    }
-    
-    var total: Double {
-        activities.compactMap { $0.value }.reduce(0, +)
-    }
-    
-    var values: [Double] {
-        activities.map { $0.value }
-    }
-    
-    var mainValue: Double {
-        if let _ = T.self as? HealthData.WeightEntry.Type {
-            return activities.last?.value ?? 0
-        } else {
-            return total
-        }
-    }
 }
 
 struct HealthData {
@@ -91,11 +71,11 @@ struct HealthData {
         var unit: String { energyBurned?.unit ?? "none" }
     }
     
-    var weightHistory: [DailyActivity<WeightEntry>]
-    var stepCountHistory: [DailyActivity<ActivityEntry>]
-    var calorieBurnHistory: [DailyActivity<ActivityEntry>]
-    var sleepHistory: [DailyActivity<SleepEntry>]
-    var workoutHistory: [DailyActivity<WorkoutEntry>]
+    var weightHistory: [PeriodActivity<WeightEntry>]
+    var stepCountHistory: [PeriodActivity<ActivityEntry>]
+    var calorieBurnHistory: [PeriodActivity<ActivityEntry>]
+    var sleepHistory: [PeriodActivity<SleepEntry>]
+    var workoutHistory: [PeriodActivity<WorkoutEntry>]
     
     init() {
         self.weightHistory = []

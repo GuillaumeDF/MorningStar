@@ -39,9 +39,9 @@ struct DashboardView: View {
                         MSLineChartCardView(
                             imageName: "weightIcon",
                             title: "Weight",
-                            dailyActivities: healthData.weightHistory,
-                            arrowDirection: .up,
-                            backgroundColor: Color.weightColor
+                            viewModel: WeightLineChartViewModel(activityPeriods: healthData.weightHistory),
+                            backgroundColor: Color.weightColor,
+                            arrowDirection: .up
                         )
                         .frame(width: (geometry.size.width - 100) / 3)
                         MSStackedChartCardView()
@@ -52,23 +52,23 @@ struct DashboardView: View {
                     MSLineChartCardView(
                         imageName: "caloriesIcon",
                         title: "Calorie burned",
-                        dailyActivities: healthData.calorieBurnHistory,
-                        arrowDirection: .up,
-                        backgroundColor: Color.calorieColor
+                        viewModel: ActivityLineChartViewModel(activityPeriods: healthData.calorieBurnHistory),
+                        backgroundColor: Color.calorieColor,
+                        arrowDirection: .up
                     )
                     MSLineChartCardView(
                         imageName: "stepIcon",
                         title: "Step",
-                        dailyActivities: healthData.stepCountHistory,
-                        arrowDirection: .up,
-                        backgroundColor: Color.stepColor
+                        viewModel: ActivityLineChartViewModel(activityPeriods: healthData.stepCountHistory),
+                        backgroundColor: Color.stepColor,
+                        arrowDirection: .up
                     )
                     MSLineChartCardView(
                         imageName: "sleepIcon",
                         title: "Sleep",
-                        dailyActivities: healthData.stepCountHistory,
-                        arrowDirection: .down,
-                        backgroundColor: Color.blue
+                        viewModel: ActivityLineChartViewModel(activityPeriods: healthData.stepCountHistory),
+                        backgroundColor: Color.blue,
+                        arrowDirection: .down
                     )
                 }
             }

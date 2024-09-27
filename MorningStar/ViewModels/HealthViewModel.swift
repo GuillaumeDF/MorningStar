@@ -52,35 +52,6 @@ class HealthViewModel: ObservableObject {
         fetchWorkoutHistory()
     }
     
-    private func fetchWeightHistory() {
-        guard let weightType = HKQuantityType.quantityType(forIdentifier: .bodyMass) else {
-            print("Body mass type is not available")
-            return
-        }
-        
-        let query = createSampleQuery(for: weightType) { [weak self] samples in
-            let weightEntries = samples.compactMap { sample -> HealthData.WeightEntry? in
-                guard let quantitySample = sample as? HKQuantitySample else { return nil }
-                
-                return HealthData.WeightEntry(
-                    date: quantitySample.startDate,
-                    weight: Measurement(
-                        value: quantitySample.quantity.doubleValue(for: .gramUnit(with: .kilo)),
-                        unit: HKUnit.gramUnit(with: .kilo).unitString
-                    )
-                )
-            }
-            
-            let dailyActivity = DailyActivity(activities: weightEntries)
-            
-            DispatchQueue.main.async {
-                self?.healthData.weightHistory = [dailyActivity]
-            }
-        }
-        
-        healthStore.execute(query)
-    }
-    
     private func fetchStepCountHistory() {
         fetchHourlyActivityHistory(for: .stepCount, unit: .count()) { [weak self] entries in
             self?.healthData.stepCountHistory = entries
@@ -103,7 +74,7 @@ class HealthViewModel: ObservableObject {
         // Implement workout history fetching
     }
     
-    private func fetchHourlyActivityHistory(for identifier: HKQuantityTypeIdentifier, unit: HKUnit, completion: @escaping ([DailyActivity<HealthData.ActivityEntry>]) -> Void) {
+    private func fetchHourlyActivityHistory(for identifier: HKQuantityTypeIdentifier, unit: HKUnit, completion: @escaping ([PeriodActivity<HealthData.ActivityEntry>]) -> Void) {
         guard let activityType = HKQuantityType.quantityType(forIdentifier: identifier) else {
             print("Invalid activity type identifier")
             return
@@ -137,8 +108,8 @@ class HealthViewModel: ObservableObject {
         healthStore.execute(query)
     }
     
-    private func processDailyActivities(statsCollection: HKStatisticsCollection, startDate: Date, endDate: Date, unit: HKUnit) -> [DailyActivity<HealthData.ActivityEntry>] {
-        var dailyActivities: [DailyActivity<HealthData.ActivityEntry>] = []
+    private func processDailyActivities(statsCollection: HKStatisticsCollection, startDate: Date, endDate: Date, unit: HKUnit) -> [PeriodActivity<HealthData.ActivityEntry>] {
+        var dailyActivities: [PeriodActivity<HealthData.ActivityEntry>] = []
         var currentDayActivities: [HealthData.ActivityEntry] = []
         var currentDay: Date?
         
@@ -149,7 +120,7 @@ class HealthViewModel: ObservableObject {
             
             if currentDay != day {
                 if !currentDayActivities.isEmpty {
-                    dailyActivities.append(DailyActivity(activities: currentDayActivities))
+                    dailyActivities.append(PeriodActivity(activities: currentDayActivities))
                 }
                 currentDay = day
                 currentDayActivities = []
@@ -167,13 +138,13 @@ class HealthViewModel: ObservableObject {
         }
         
         if !currentDayActivities.isEmpty {
-            dailyActivities.append(DailyActivity(activities: currentDayActivities))
+            dailyActivities.append(PeriodActivity(activities: currentDayActivities))
         }
         
         return dailyActivities
     }
     
-    private func fetchHourlySleepQuality(completion: @escaping ([DailyActivity<HealthData.SleepEntry>]) -> Void) {
+    private func fetchHourlySleepQuality(completion: @escaping ([PeriodActivity<HealthData.SleepEntry>]) -> Void) {
         guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else {
             print("Sleep analysis type is not available")
             return
@@ -200,8 +171,8 @@ class HealthViewModel: ObservableObject {
         healthStore.execute(query)
     }
     
-    private func processSleepEntries(samples: [HKCategorySample]) -> [DailyActivity<HealthData.SleepEntry>] {
-        var dailyActivities: [DailyActivity<HealthData.SleepEntry>] = []
+    private func processSleepEntries(samples: [HKCategorySample]) -> [PeriodActivity<HealthData.SleepEntry>] {
+        var dailyActivities: [PeriodActivity<HealthData.SleepEntry>] = []
         var currentDayEntries: [HealthData.SleepEntry] = []
         var currentDay: Date?
         
@@ -211,7 +182,7 @@ class HealthViewModel: ObservableObject {
             
             if currentDay != day {
                 if !currentDayEntries.isEmpty {
-                    dailyActivities.append(DailyActivity(activities: currentDayEntries))
+                    dailyActivities.append(PeriodActivity(activities: currentDayEntries))
                 }
                 currentDay = day
                 currentDayEntries = []
@@ -222,7 +193,7 @@ class HealthViewModel: ObservableObject {
         }
         
         if !currentDayEntries.isEmpty {
-            dailyActivities.append(DailyActivity(activities: currentDayEntries))
+            dailyActivities.append(PeriodActivity(activities: currentDayEntries))
         }
         
         return dailyActivities
@@ -251,7 +222,38 @@ class HealthViewModel: ObservableObject {
         
         return entries
     }
+
+    // MARK: - Fetch Weight
     
+    private func fetchWeightHistory() {
+        guard let weightType = HKQuantityType.quantityType(forIdentifier: .bodyMass) else {
+            print("Body mass type is not available")
+            return
+        }
+        
+        let query = createSampleQuery(for: weightType) { [weak self] samples in
+            let weightEntries = samples.compactMap { sample -> HealthData.WeightEntry? in
+                guard let quantitySample = sample as? HKQuantitySample else { return nil }
+                
+                return HealthData.WeightEntry(
+                    date: quantitySample.startDate,
+                    weight: Measurement(
+                        value: quantitySample.quantity.doubleValue(for: .gramUnit(with: .kilo)),
+                        unit: HKUnit.gramUnit(with: .kilo).unitString
+                    )
+                )
+            }
+            
+            let groupedByWeek = self?.groupEntriesByWeek(entries: weightEntries) ?? []
+            
+            DispatchQueue.main.async {
+                self?.healthData.weightHistory = groupedByWeek
+            }
+        }
+        
+        healthStore.execute(query)
+    }
+
     private func createSampleQuery(for sampleType: HKSampleType, resultHandler: @escaping ([HKSample]) -> Void) -> HKSampleQuery {
         let predicate = HKQuery.predicateForSamples(withStart: nil, end: Date(), options: .strictEndDate)
         
@@ -262,5 +264,17 @@ class HealthViewModel: ObservableObject {
             }
             resultHandler(samples)
         }
+    }
+
+    private func groupEntriesByWeek(entries: [HealthData.WeightEntry]) -> [PeriodActivity<HealthData.WeightEntry>] {
+        let calendar = Calendar.current
+        let groupedEntries = Dictionary(grouping: entries) { entry in
+            calendar.dateComponents([.weekOfYear, .year], from: entry.date)
+        }
+        
+        return groupedEntries.map { _, weekEntries in
+            let sortedEntries = weekEntries.sorted { $0.date < $1.date }
+            return PeriodActivity(activities: sortedEntries)
+        }.sorted { $0.activities.first!.date < $1.activities.first!.date }
     }
 }
