@@ -250,6 +250,7 @@
 		F03AA6D82C642629003C1BB3 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				F0D749B32CA7090600382452 /* BaseLineChartViewModel.swift */,
 				F0512F062C85109A00FA033F /* HealthViewModel.swift */,
 			);
 			path = ViewModels;
@@ -384,7 +385,6 @@
 		F0FF79CA2C7E426A00DA3A54 /* LineChartCard */ = {
 			isa = PBXGroup;
 			children = (
-				F0D749B32CA7090600382452 /* BaseLineChartViewModel.swift */,
 				F0CFA07E2C765A5800B7FD7D /* MSChartCardView.swift */,
 				F0FF79CB2C7E427000DA3A54 /* Components */,
 			);

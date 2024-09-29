@@ -113,3 +113,28 @@ class ActivityLineChartViewModel: BaseLineChartViewModel<HealthData.ActivityEntr
         return String(Int(totalValue))
     }
 }
+
+
+class SleepLineChartViewModel: BaseLineChartViewModel<HealthData.SleepEntry> {
+    override var formattedSelectedDate: String {
+        if let startDate = activityPeriods[selectedPeriodIndex].activities.first?.start {
+            return "\(dateFormatter.string(from: startDate))"
+        } else {
+            return "Aucune date"
+        }
+    }
+    
+    override var formattedSelectedValue: String {
+        let totalSeconds = activityPeriods[selectedPeriodIndex].activities.reduce(0) { $0 + $1.value }
+        let hours = Int(totalSeconds / 3600)
+        let minutes = Int((totalSeconds.truncatingRemainder(dividingBy: 3600)) / 60)
+        
+        if minutes == 0 {
+            return "\(hours)\(activityPeriods[selectedPeriodIndex].activities.first?.unit ?? "")"
+        } else {
+            return "\(hours)\(activityPeriods[selectedPeriodIndex].activities.first?.unit ?? "") \(minutes)"
+        }
+    }
+    
+    override var selectedActivityUnit: String { "" }
+}

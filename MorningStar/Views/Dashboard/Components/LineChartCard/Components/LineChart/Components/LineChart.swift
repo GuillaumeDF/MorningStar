@@ -16,20 +16,28 @@ struct LineChart: View {
     var body: some View {
         Path { path in
             let scaleFactor = size.height / maxValue
-            path.move(to: CGPoint(x: 0, y: size.height - CGFloat(data[0]) * scaleFactor))
             
-            for (index, value) in data.enumerated() {
-                let x = size.width * CGFloat(index) / CGFloat(data.count - 1)
-                let y = size.height - CGFloat(value) * scaleFactor
+            if data.count == 1 {
+                let y = size.height - CGFloat(data[0]) * scaleFactor
                 
-                if index > 0 {
-                    let prevX = size.width * CGFloat(index - 1) / CGFloat(data.count - 1)
-                    let prevY = size.height - CGFloat(data[index - 1]) * scaleFactor
-                    let controlX = (x + prevX) / 2
+                path.move(to: CGPoint(x: 0, y: y))
+                path.addLine(to: CGPoint(x: size.width, y: y))
+            } else {
+                path.move(to: CGPoint(x: 0, y: size.height - CGFloat(data[0]) * scaleFactor))
+                
+                for (index, value) in data.enumerated() {
+                    let x = size.width * CGFloat(index) / CGFloat(data.count - 1)
+                    let y = size.height - CGFloat(value) * scaleFactor
                     
-                    path.addCurve(to: CGPoint(x: x, y: y),
-                                  control1: CGPoint(x: controlX, y: prevY),
-                                  control2: CGPoint(x: controlX, y: y))
+                    if index > 0 {
+                        let prevX = size.width * CGFloat(index - 1) / CGFloat(data.count - 1)
+                        let prevY = size.height - CGFloat(data[index - 1]) * scaleFactor
+                        let controlX = (x + prevX) / 2
+                        
+                        path.addCurve(to: CGPoint(x: x, y: y),
+                                      control1: CGPoint(x: controlX, y: prevY),
+                                      control2: CGPoint(x: controlX, y: y))
+                    }
                 }
             }
             

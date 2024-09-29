@@ -151,7 +151,10 @@ class HealthViewModel: ObservableObject {
         }
         
         let endDate = Date()
-        let startDate = calendar.date(byAdding: .year, value: -1, to: endDate)!
+        guard let startDate = calendar.date(byAdding: .year, value: -1, to: endDate) else {
+            print("Failed to calculate start date")
+            return
+        }
         
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
         
@@ -161,10 +164,47 @@ class HealthViewModel: ObservableObject {
                 return
             }
             
-            let dailyActivities = self.processSleepEntries(samples: samples)
+            var sleepHistory: [PeriodActivity<HealthData.SleepEntry>] = []
+            var currentNightEntries: [HealthData.SleepEntry] = []
+            var lastSampleEndDate: Date?
+            
+            for sample in samples {
+                let quality = HKCategoryValueSleepAnalysis(rawValue: sample.value) ?? .asleepUnspecified
+                
+                // Check if this sample is part of a new sleep period
+                if let lastEnd = lastSampleEndDate, sample.startDate.timeIntervalSince(lastEnd) > 3600 { // More than 1 hour gap
+                    if !currentNightEntries.isEmpty {
+                        sleepHistory.append(PeriodActivity(activities: currentNightEntries))
+                        currentNightEntries = []
+                    }
+                }
+                
+                // Split the sample into hourly entries
+                var currentHour = sample.startDate
+                while currentHour < sample.endDate {
+                    guard let endOfHour = calendar.date(byAdding: .hour, value: 1, to: currentHour) else {
+                        print("Failed to calculate end of hour")
+                        break
+                    }
+                    
+                    let entryEnd = min(endOfHour, sample.endDate)
+                    let hourlyDuration = entryEnd.timeIntervalSince(currentHour)
+                    
+                    let hourlyEntry = HealthData.SleepEntry(start: currentHour, end: entryEnd, duration: hourlyDuration, quality: quality)
+                    currentNightEntries.append(hourlyEntry)
+                    
+                    currentHour = endOfHour
+                }
+                
+                lastSampleEndDate = sample.endDate
+            }
+            
+            if !currentNightEntries.isEmpty {
+                sleepHistory.append(PeriodActivity(activities: currentNightEntries))
+            }
             
             DispatchQueue.main.async {
-                completion(dailyActivities)
+                completion(sleepHistory)
             }
         }
         
@@ -223,7 +263,7 @@ class HealthViewModel: ObservableObject {
         return entries
     }
 
-    // MARK: - Fetch Weight
+    // MARK: - Weight Fetching
     
     private func fetchWeightHistory() {
         guard let weightType = HKQuantityType.quantityType(forIdentifier: .bodyMass) else {

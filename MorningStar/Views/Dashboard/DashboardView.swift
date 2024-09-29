@@ -11,7 +11,7 @@ struct DashboardView: View {
     @Binding var healthData: HealthData
     
     var body: some View {
-        if !healthData.stepCountHistory.isEmpty && !healthData.calorieBurnHistory.isEmpty && !healthData.weightHistory.isEmpty {
+        if !healthData.stepCountHistory.isEmpty && !healthData.calorieBurnHistory.isEmpty && !healthData.weightHistory.isEmpty && !healthData.sleepHistory.isEmpty {
             
             VStack(spacing: AppConstants.Padding.extraLarge) {
                 
@@ -66,7 +66,7 @@ struct DashboardView: View {
                     MSLineChartCardView(
                         imageName: "sleepIcon",
                         title: "Sleep",
-                        viewModel: ActivityLineChartViewModel(activityPeriods: healthData.stepCountHistory),
+                        viewModel: SleepLineChartViewModel(activityPeriods: healthData.sleepHistory),
                         backgroundColor: Color.blue,
                         arrowDirection: .down
                     )
