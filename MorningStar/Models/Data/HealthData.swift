@@ -9,73 +9,88 @@ import Foundation
 import HealthKit
 
 protocol HealthEntry: Identifiable {
-    var start: Date { get }
-    var end: Date? { get }
-    var value: Double { get }
+    associatedtype T
+    
+    var startDate: Date { get }
+    var endDate: Date { get }
+    var value: T { get }
     var unit: String { get }
 }
 
-struct Measurement<T: Numeric & Comparable> {
-    let value: T
-    let unit: String
+enum IntensityLevel {
+    case undetermined
+    case low
+    case moderate
+    case high
+    case veryHigh
 }
 
-struct PeriodActivity<T: HealthEntry>: Identifiable {
+struct PeriodEntry<T: HealthEntry>: Identifiable {
     let id = UUID()
-    var activities: [T]
+    var entries: [T]
 }
 
 struct HealthData {
     struct WeightEntry: HealthEntry {
-        let id = UUID()
-        let date: Date
-        let weight: Measurement<Double>
+        typealias T = Double
         
-        var start: Date { date }
-        var end: Date? { nil }
-        var value: Double { weight.value }
-        var unit: String { weight.unit }
+        let id = UUID()
+        let startDate: Date
+        let endDate: Date
+        let value: T
+        let unit: String
     }
     
     struct ActivityEntry: HealthEntry {
-        let id = UUID()
-        let start: Date
-        let end: Date?
-        let measurement: Measurement<Double>
+        typealias T = Double
         
-        var value: Double { measurement.value }
-        var unit: String { measurement.unit }
+        let id = UUID()
+        let startDate: Date
+        let endDate: Date
+        let value: T
+        let unit: String
     }
     
     struct SleepEntry: HealthEntry {
-        let id = UUID()
-        let start: Date
-        let end: Date?
-        let duration: TimeInterval
-        let quality: HKCategoryValueSleepAnalysis
+        typealias T = TimeInterval
         
-        var value: Double { duration }
-        var unit: String { HKUnit.hour().unitString }
+        let id = UUID()
+        let startDate: Date
+        let endDate: Date
+        let unit: String
+        
+        var value: T {
+            return endDate.timeIntervalSince(startDate)
+        }
     }
     
     struct WorkoutEntry: HealthEntry {
-        let id = UUID()
-        let start: Date
-        let end: Date?
-        let duration: TimeInterval
-        let energyBurned: Measurement<Double>?
-        let distance: Measurement<Double>?
-        let workoutActivityType: HKWorkoutActivityType
+        typealias T = IntensityLevel
         
-        var value: Double { energyBurned?.value ?? 0 }
-        var unit: String { energyBurned?.unit ?? "none" }
+        let id = UUID()
+        let startDate: Date
+        var endDate: Date
+        let value: T
+        let unit: String = ""
+        let averageHeartRate: Double
+        let caloriesBurned: Double
     }
     
-    var weightHistory: [PeriodActivity<WeightEntry>]
-    var stepCountHistory: [PeriodActivity<ActivityEntry>]
-    var calorieBurnHistory: [PeriodActivity<ActivityEntry>]
-    var sleepHistory: [PeriodActivity<SleepEntry>]
-    var workoutHistory: [PeriodActivity<WorkoutEntry>]
+    struct HeartRateEntry: HealthEntry {
+        typealias T = Double
+        
+        let id = UUID()
+        let startDate: Date
+        let endDate: Date
+        let value: T
+        let unit: String = ""
+    }
+    
+    var weightHistory: [PeriodEntry<WeightEntry>]
+    var stepCountHistory: [PeriodEntry<ActivityEntry>]
+    var calorieBurnHistory: [PeriodEntry<ActivityEntry>]
+    var sleepHistory: [PeriodEntry<SleepEntry>]
+    var workoutHistory: [PeriodEntry<WorkoutEntry>]
     
     init() {
         self.weightHistory = []

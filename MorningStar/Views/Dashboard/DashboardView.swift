@@ -11,7 +11,7 @@ struct DashboardView: View {
     @Binding var healthData: HealthData
     
     var body: some View {
-        if !healthData.stepCountHistory.isEmpty && !healthData.calorieBurnHistory.isEmpty && !healthData.weightHistory.isEmpty && !healthData.sleepHistory.isEmpty {
+        if !healthData.stepCountHistory.isEmpty && !healthData.calorieBurnHistory.isEmpty && !healthData.weightHistory.isEmpty && !healthData.sleepHistory.isEmpty && !healthData.workoutHistory.isEmpty{
             
             VStack(spacing: AppConstants.Padding.extraLarge) {
                 

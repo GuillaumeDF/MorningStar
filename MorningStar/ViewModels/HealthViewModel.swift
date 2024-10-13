@@ -5,7 +5,6 @@
 //  Created by Guillaume Djaider Fornari on 01/09/2024.
 //
 
-import Foundation
 import HealthKit
 
 enum AuthorizationStatus {
@@ -15,6 +14,7 @@ enum AuthorizationStatus {
 class HealthViewModel: ObservableObject {
     @Published var healthData = HealthData()
     @Published var authorizationStatus: AuthorizationStatus = .notDetermined
+    @Published var errorMessage: String?
     
     private let healthStore = HKHealthStore()
     private let calendar = Calendar.current
@@ -28,8 +28,9 @@ class HealthViewModel: ObservableObject {
             .quantityType(forIdentifier: .stepCount)!,
             .quantityType(forIdentifier: .bodyMass)!,
             .quantityType(forIdentifier: .activeEnergyBurned)!,
+            .quantityType(forIdentifier: .heartRate)!,
             .categoryType(forIdentifier: .sleepAnalysis)!,
-            .workoutType()
+            .workoutType(),
         ]
         
         healthStore.requestAuthorization(toShare: nil, read: typesToRead) { [weak self] success, error in
@@ -38,7 +39,7 @@ class HealthViewModel: ObservableObject {
                 if success {
                     self?.fetchAllHealthData()
                 } else {
-                    print("Authorization failed: \(error?.localizedDescription ?? "Unknown error")")
+                    self?.errorMessage = "Authorization failed: \(error?.localizedDescription ?? "Unknown error")"
                 }
             }
         }
@@ -53,268 +54,777 @@ class HealthViewModel: ObservableObject {
     }
     
     private func fetchStepCountHistory() {
-        fetchHourlyActivityHistory(for: .stepCount, unit: .count()) { [weak self] entries in
-            self?.healthData.stepCountHistory = entries
+        let startDate = calendar.date(byAdding: .year, value: -1, to: Date())!
+        
+        StepDataManager(healthStore: healthStore, retrieveDataFrom: startDate).fetchData {  [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let entries):
+                    self?.healthData.stepCountHistory = entries
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
         }
     }
     
     private func fetchCaloriesBurnedHistory() {
-        fetchHourlyActivityHistory(for: .activeEnergyBurned, unit: .kilocalorie()) { [weak self] entries in
-            self?.healthData.calorieBurnHistory = entries
+        let startDate = calendar.date(byAdding: .year, value: -1, to: Date())!
+        
+        CalorieBurnedDataManager(healthStore: healthStore, retrieveDataFrom: startDate).fetchData {  [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let entries):
+                    self?.healthData.calorieBurnHistory = entries
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    private func fetchWeightHistory() {
+        WeightDataManager(healthStore: healthStore).fetchData {  [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let entries):
+                    self?.healthData.weightHistory = entries
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
         }
     }
     
     private func fetchSleepQualityHistory() {
-        fetchHourlySleepQuality { [weak self] entries in
-            self?.healthData.sleepHistory = entries
+        SleepDataManager(healthStore: healthStore).fetchData {  [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let entries):
+                    self?.healthData.sleepHistory = entries
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
         }
     }
     
     private func fetchWorkoutHistory() {
-        // Implement workout history fetching
-    }
-    
-    private func fetchHourlyActivityHistory(for identifier: HKQuantityTypeIdentifier, unit: HKUnit, completion: @escaping ([PeriodActivity<HealthData.ActivityEntry>]) -> Void) {
-        guard let activityType = HKQuantityType.quantityType(forIdentifier: identifier) else {
-            print("Invalid activity type identifier")
-            return
-        }
+        let startDate = calendar.date(byAdding: .day, value: -7, to: Date())!
         
-        let endDate = Date()
-        let startDate = calendar.date(byAdding: .year, value: -1, to: endDate)!
-        let anchorDate = calendar.startOfDay(for: startDate)
-        
-        let query = HKStatisticsCollectionQuery(
-            quantityType: activityType,
-            quantitySamplePredicate: nil,
-            options: .cumulativeSum,
-            anchorDate: anchorDate,
-            intervalComponents: DateComponents(hour: 1)
-        )
-        
-        query.initialResultsHandler = { [weak self] _, results, error in
-            guard let self = self, let statsCollection = results, error == nil else {
-                print("Error fetching hourly activity data: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-            
-            let dailyActivities = self.processDailyActivities(statsCollection: statsCollection, startDate: startDate, endDate: endDate, unit: unit)
-            
+        WorkoutDataManager(healthStore: healthStore, retrieveDataFrom: startDate).fetchData {  [weak self] result in
             DispatchQueue.main.async {
-                completion(dailyActivities)
+                switch result {
+                case .success(let entries):
+                    self?.healthData.workoutHistory = entries
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
             }
         }
-        
-        healthStore.execute(query)
     }
-    
-    private func processDailyActivities(statsCollection: HKStatisticsCollection, startDate: Date, endDate: Date, unit: HKUnit) -> [PeriodActivity<HealthData.ActivityEntry>] {
-        var dailyActivities: [PeriodActivity<HealthData.ActivityEntry>] = []
+}
+
+// --------------------------------------------------------------------
+
+struct HealthDataProcessor {
+    static func groupActivitiesByDay(from statsCollection: HKStatisticsCollection, startDate: Date, unit: HKUnit) -> [PeriodEntry<HealthData.ActivityEntry>] {
+        var dailyActivities: [PeriodEntry<HealthData.ActivityEntry>] = []
         var currentDayActivities: [HealthData.ActivityEntry] = []
         var currentDay: Date?
         
-        statsCollection.enumerateStatistics(from: startDate, to: endDate) { [weak self] statistics, _ in
-            guard let self = self else { return }
-            
-            let day = self.calendar.startOfDay(for: statistics.startDate)
+        statsCollection.enumerateStatistics(from: startDate, to: Date()) { statistics, _ in
+            let day = Calendar.current.startOfDay(for: statistics.startDate)
             
             if currentDay != day {
                 if !currentDayActivities.isEmpty {
-                    dailyActivities.append(PeriodActivity(activities: currentDayActivities))
+                    dailyActivities.append(PeriodEntry(entries: currentDayActivities))
                 }
                 currentDay = day
                 currentDayActivities = []
             }
             
             let entry = HealthData.ActivityEntry(
-                start: statistics.startDate,
-                end: statistics.endDate,
-                measurement: Measurement(
-                    value: statistics.sumQuantity()?.doubleValue(for: unit) ?? 0.0,
-                    unit: unit.unitString
-                )
+                startDate: statistics.startDate,
+                endDate: statistics.endDate,
+                value: statistics.sumQuantity()?.doubleValue(for: unit) ?? -1,
+                unit: unit.unitString
             )
             currentDayActivities.append(entry)
         }
         
         if !currentDayActivities.isEmpty {
-            dailyActivities.append(PeriodActivity(activities: currentDayActivities))
+            dailyActivities.append(PeriodEntry(entries: currentDayActivities))
         }
         
         return dailyActivities
     }
     
-    private func fetchHourlySleepQuality(completion: @escaping ([PeriodActivity<HealthData.SleepEntry>]) -> Void) {
-        guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else {
-            print("Sleep analysis type is not available")
-            return
-        }
-        
-        let endDate = Date()
-        guard let startDate = calendar.date(byAdding: .year, value: -1, to: endDate) else {
-            print("Failed to calculate start date")
-            return
-        }
-        
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
-        
-        let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]) { [weak self] _, samples, error in
-            guard let self = self, let samples = samples as? [HKCategorySample], error == nil else {
-                print("Error fetching sleep data: \(error?.localizedDescription ?? "Unknown error")")
-                return
-            }
-            
-            var sleepHistory: [PeriodActivity<HealthData.SleepEntry>] = []
-            var currentNightEntries: [HealthData.SleepEntry] = []
-            var lastSampleEndDate: Date?
-            
-            for sample in samples {
-                let quality = HKCategoryValueSleepAnalysis(rawValue: sample.value) ?? .asleepUnspecified
-                
-                // Check if this sample is part of a new sleep period
-                if let lastEnd = lastSampleEndDate, sample.startDate.timeIntervalSince(lastEnd) > 3600 { // More than 1 hour gap
-                    if !currentNightEntries.isEmpty {
-                        sleepHistory.append(PeriodActivity(activities: currentNightEntries))
-                        currentNightEntries = []
-                    }
-                }
-                
-                // Split the sample into hourly entries
-                var currentHour = sample.startDate
-                while currentHour < sample.endDate {
-                    guard let endOfHour = calendar.date(byAdding: .hour, value: 1, to: currentHour) else {
-                        print("Failed to calculate end of hour")
-                        break
-                    }
-                    
-                    let entryEnd = min(endOfHour, sample.endDate)
-                    let hourlyDuration = entryEnd.timeIntervalSince(currentHour)
-                    
-                    let hourlyEntry = HealthData.SleepEntry(start: currentHour, end: entryEnd, duration: hourlyDuration, quality: quality)
-                    currentNightEntries.append(hourlyEntry)
-                    
-                    currentHour = endOfHour
-                }
-                
-                lastSampleEndDate = sample.endDate
-            }
-            
-            if !currentNightEntries.isEmpty {
-                sleepHistory.append(PeriodActivity(activities: currentNightEntries))
-            }
-            
-            DispatchQueue.main.async {
-                completion(sleepHistory)
-            }
-        }
-        
-        healthStore.execute(query)
-    }
-    
-    private func processSleepEntries(samples: [HKCategorySample]) -> [PeriodActivity<HealthData.SleepEntry>] {
-        var dailyActivities: [PeriodActivity<HealthData.SleepEntry>] = []
-        var currentDayEntries: [HealthData.SleepEntry] = []
-        var currentDay: Date?
+    static func groupSleepByNight(from samples: [HKSample]) -> [PeriodEntry<HealthData.SleepEntry>] {
+        var nightlyActivities: [PeriodEntry<HealthData.SleepEntry>] = []
+        var currentNightActivities: [HealthData.SleepEntry] = []
+        var lastSampleEndDate: Date?
         
         for sample in samples {
-            let sampleStartDate = sample.startDate
-            let day = calendar.startOfDay(for: sampleStartDate)
+            guard let categorySample = sample as? HKCategorySample else { continue }
             
-            if currentDay != day {
-                if !currentDayEntries.isEmpty {
-                    dailyActivities.append(PeriodActivity(activities: currentDayEntries))
+            if let lastEnd = lastSampleEndDate, categorySample.startDate.timeIntervalSince(lastEnd) > 4 * 60 * 60 {
+                if !currentNightActivities.isEmpty {
+                    nightlyActivities.append(PeriodEntry(entries: currentNightActivities))
+                    currentNightActivities = []
                 }
-                currentDay = day
-                currentDayEntries = []
             }
-            
-            let hourlyEntries = processHourlySleepEntries(for: sample)
-            currentDayEntries.append(contentsOf: hourlyEntries)
-        }
-        
-        if !currentDayEntries.isEmpty {
-            dailyActivities.append(PeriodActivity(activities: currentDayEntries))
-        }
-        
-        return dailyActivities
-    }
-    
-    private func processHourlySleepEntries(for sample: HKCategorySample) -> [HealthData.SleepEntry] {
-        var entries: [HealthData.SleepEntry] = []
-        var currentHourStart = sample.startDate
-        
-        while currentHourStart < sample.endDate {
-            let nextHourStart = calendar.date(byAdding: .hour, value: 1, to: currentHourStart)!
-            let intervalEnd = min(nextHourStart, sample.endDate)
-            
-            let sleepQuality = HKCategoryValueSleepAnalysis(rawValue: sample.value) ?? .asleepUnspecified
             
             let entry = HealthData.SleepEntry(
-                start: currentHourStart,
-                end: intervalEnd,
-                duration: intervalEnd.timeIntervalSince(currentHourStart),
-                quality: sleepQuality
+                startDate: categorySample.startDate,
+                endDate: categorySample.endDate,
+                unit: HKUnit.hour().unitString
             )
-            entries.append(entry)
             
-            currentHourStart = nextHourStart
+            currentNightActivities.append(entry)
+            lastSampleEndDate = categorySample.endDate
         }
         
-        return entries
+        if !currentNightActivities.isEmpty {
+            nightlyActivities.append(PeriodEntry(entries: currentNightActivities))
+        }
+        
+        return nightlyActivities
     }
-
-    // MARK: - Weight Fetching
     
-    private func fetchWeightHistory() {
-        guard let weightType = HKQuantityType.quantityType(forIdentifier: .bodyMass) else {
-            print("Body mass type is not available")
-            return
-        }
+    static func groupWeightsByWeek(from samples: [HKSample], unit: HKUnit) -> [PeriodEntry<HealthData.WeightEntry>] {
+        let calendar = Calendar.current
         
-        let query = createSampleQuery(for: weightType) { [weak self] samples in
-            let weightEntries = samples.compactMap { sample -> HealthData.WeightEntry? in
-                guard let quantitySample = sample as? HKQuantitySample else { return nil }
+        var weeklyActivities: [PeriodEntry<HealthData.WeightEntry>] = []
+        var currentWeekActivities: [HealthData.WeightEntry] = []
+        var currentWeek: Date?
+        
+        for sample in samples {
+            guard let quantitySample = sample as? HKQuantitySample else { continue }
+            guard let week = calendar.dateInterval(of: .weekOfYear, for: quantitySample.startDate)?.start else { continue }
+            
+            if currentWeek != week {
+                if !currentWeekActivities.isEmpty {
+                    weeklyActivities.append(PeriodEntry(entries: currentWeekActivities))
+                }
+                currentWeek = week
+                currentWeekActivities = []
+            }
+            
+            let entry = HealthData.WeightEntry(
+                startDate: sample.startDate,
+                endDate: sample.endDate,
+                value: quantitySample.quantity.doubleValue(for: unit),
+                unit: unit.unitString
                 
-                return HealthData.WeightEntry(
-                    date: quantitySample.startDate,
-                    weight: Measurement(
-                        value: quantitySample.quantity.doubleValue(for: .gramUnit(with: .kilo)),
-                        unit: HKUnit.gramUnit(with: .kilo).unitString
+            )
+            currentWeekActivities.append(entry)
+        }
+        
+        if !currentWeekActivities.isEmpty {
+            weeklyActivities.append(PeriodEntry(entries: currentWeekActivities))
+        }
+        
+        return weeklyActivities
+    }
+}
+
+class WorkoutIntensityAnalyzer {
+    
+    private enum Constants {
+        static let minPhaseDurationFactor: Double = 0.05
+        static let minPhaseDurationSeconds: TimeInterval = 30
+        static let variabilityThresholdFactor: Double = 0.7
+        static let lowIntensityThreshold: Double = 0.8
+        static let moderateIntensityThreshold: Double = 1.1
+        static let highIntensityThreshold: Double = 1.4
+    }
+    
+    func generateIntensityPhases(
+        workout: HKSample,
+        heartRates: [HealthData.HeartRateEntry],
+        caloriesBurned: [HealthData.ActivityEntry]
+    ) -> [HealthData.WorkoutEntry] {
+        guard !heartRates.isEmpty else {
+            return [createUndeterminedPhase(startDate: workout.startDate, endDate: workout.endDate)]
+        }
+        
+        let duration = workout.endDate.timeIntervalSince(workout.startDate)
+        let globalAverages = calculateGlobalAverages(heartRates: heartRates, caloriesBurned: caloriesBurned, duration: duration)
+        let thresholds = calculateThresholds(heartRates: heartRates, caloriesBurned: caloriesBurned, globalAverages: globalAverages)
+        let minPhaseDuration = max(duration * Constants.minPhaseDurationFactor, Constants.minPhaseDurationSeconds)
+        
+        return generatePhases(
+            workout: workout,
+            heartRates: heartRates,
+            caloriesBurned: caloriesBurned,
+            globalAverages: globalAverages,
+            thresholds: thresholds,
+            minPhaseDuration: minPhaseDuration
+        )
+    }
+    
+    private func createUndeterminedPhase(startDate: Date, endDate: Date) -> HealthData.WorkoutEntry {
+        return HealthData.WorkoutEntry(startDate: startDate, endDate: endDate, value: .undetermined, averageHeartRate: 0, caloriesBurned: 0)
+    }
+    
+    private func calculateGlobalAverages(heartRates: [HealthData.HeartRateEntry], caloriesBurned: [HealthData.ActivityEntry], duration: TimeInterval) -> (heartRate: Double, calorieRate: Double) {
+        let avgHeartRate = calculateAverageHeartRate(heartRates)
+        let avgCalorieRate = calculateCaloriesBurnedRate(caloriesBurned, duration: duration)
+        
+        return (heartRate: avgHeartRate, calorieRate: avgCalorieRate)
+    }
+    
+    private func calculateHeartRateVariability(_ entries: [HealthData.HeartRateEntry], globalAverage: Double) -> Double {
+        let variance = entries.reduce(0.0) { sum, entrie in
+            let heartRate = entrie.value
+            let difference = heartRate - globalAverage
+            
+            return sum + (difference * difference)
+        }
+        return sqrt(variance / Double(entries.count))
+    }
+    
+    private func calculateCaloriesVariability(_ entries: [HealthData.ActivityEntry], globalAverage: Double) -> Double {
+        let variance = entries.reduce(0.0) { sum, entry in
+            let calories = entry.value
+            let difference = calories - globalAverage
+            
+            return sum + (difference * difference)
+        }
+        return sqrt(variance / Double(entries.count))
+    }
+    
+    // Utilisation de ces fonctions dans calculateThresholds
+    private func calculateThresholds(heartRates: [HealthData.HeartRateEntry], caloriesBurned: [HealthData.ActivityEntry], globalAverages: (heartRate: Double, calorieRate: Double)) -> (heartRate: Double, calorieRate: Double) {
+        let heartRateVariability = calculateHeartRateVariability(heartRates, globalAverage: globalAverages.heartRate)
+        let calorieRateVariability = calculateCaloriesVariability(caloriesBurned, globalAverage: globalAverages.calorieRate)
+        
+        return (
+            heartRate: heartRateVariability * Constants.variabilityThresholdFactor,
+            calorieRate: calorieRateVariability * Constants.variabilityThresholdFactor
+        )
+    }
+    
+    private func generatePhases(
+        workout: HKSample,
+        heartRates: [HealthData.HeartRateEntry],
+        caloriesBurned: [HealthData.ActivityEntry],
+        globalAverages: (heartRate: Double, calorieRate: Double),
+        thresholds: (heartRate: Double, calorieRate: Double),
+        minPhaseDuration: TimeInterval
+    ) -> [HealthData.WorkoutEntry] {
+        var phases: [HealthData.WorkoutEntry] = []
+        var currentPhaseStart = workout.startDate
+        var previousStats: (heartRate: Double?, calorieRate: Double?) = (
+            heartRates.first?.value,
+            caloriesBurned.first?.value
+        )
+        
+        for (index, currentSample) in heartRates.enumerated() {
+            let currentDate = currentSample.startDate
+            let phaseDuration = currentDate.timeIntervalSince(currentPhaseStart)
+            let isLastSample = index == heartRates.count - 1
+            
+            let phaseStats = calculatePhaseStats(
+                heartRates: heartRates,
+                caloriesBurned: caloriesBurned,
+                startDate: currentPhaseStart,
+                endDate: currentDate
+            )
+            
+            let shouldCreatePhase = shouldCreateNewPhase(
+                phaseDuration: phaseDuration,
+                minPhaseDuration: minPhaseDuration,
+                currentStats: phaseStats,
+                previousStats: previousStats,
+                thresholds: thresholds
+            )
+            
+            if shouldCreatePhase || isLastSample {
+                if isLastSample && shouldCreatePhase == false {
+                    if let lastIndex = phases.indices.last {
+                        phases[lastIndex].endDate = workout.endDate
+                    }
+                } else {
+                    let phase = createWorkoutPhase(
+                        startDate: currentPhaseStart,
+                        endDate: currentDate,
+                        stats: phaseStats,
+                        globalAverages: globalAverages
                     )
-                )
-            }
-            
-            let groupedByWeek = self?.groupEntriesByWeek(entries: weightEntries) ?? []
-            
-            DispatchQueue.main.async {
-                self?.healthData.weightHistory = groupedByWeek
+                    phases.append(phase)
+                    
+                    currentPhaseStart = currentDate
+                    previousStats = phaseStats
+                }
             }
         }
         
+        return phases
+    }
+    
+    private func calculatePhaseStats(
+        heartRates: [HealthData.HeartRateEntry],
+        caloriesBurned: [HealthData.ActivityEntry],
+        startDate: Date,
+        endDate: Date
+    ) -> (heartRate: Double, calorieRate: Double) {
+        let phaseHeartRates = heartRates.filter { $0.startDate >= startDate && $0.endDate <= endDate }
+        let phaseCalories = caloriesBurned.filter { $0.startDate >= startDate && $0.endDate <= endDate }
+        let phaseDuration = endDate.timeIntervalSince(startDate)
+        
+        let avgHeartRate = calculateAverageHeartRate(phaseHeartRates)
+        let calorieRate = calculateCaloriesBurnedRate(phaseCalories, duration: phaseDuration)
+        
+        return (heartRate: avgHeartRate, calorieRate: calorieRate)
+    }
+    
+    private func shouldCreateNewPhase(
+        phaseDuration: TimeInterval,
+        minPhaseDuration: TimeInterval,
+        currentStats: (heartRate: Double, calorieRate: Double),
+        previousStats: (heartRate: Double?, calorieRate: Double?),
+        thresholds: (heartRate: Double, calorieRate: Double)
+    ) -> Bool {
+        guard phaseDuration >= minPhaseDuration else { return false }
+        
+        let heartRateChanged = hasIntensityChanged(
+            previousValue: previousStats.heartRate,
+            currentValue: currentStats.heartRate,
+            threshold: thresholds.heartRate
+        )
+        
+        let calorieRateChanged = hasIntensityChanged(
+            previousValue: previousStats.calorieRate,
+            currentValue: currentStats.calorieRate,
+            threshold: thresholds.calorieRate
+        )
+        
+        return heartRateChanged || calorieRateChanged
+    }
+    
+    private func createWorkoutPhase(
+        startDate: Date,
+        endDate: Date,
+        stats: (heartRate: Double, calorieRate: Double),
+        globalAverages: (heartRate: Double, calorieRate: Double)
+    ) -> HealthData.WorkoutEntry {
+        let intensityLevel = determineIntensityLevel(
+            heartRate: stats.heartRate,
+            caloriesBurnedRate: stats.calorieRate,
+            globalHeartRate: globalAverages.heartRate,
+            globalCaloriesBurnedRate: globalAverages.calorieRate
+        )
+        
+        return HealthData.WorkoutEntry(
+            startDate: startDate,
+            endDate: endDate,
+            value: intensityLevel,
+            averageHeartRate: stats.heartRate,
+            caloriesBurned: stats.calorieRate
+        )
+    }
+    
+    private func calculateAverageHeartRate(_ entries: [HealthData.HeartRateEntry]) -> Double {
+        guard !entries.isEmpty else { return 0 }
+        let totalHr = entries.reduce(0.0) { $0 + $1.value }
+        
+        return totalHr / Double(entries.count)
+    }
+    
+    private func calculateCaloriesBurnedRate(_ entries: [HealthData.ActivityEntry], duration: TimeInterval) -> Double {
+        guard duration > 0 else { return 0 }
+        let totalCalories = entries.reduce(0.0) { $0 + $1.value }
+        
+        return totalCalories / duration * 60
+    }
+    
+    private func hasIntensityChanged(previousValue: Double?, currentValue: Double, threshold: Double) -> Bool {
+        guard let previousValue = previousValue else { return false }
+        
+        return abs(previousValue - currentValue) > threshold
+    }
+    
+    private func determineIntensityLevel(
+        heartRate: Double,
+        caloriesBurnedRate: Double,
+        globalHeartRate: Double,
+        globalCaloriesBurnedRate: Double
+    ) -> IntensityLevel {
+        let heartRateRatio = heartRate / globalHeartRate
+        let calorieRateRatio = caloriesBurnedRate / globalCaloriesBurnedRate
+        let combinedRatio = (heartRateRatio + calorieRateRatio) / 2
+        
+        switch combinedRatio {
+        case 0..<Constants.lowIntensityThreshold:
+            return .low
+        case Constants.lowIntensityThreshold..<Constants.moderateIntensityThreshold:
+            return .moderate
+        case Constants.moderateIntensityThreshold..<Constants.highIntensityThreshold:
+            return .high
+        case Constants.highIntensityThreshold...:
+            return .veryHigh
+        default:
+            return .undetermined
+        }
+    }
+}
+
+enum HealthKitError: Error {
+    case dataProcessingFailed
+    case queryFailed(Error)
+    
+    var localizedDescription: String {
+        switch self {
+        case .dataProcessingFailed:
+            return "Failed to process the HealthKit data."
+        case .queryFailed(let error):
+            return error.localizedDescription
+        }
+    }
+}
+
+protocol QueryStrategy {
+    associatedtype QueryType: HKQuery
+    associatedtype ResultType
+    
+    func createQuery(for healthStore: HKHealthStore, completion: @escaping (Result<ResultType, Error>) -> Void) -> QueryType
+}
+
+protocol HealthDataFetchable {
+    associatedtype Strategy: QueryStrategy
+    
+    var queryStrategy: Strategy { get }
+    var healthStore: HKHealthStore { get }
+    
+    func fetchData(completion: @escaping (Result<Strategy.ResultType, Error>) -> Void)
+}
+
+extension HealthDataFetchable {
+    func fetchData(completion: @escaping (Result<Strategy.ResultType, Error>) -> Void) {
+        let query = queryStrategy.createQuery(for: healthStore, completion: completion)
         healthStore.execute(query)
     }
+}
 
-    private func createSampleQuery(for sampleType: HKSampleType, resultHandler: @escaping ([HKSample]) -> Void) -> HKSampleQuery {
-        let predicate = HKQuery.predicateForSamples(withStart: nil, end: Date(), options: .strictEndDate)
-        
-        return HKSampleQuery(sampleType: sampleType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]) { _, samples, error in
-            guard let samples = samples, error == nil else {
-                print("Error fetching samples: \(error?.localizedDescription ?? "Unknown error")")
-                return
+struct HealthSampleQueryStrategy<T>: QueryStrategy {
+    typealias QueryType = HKSampleQuery
+    typealias ResultType = T
+    
+    let sampleType: HKSampleType
+    let predicate: NSPredicate?
+    let limit: Int
+    let sortDescriptors: [NSSortDescriptor]?
+    let resultsHandler: ([HKSample]) -> T?
+    
+    func createQuery(for healthStore: HKHealthStore, completion: @escaping (Result<T, Error>) -> Void) -> HKSampleQuery {
+        return HKSampleQuery(
+            sampleType: sampleType,
+            predicate: predicate,
+            limit: limit,
+            sortDescriptors: sortDescriptors
+        ) { _, samples, error in
+            if let error = error {
+                completion(.failure(HealthKitError.queryFailed(error)))
+            } else if let samples = samples, let processedResults = self.resultsHandler(samples) {
+                completion(.success(processedResults))
+            } else {
+                completion(.failure(HealthKitError.dataProcessingFailed))
             }
-            resultHandler(samples)
         }
     }
+}
 
-    private func groupEntriesByWeek(entries: [HealthData.WeightEntry]) -> [PeriodActivity<HealthData.WeightEntry>] {
-        let calendar = Calendar.current
-        let groupedEntries = Dictionary(grouping: entries) { entry in
-            calendar.dateComponents([.weekOfYear, .year], from: entry.date)
+struct HealthStatisticsCollectionQueryStrategy<T>: QueryStrategy {
+    typealias QueryType = HKStatisticsCollectionQuery
+    typealias ResultType = T
+    
+    let quantityType: HKQuantityType
+    let anchorDate: Date
+    let intervalComponents: DateComponents
+    let predicate: NSPredicate?
+    let options: HKStatisticsOptions
+    let resultsHandler: (HKStatisticsCollection) -> T?
+    
+    func createQuery(for healthStore: HKHealthStore, completion: @escaping (Result<T, Error>) -> Void) -> HKStatisticsCollectionQuery {
+        let query = HKStatisticsCollectionQuery(
+            quantityType: quantityType,
+            quantitySamplePredicate: predicate,
+            options: options,
+            anchorDate: anchorDate,
+            intervalComponents: intervalComponents
+        )
+        
+        query.initialResultsHandler = { _, results, error in
+            if let error = error {
+                completion(.failure(HealthKitError.queryFailed(error)))
+            } else if let statisticsCollection = results, let processedResults = self.resultsHandler(statisticsCollection) {
+                completion(.success(processedResults))
+            } else {
+                completion(.failure(HealthKitError.dataProcessingFailed))
+            }
         }
         
-        return groupedEntries.map { _, weekEntries in
-            let sortedEntries = weekEntries.sorted { $0.date < $1.date }
-            return PeriodActivity(activities: sortedEntries)
-        }.sorted { $0.activities.first!.date < $1.activities.first!.date }
+        return query
+    }
+}
+
+struct HealthStatisticsQueryStrategy<T>: QueryStrategy {
+    typealias QueryType = HKStatisticsQuery
+    typealias ResultType = T
+    
+    let quantityType: HKQuantityType
+    let predicate: NSPredicate?
+    let options: HKStatisticsOptions
+    let resultsHandler: (HKStatistics) -> T?
+    
+    func createQuery(for healthStore: HKHealthStore, completion: @escaping (Result<T, Error>) -> Void) -> HKStatisticsQuery {
+        let query = HKStatisticsQuery(
+            quantityType: quantityType,
+            quantitySamplePredicate: predicate,
+            options: options
+        ) { _, result, error in
+            if let error = error {
+                completion(.failure(HealthKitError.queryFailed(error)))
+            } else if let statistics = result, let processedResults = self.resultsHandler(statistics) {
+                completion(.success(processedResults))
+            } else {
+                completion(.failure(HealthKitError.dataProcessingFailed))
+            }
+        }
+        
+        return query
+    }
+}
+
+struct CalorieBurnedQueryStrategy: QueryStrategy {
+    typealias QueryType = HKQuery
+    typealias ResultType = [PeriodEntry<HealthData.ActivityEntry>]
+    
+    private let collectionStatictics: HealthStatisticsCollectionQueryStrategy<ResultType>?
+    private let collectionSample: HealthSampleQueryStrategy<ResultType>?
+    
+    init(collectionStatictics: HealthStatisticsCollectionQueryStrategy<ResultType>) {
+        self.collectionStatictics = collectionStatictics
+        self.collectionSample = nil
+    }
+    
+    init(collectionSample: HealthSampleQueryStrategy<ResultType>) {
+        self.collectionStatictics = nil
+        self.collectionSample = collectionSample
+    }
+    
+    func createQuery(for healthStore: HKHealthStore, completion: @escaping (Result<ResultType, Error>) -> Void) -> HKQuery {
+        if let collectionStatictics = collectionStatictics {
+            return collectionStatictics.createQuery(for: healthStore, completion: completion)
+        } else if let collectionSample = collectionSample {
+            return collectionSample.createQuery(for: healthStore, completion: completion)
+        } else {
+            fatalError("Neither collection nor single strategy is set")
+        }
+    }
+}
+
+
+class CalorieBurnedDataManager: HealthDataFetchable {
+    typealias Strategy = CalorieBurnedQueryStrategy
+    
+    let healthStore: HKHealthStore
+    let queryStrategy: Strategy
+    
+    init(healthStore: HKHealthStore, retrieveDataFrom startDate: Date) {
+        self.healthStore = healthStore
+        self.queryStrategy = CalorieBurnedQueryStrategy(
+            collectionStatictics:
+                HealthStatisticsCollectionQueryStrategy<[PeriodEntry<HealthData.ActivityEntry>]>(
+                    quantityType: HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!,
+                    anchorDate: Calendar.current.startOfDay(for: startDate),
+                    intervalComponents: DateComponents(hour: 1),
+                    predicate: nil,
+                    options: .cumulativeSum,
+                    resultsHandler: { statisticsCollection in
+                        return HealthDataProcessor.groupActivitiesByDay(from: statisticsCollection, startDate: startDate, unit: HKUnit.kilocalorie())
+                    }
+                )
+        )
+    }
+    
+    init(healthStore: HKHealthStore, retrieveDataFrom startDate: Date, to endDate: Date) {
+        self.healthStore = healthStore
+        self.queryStrategy = CalorieBurnedQueryStrategy(
+            collectionSample:
+                HealthSampleQueryStrategy<[PeriodEntry<HealthData.ActivityEntry>]>(
+                    sampleType: HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!,
+                    predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
+                    limit: HKObjectQueryNoLimit,
+                    sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)],
+                    resultsHandler: { samples in
+                        let activities = samples.compactMap { sample -> HealthData.ActivityEntry? in
+                            guard let quantitySample = sample as? HKQuantitySample else {
+                                return nil
+                            }
+                            
+                            let caloriesBurned = quantitySample.quantity.doubleValue(for: HKUnit.kilocalorie())
+                            
+                            return HealthData.ActivityEntry(
+                                startDate: quantitySample.startDate,
+                                endDate: quantitySample.endDate,
+                                value: caloriesBurned,
+                                unit: HKUnit.kilocalorie().unitString
+                            )
+                        }
+                        
+                        return [PeriodEntry(entries: activities)]
+                    }
+                )
+        )
+    }
+}
+
+class StepDataManager: HealthDataFetchable {
+    typealias Strategy = HealthStatisticsCollectionQueryStrategy<[PeriodEntry<HealthData.ActivityEntry>]>
+    
+    let healthStore: HKHealthStore
+    let queryStrategy: Strategy
+    
+    init(healthStore: HKHealthStore, retrieveDataFrom startDate: Date) {
+        self.healthStore = healthStore
+        self.queryStrategy = HealthStatisticsCollectionQueryStrategy(
+            quantityType: HKQuantityType.quantityType(forIdentifier: .stepCount)!,
+            anchorDate: Calendar.current.startOfDay(for: startDate),
+            intervalComponents: DateComponents(hour: 1),
+            predicate: nil,
+            options: .cumulativeSum,
+            resultsHandler: { statisticsCollection in
+                return HealthDataProcessor.groupActivitiesByDay(from: statisticsCollection, startDate: startDate, unit: HKUnit.count())
+            }
+        )
+    }
+}
+
+class WeightDataManager: HealthDataFetchable {
+    typealias Strategy = HealthSampleQueryStrategy<[PeriodEntry<HealthData.WeightEntry>]>
+    
+    let healthStore: HKHealthStore
+    let queryStrategy: Strategy
+    
+    init(healthStore: HKHealthStore) {
+        self.healthStore = healthStore
+        self.queryStrategy = HealthSampleQueryStrategy(
+            sampleType: HKQuantityType.quantityType(forIdentifier: .bodyMass)!,
+            predicate: HKQuery.predicateForSamples(withStart: nil, end: Date(), options: .strictEndDate),
+            limit: HKObjectQueryNoLimit,
+            sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)],
+            resultsHandler: { samples in
+                return HealthDataProcessor.groupWeightsByWeek(from: samples, unit: .gramUnit(with: .kilo))
+            }
+        )
+    }
+}
+
+class SleepDataManager: HealthDataFetchable {
+    typealias Strategy = HealthSampleQueryStrategy<[PeriodEntry<HealthData.SleepEntry>]>
+    
+    let healthStore: HKHealthStore
+    let queryStrategy: Strategy
+    
+    init(healthStore: HKHealthStore) {
+        self.healthStore = healthStore
+        self.queryStrategy = HealthSampleQueryStrategy(
+            sampleType: HKQuantityType.categoryType(forIdentifier: .sleepAnalysis)!,
+            predicate: HKQuery.predicateForSamples(withStart: nil, end: Date(), options: .strictEndDate),
+            limit: HKObjectQueryNoLimit,
+            sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)],
+            resultsHandler: { samples in
+                return HealthDataProcessor.groupSleepByNight(from: samples)
+            }
+        )
+    }
+}
+
+class WorkoutDataManager: HealthDataFetchable {
+    typealias Strategy = HealthSampleQueryStrategy<[PeriodEntry<HealthData.WorkoutEntry>]>
+    
+    let healthStore: HKHealthStore
+    let queryStrategy: Strategy
+    
+    init(healthStore: HKHealthStore, retrieveDataFrom startDate: Date) {
+        self.healthStore = healthStore
+        self.queryStrategy = HealthSampleQueryStrategy(
+            sampleType: HKObjectType.workoutType(),
+            predicate: HKQuery.predicateForSamples(withStart: startDate, end: Date(), options: .strictEndDate),
+            limit: HKObjectQueryNoLimit,
+            sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)],
+            resultsHandler: { samples in
+                
+                for sample in samples {
+                    HeartRateDataManager(healthStore: healthStore, retrieveDataFrom: sample.startDate, to: sample.endDate).fetchData { heartRates in
+                        //guard let avgHeartRate = try? avgHeartRate.get() else { return }
+                        CalorieBurnedDataManager(healthStore: healthStore, retrieveDataFrom: sample.startDate, to: sample.endDate).fetchData { calorieBurned in
+                            var heartRatesT: [HealthData.HeartRateEntry] = []
+                            var caloriesBurnedTmp: [HealthData.ActivityEntry] = []
+                            
+                            print("Workout: \(sample.startDate) - \(sample.endDate)")
+                            switch heartRates {
+                            case .success(let entries):
+                                heartRatesT = entries.entries
+                                //print("Average HeartRate: \(entries)")
+                            case .failure(let error):
+                                print("no heart rate data: \(error)")
+                            }
+                            switch calorieBurned {
+                            case .success(let entries):
+                                caloriesBurnedTmp = entries.first!.entries
+                                //print("Average Calorie Burned: \(entries)")
+                            case .failure(let error):
+                                print("no calorie burned data: \(error)")
+                            }
+                            let t = WorkoutIntensityAnalyzer().generateIntensityPhases(workout: sample, heartRates: heartRatesT, caloriesBurned: caloriesBurnedTmp)
+                            t.forEach { workout in
+                                print(workout.value)
+                            }
+                            print("--------------------------------")
+                        }
+                    }
+                }
+                return []
+            }
+        )
+    }
+}
+
+class HeartRateDataManager: HealthDataFetchable {
+    typealias Strategy = HealthSampleQueryStrategy<PeriodEntry<HealthData.HeartRateEntry>>
+    
+    let healthStore: HKHealthStore
+    let queryStrategy: Strategy
+    
+    init(healthStore: HKHealthStore, retrieveDataFrom startDate: Date, to endDate: Date) {
+        self.healthStore = healthStore
+        self.queryStrategy = HealthSampleQueryStrategy(
+            sampleType: HKQuantityType.quantityType(forIdentifier: .heartRate)!,
+            predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
+            limit: HKObjectQueryNoLimit,
+            sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)],
+            resultsHandler: { samples in
+                let heartRateUnit = HKUnit.count().unitDivided(by: HKUnit.minute())
+                
+                let heartRateEntries: [HealthData.HeartRateEntry] = samples.compactMap { sample in
+                    guard let quantitySample = sample as? HKQuantitySample else { return nil }
+                    let heartRateValue = quantitySample.quantity.doubleValue(for: heartRateUnit)
+                    
+                    return HealthData.HeartRateEntry(
+                        startDate: quantitySample.startDate,
+                        endDate: quantitySample.endDate,
+                        value: heartRateValue
+                    )
+                }
+                
+                let heartRates = PeriodEntry<HealthData.HeartRateEntry>(entries: heartRateEntries)
+                
+                return heartRates
+            }
+        )
     }
 }

@@ -25,11 +25,11 @@ protocol MSLineChartCardViewModelProtocol: ObservableObject {
 }
 
 class BaseLineChartViewModel<T: HealthEntry>: MSLineChartCardViewModelProtocol {
-    typealias ActivityEntryType = PeriodActivity<T>
+    typealias EntryType = PeriodEntry<T>
     
     @Published var selectedPeriodIndex: Int
     
-    var activityPeriods: [ActivityEntryType]
+    var activityPeriods: [EntryType]
     
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -52,11 +52,12 @@ class BaseLineChartViewModel<T: HealthEntry>: MSLineChartCardViewModelProtocol {
     var formattedSelectedValue: String { "" }
     
     var selectedActivityUnit: String {
-        activityPeriods[selectedPeriodIndex].activities.first?.unit ?? "none"
+        activityPeriods[selectedPeriodIndex].entries.first?.unit ?? "none"
     }
     
     var activityValues: [Double] {
-        activityPeriods[selectedPeriodIndex].activities.map { $0.value }
+        //activityPeriods[selectedPeriodIndex].entries.map { $0.value }
+        []
     }
     
     func selectPreviousPeriod() {
@@ -80,8 +81,8 @@ class BaseLineChartViewModel<T: HealthEntry>: MSLineChartCardViewModelProtocol {
 
 class WeightLineChartViewModel: BaseLineChartViewModel<HealthData.WeightEntry> {
     override var formattedSelectedDate: String {
-        guard let startDate = activityPeriods[selectedPeriodIndex].activities.first?.start,
-              let endDate = activityPeriods[selectedPeriodIndex].activities.last?.start else {
+        guard let startDate = activityPeriods[selectedPeriodIndex].entries.first?.startDate,
+              let endDate = activityPeriods[selectedPeriodIndex].entries.last?.startDate else {
             return "Aucune date"
         }
         
@@ -91,7 +92,7 @@ class WeightLineChartViewModel: BaseLineChartViewModel<HealthData.WeightEntry> {
     }
     
     override var formattedSelectedValue: String {
-        let value = activityPeriods.last?.activities.last?.value ?? 0.0
+        let value = activityPeriods.last?.entries.last?.value ?? 0.0
         let roundedValue = (value * 100).rounded() / 100
         
         return String(format: "%.2f", roundedValue)
@@ -100,7 +101,7 @@ class WeightLineChartViewModel: BaseLineChartViewModel<HealthData.WeightEntry> {
 
 class ActivityLineChartViewModel: BaseLineChartViewModel<HealthData.ActivityEntry> {
     override var formattedSelectedDate: String {
-        if let startDate = activityPeriods[selectedPeriodIndex].activities.first?.start {
+        if let startDate = activityPeriods[selectedPeriodIndex].entries.first?.startDate {
             return "\(dateFormatter.string(from: startDate))"
         } else {
             return "Aucune date"
@@ -108,7 +109,7 @@ class ActivityLineChartViewModel: BaseLineChartViewModel<HealthData.ActivityEntr
     }
     
     override var formattedSelectedValue: String {
-        let totalValue = activityPeriods[selectedPeriodIndex].activities.reduce(0) { $0 + $1.value }
+        let totalValue = activityPeriods[selectedPeriodIndex].entries.reduce(0) { $0 + $1.value }
         
         return String(Int(totalValue))
     }
@@ -117,7 +118,7 @@ class ActivityLineChartViewModel: BaseLineChartViewModel<HealthData.ActivityEntr
 
 class SleepLineChartViewModel: BaseLineChartViewModel<HealthData.SleepEntry> {
     override var formattedSelectedDate: String {
-        if let startDate = activityPeriods[selectedPeriodIndex].activities.first?.start {
+        if let startDate = activityPeriods[selectedPeriodIndex].entries.first?.startDate {
             return "\(dateFormatter.string(from: startDate))"
         } else {
             return "Aucune date"
@@ -125,14 +126,14 @@ class SleepLineChartViewModel: BaseLineChartViewModel<HealthData.SleepEntry> {
     }
     
     override var formattedSelectedValue: String {
-        let totalSeconds = activityPeriods[selectedPeriodIndex].activities.reduce(0) { $0 + $1.value }
+        let totalSeconds = activityPeriods[selectedPeriodIndex].entries.reduce(0) { $0 + $1.value }
         let hours = Int(totalSeconds / 3600)
         let minutes = Int((totalSeconds.truncatingRemainder(dividingBy: 3600)) / 60)
         
         if minutes == 0 {
-            return "\(hours)\(activityPeriods[selectedPeriodIndex].activities.first?.unit ?? "")"
+            return "\(hours)\(activityPeriods[selectedPeriodIndex].entries.first?.unit ?? "")"
         } else {
-            return "\(hours)\(activityPeriods[selectedPeriodIndex].activities.first?.unit ?? "") \(minutes)"
+            return "\(hours)\(activityPeriods[selectedPeriodIndex].entries.first?.unit ?? "") \(minutes)"
         }
     }
     

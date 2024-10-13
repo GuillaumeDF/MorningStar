@@ -8,19 +8,20 @@
 import Foundation
 
 extension HealthData {
-    static func fakeStepCountHistory() -> [PeriodActivity<ActivityEntry>] {
-        var stepHistory: [PeriodActivity<ActivityEntry>] = []
+    static func fakeStepCountHistory() -> [PeriodEntry<ActivityEntry>] {
+        var stepHistory: [PeriodEntry<ActivityEntry>] = []
         let calendar = Calendar.current
         
         for dayOffset in 0..<7 {
             let date = calendar.date(byAdding: .day, value: -dayOffset, to: Date())!
             let stepCount = Double(Int.random(in: 2000...12000))
             let activityEntry = ActivityEntry(
-                start: date,
-                end: calendar.date(byAdding: .hour, value: 1, to: date),
-                measurement: Measurement(value: stepCount, unit: "steps")
+                startDate: date,
+                endDate: calendar.date(byAdding: .hour, value: 1, to: date)!,
+                value: stepCount, 
+                unit: "steps"
             )
-            let dailyActivity = PeriodActivity<ActivityEntry>(activities: [activityEntry])
+            let dailyActivity = PeriodEntry<ActivityEntry>(entries: [activityEntry])
             
             stepHistory.append(dailyActivity)
         }
