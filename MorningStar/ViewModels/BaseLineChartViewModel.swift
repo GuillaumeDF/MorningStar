@@ -56,8 +56,15 @@ class BaseLineChartViewModel<T: HealthEntry>: MSLineChartCardViewModelProtocol {
     }
     
     var activityValues: [Double] {
-        //activityPeriods[selectedPeriodIndex].entries.map { $0.value }
-        []
+        activityPeriods[selectedPeriodIndex].entries.map {
+            if let doubleValue = $0.value as? Double {
+                return doubleValue
+            } else if let timeIntervalValue = $0.value as? TimeInterval {
+                return Double(timeIntervalValue)
+            } else {
+                return 0
+            }
+        }
     }
     
     func selectPreviousPeriod() {
