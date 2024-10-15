@@ -48,6 +48,7 @@
 		F083A02B2CBDD3B30085C1D0 /* StepDataManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F083A02A2CBDD3B30085C1D0 /* StepDataManagerFactory.swift */; };
 		F083A02D2CBDD3DB0085C1D0 /* CalorieBurnedDataManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F083A02C2CBDD3DB0085C1D0 /* CalorieBurnedDataManagerFactory.swift */; };
 		F083A02F2CBDD4190085C1D0 /* HealthKitError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F083A02E2CBDD4190085C1D0 /* HealthKitError.swift */; };
+		F083A0312CBF1E740085C1D0 /* HealthDataProcessor+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = F083A0302CBF1E740085C1D0 /* HealthDataProcessor+Debug.swift */; };
 		F08576522CA4180C003B2252 /* HealthData+Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08576512CA4180C003B2252 /* HealthData+Generator.swift */; };
 		F08576542CA46268003B2252 /* MSSelectionTimePeriodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08576532CA46268003B2252 /* MSSelectionTimePeriodView.swift */; };
 		F0CFA07D2C76368300B7FD7D /* MSUpDownArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */; };
@@ -124,6 +125,7 @@
 		F083A02A2CBDD3B30085C1D0 /* StepDataManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepDataManagerFactory.swift; sourceTree = "<group>"; };
 		F083A02C2CBDD3DB0085C1D0 /* CalorieBurnedDataManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieBurnedDataManagerFactory.swift; sourceTree = "<group>"; };
 		F083A02E2CBDD4190085C1D0 /* HealthKitError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitError.swift; sourceTree = "<group>"; };
+		F083A0302CBF1E740085C1D0 /* HealthDataProcessor+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HealthDataProcessor+Debug.swift"; sourceTree = "<group>"; };
 		F08576512CA4180C003B2252 /* HealthData+Generator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HealthData+Generator.swift"; sourceTree = "<group>"; };
 		F08576532CA46268003B2252 /* MSSelectionTimePeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSSelectionTimePeriodView.swift; sourceTree = "<group>"; };
 		F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSUpDownArrow.swift; sourceTree = "<group>"; };
@@ -309,6 +311,7 @@
 				F03AA6E02C6426F2003C1BB3 /* Color+Theme.swift */,
 				F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */,
 				F08576512CA4180C003B2252 /* HealthData+Generator.swift */,
+				F083A0302CBF1E740085C1D0 /* HealthDataProcessor+Debug.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -646,6 +649,7 @@
 				F0CFA07D2C76368300B7FD7D /* MSUpDownArrow.swift in Sources */,
 				F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */,
 				F0512F052C85107900FA033F /* HealthData.swift in Sources */,
+				F083A0312CBF1E740085C1D0 /* HealthDataProcessor+Debug.swift in Sources */,
 				F0D5E0142C6E66EA00EE647B /* MSStackedChart.swift in Sources */,
 				F083A0252CBDD3500085C1D0 /* WorkoutDataManagerFactory.swift in Sources */,
 				F076E42F2C7E37F30080BA83 /* MSThemeToggleButton.swift in Sources */,

@@ -31,6 +31,11 @@ struct PeriodEntry<T: HealthEntry>: Identifiable {
 }
 
 struct HealthData {
+    typealias WorkoutPhaseEntries = [WorkoutEntry]
+    typealias DailyWorkoutSessions = [WorkoutPhaseEntries]
+    typealias WeeklyWorkoutSessions = [DailyWorkoutSessions]
+    typealias WorkoutHistory = [WeeklyWorkoutSessions]
+    
     struct WeightEntry: HealthEntry {
         typealias T = Double
         
@@ -90,7 +95,7 @@ struct HealthData {
     var stepCountHistory: [PeriodEntry<ActivityEntry>]
     var calorieBurnHistory: [PeriodEntry<ActivityEntry>]
     var sleepHistory: [PeriodEntry<SleepEntry>]
-    var workoutHistory: [PeriodEntry<WorkoutEntry>]
+    var workoutHistory: WorkoutHistory
     
     init() {
         self.weightHistory = []

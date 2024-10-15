@@ -16,7 +16,7 @@ class SleepDataManagerFactory {
             limit: HKObjectQueryNoLimit,
             sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
         ) { samples in
-            return HealthDataProcessor.groupSleepByNight(from: samples)
+            HealthDataProcessor.groupSleepByNight(from: samples)
         }
         
         return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)

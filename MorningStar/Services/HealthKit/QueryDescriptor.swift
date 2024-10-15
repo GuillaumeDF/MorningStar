@@ -13,8 +13,6 @@ protocol QueryDescriptor {
     func createQuery(completion: @escaping (Result<ResultType, Error>) -> Void) -> HKQuery
 }
 
-// MARK: - Specific Query Descriptors
-
 struct SampleQueryDescriptor<T>: QueryDescriptor {
     typealias ResultType = T
     
@@ -22,7 +20,7 @@ struct SampleQueryDescriptor<T>: QueryDescriptor {
     let predicate: NSPredicate?
     let limit: Int
     let sortDescriptors: [NSSortDescriptor]?
-    let resultsHandler: ([HKSample]) -> T?
+    let resultsHandler: ([HKSample]) async -> T?
     
     func createQuery(completion: @escaping (Result<T, Error>) -> Void) -> HKQuery {
         return HKSampleQuery(
@@ -33,8 +31,15 @@ struct SampleQueryDescriptor<T>: QueryDescriptor {
         ) { _, samples, error in
             if let error = error {
                 completion(.failure(HealthKitError.queryFailed(error)))
-            } else if let samples = samples, let processedResults = self.resultsHandler(samples) {
-                completion(.success(processedResults))
+            } else if let samples = samples {
+                Task {
+                    let processedResults = await self.resultsHandler(samples)
+                    if let processedResults = processedResults {
+                        completion(.success(processedResults))
+                    } else {
+                        completion(.failure(HealthKitError.dataProcessingFailed))
+                    }
+                }
             } else {
                 completion(.failure(HealthKitError.dataProcessingFailed))
             }
@@ -50,7 +55,7 @@ struct StatisticsCollectionQueryDescriptor<T>: QueryDescriptor {
     let intervalComponents: DateComponents
     let predicate: NSPredicate?
     let options: HKStatisticsOptions
-    let resultsHandler: (HKStatisticsCollection) -> T?
+    let resultsHandler: (HKStatisticsCollection) async -> T?
     
     func createQuery(completion: @escaping (Result<T, Error>) -> Void) -> HKQuery {
         let query = HKStatisticsCollectionQuery(
@@ -64,8 +69,15 @@ struct StatisticsCollectionQueryDescriptor<T>: QueryDescriptor {
         query.initialResultsHandler = { _, results, error in
             if let error = error {
                 completion(.failure(HealthKitError.queryFailed(error)))
-            } else if let statisticsCollection = results, let processedResults = self.resultsHandler(statisticsCollection) {
-                completion(.success(processedResults))
+            } else if let statisticsCollection = results {
+                Task {
+                    let processedResults = await self.resultsHandler(statisticsCollection)
+                    if let processedResults = processedResults {
+                        completion(.success(processedResults))
+                    } else {
+                        completion(.failure(HealthKitError.dataProcessingFailed))
+                    }
+                }
             } else {
                 completion(.failure(HealthKitError.dataProcessingFailed))
             }

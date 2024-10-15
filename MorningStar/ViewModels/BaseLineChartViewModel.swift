@@ -99,7 +99,7 @@ class WeightLineChartViewModel: BaseLineChartViewModel<HealthData.WeightEntry> {
     }
     
     override var formattedSelectedValue: String {
-        let value = activityPeriods.last?.entries.last?.value ?? 0.0
+        let value = activityPeriods[selectedPeriodIndex].entries.last?.value ?? 0.0
         let roundedValue = (value * 100).rounded() / 100
         
         return String(format: "%.2f", roundedValue)

@@ -108,4 +108,53 @@ struct HealthDataProcessor {
         
         return weeklyActivities
     }
+    
+    static func groupWorkoutsByDayAndWeek(_ workouts: [HealthData.WorkoutPhaseEntries]) -> HealthData.WorkoutHistory {
+        let calendar = Calendar.current
+        
+        var weeklyGroups: HealthData.WorkoutHistory = []
+        var currentWeekDailyGroups: HealthData.WeeklyWorkoutSessions = []
+        var currentDayWorkouts: HealthData.DailyWorkoutSessions = []
+        var currentWeek: Date?
+        var currentDay: Date?
+        
+        for workout in workouts {
+            guard let firstPhase = workout.first else { continue }
+            guard let week = calendar.dateInterval(of: .weekOfYear, for: firstPhase.startDate)?.start else { continue }
+            guard let day = calendar.dateInterval(of: .day, for: firstPhase.startDate)?.start else { continue }
+            
+            if currentWeek != week {
+                if !currentDayWorkouts.isEmpty {
+                    currentWeekDailyGroups.append(currentDayWorkouts)
+                }
+                if !currentWeekDailyGroups.isEmpty {
+                    weeklyGroups.append(currentWeekDailyGroups)
+                }
+                currentWeek = week
+                currentWeekDailyGroups = []
+                currentDay = nil
+            }
+            
+            if currentDay != day {
+                if !currentDayWorkouts.isEmpty {
+                    currentWeekDailyGroups.append(currentDayWorkouts)
+                }
+                currentDay = day
+                currentDayWorkouts = []
+            }
+            
+            currentDayWorkouts.append(workout)
+        }
+        
+        if !currentDayWorkouts.isEmpty {
+            currentWeekDailyGroups.append(currentDayWorkouts)
+        }
+        if !currentWeekDailyGroups.isEmpty {
+            weeklyGroups.append(currentWeekDailyGroups)
+        }
+        
+        //printWeeklyGroups(weeklyGroups)
+        
+        return weeklyGroups
+    }
 }
