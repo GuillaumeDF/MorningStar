@@ -7,8 +7,9 @@
 
 import Foundation
 import HealthKit
+import SwiftUICore
 
-protocol HealthEntry: Identifiable {
+protocol HealthEntry: Identifiable, Hashable {
     associatedtype T
     
     var startDate: Date { get }
@@ -17,12 +18,18 @@ protocol HealthEntry: Identifiable {
     var unit: String { get }
 }
 
-enum IntensityLevel {
-    case undetermined
-    case low
-    case moderate
-    case high
-    case veryHigh
+enum IntensityLevel: Hashable {
+    case undetermined, low, moderate, high, veryHigh
+    
+    var color: Color {
+        switch self {
+        case .undetermined: return Color.gray
+        case .low: return Color.lowIntensity
+        case .moderate: return Color.moderateIntensity
+        case .high: return Color.highIntensity
+        case .veryHigh: return Color.veryHighIntensity
+        }
+    }
 }
 
 struct PeriodEntry<T: HealthEntry>: Identifiable {
@@ -79,6 +86,10 @@ struct HealthData {
         let unit: String = ""
         let averageHeartRate: Double
         let caloriesBurned: Double
+        
+        var duration: Double {
+            return endDate.timeIntervalSince(startDate)
+        }
     }
     
     struct HeartRateEntry: HealthEntry {

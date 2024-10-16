@@ -114,7 +114,7 @@ class HealthViewModel: ObservableObject {
     }
     
     private func fetchWorkoutHistory() {
-        let startDate = calendar.date(byAdding: .year, value: -1, to: Date())!
+        let startDate = calendar.date(byAdding: .month, value: -1, to: Date())!
         
         WorkoutDataManagerFactory.createSampleManager(healthStore: healthStore, from: startDate).fetchData {  [weak self] result in
             DispatchQueue.main.async {

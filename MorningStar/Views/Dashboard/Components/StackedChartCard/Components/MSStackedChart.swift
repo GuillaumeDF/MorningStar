@@ -14,35 +14,37 @@ private enum Constants {
 }
 
 struct MSStackedChart: View {
-    let data: [[IntensitySegment]]
+    let weeklyWorkoutSessions: HealthData.WeeklyWorkoutSessions
     let stackWidth: CGFloat = Constants.stackWidth
     
     @State private var maxTime: CGFloat = 0
     
-    init(data: [[IntensitySegment]]) {
-        self.data = data
-        _maxTime = State(initialValue: findMaxSumTime(from: data) * 10)
+    init(weeklyWorkoutSessions: HealthData.WeeklyWorkoutSessions) {
+        self.weeklyWorkoutSessions = weeklyWorkoutSessions
+        _maxTime = State(initialValue: maxSumTime)
     }
     
     var body: some View {
         ZStack(alignment: .topLeading) {
             YAxisLabelsAndGridLines(
-                maxTime: Int(maxTime),
+                maxTime: Int(maxTime / 10),
                 gridLineStartX: Constants.stackSpacingHorizontaly
             )
             .padding(.bottom, Constants.textXHeight)
             
             HStack(spacing: Constants.stackSpacingHorizontaly) {
-                ForEach(data, id: \.self) { segments in
-                    IntensityStack(segments: segments, maxTime: maxTime)
-                        .frame(width: stackWidth)
+                ForEach(weeklyWorkoutSessions, id: \.self) { dailyWorkoutSessions in
+                    ForEach(dailyWorkoutSessions, id: \.self) { workoutPhaseEntries in
+                        IntensityStack(workoutPhaseEntries: workoutPhaseEntries, maxTime: maxTime)
+                            .frame(width: stackWidth)
+                    }
                 }
             }
             .padding(.leading, Constants.stackSpacingHorizontaly)
             .padding(.bottom, Constants.textXHeight)
             
             XAxisLabels(
-                dataCount: data.count,
+                dailyWorkoutSessions: weeklyWorkoutSessions.first ?? [],
                 textWidth: stackWidth,
                 labelStartX: Constants.stackSpacingHorizontaly
             )
@@ -50,33 +52,40 @@ struct MSStackedChart: View {
         .padding([.top, .leading], AppConstants.Padding.medium)
     }
     
-    private func findMaxSumTime(from arrays: [[IntensitySegment]]) -> CGFloat {
-        arrays.map { $0.reduce(0) { $0 + $1.time } }.max() ?? 0
+    var maxSumTime: CGFloat {
+        return (weeklyWorkoutSessions
+            .flatMap { $0 }
+            .map { workoutPhases in
+                workoutPhases.reduce(0) { total, phase in
+                    total + phase.endDate.timeIntervalSince(phase.startDate)
+                }
+            }
+            .max() ?? 0) / 60
     }
 }
 
-#Preview {
-    MSStackedChart(
-        data: [
-            [
-                IntensitySegment(time: 0.2, type: .lowIntensity),
-                IntensitySegment(time: 0.3, type: .moderateIntensity),
-                IntensitySegment(time: 0.4, type: .lowIntensity),
-                IntensitySegment(time: 0.1, type: .highIntensity)
-            ],
-            [
-                IntensitySegment(time: 0.5, type: .moderateIntensity),
-                IntensitySegment(time: 0.2, type: .veryHighIntensity),
-                IntensitySegment(time: 0.4, type: .highIntensity),
-                IntensitySegment(time: 0.7, type: .lowIntensity)
-            ],
-            [
-                IntensitySegment(time: 0.3, type: .lowIntensity),
-                IntensitySegment(time: 0.1, type: .moderateIntensity),
-                IntensitySegment(time: 0.4, type: .highIntensity),
-                IntensitySegment(time: 0.6, type: .veryHighIntensity)
-            ],
-        ]
-    )
-    .frame(height: 400)
-}
+//#Preview {
+//    MSStackedChart(
+//        data: [
+//            [
+//                IntensitySegment(time: 0.2, type: .lowIntensity),
+//                IntensitySegment(time: 0.3, type: .moderateIntensity),
+//                IntensitySegment(time: 0.4, type: .lowIntensity),
+//                IntensitySegment(time: 0.1, type: .highIntensity)
+//            ],
+//            [
+//                IntensitySegment(time: 0.5, type: .moderateIntensity),
+//                IntensitySegment(time: 0.2, type: .veryHighIntensity),
+//                IntensitySegment(time: 0.4, type: .highIntensity),
+//                IntensitySegment(time: 0.7, type: .lowIntensity)
+//            ],
+//            [
+//                IntensitySegment(time: 0.3, type: .lowIntensity),
+//                IntensitySegment(time: 0.1, type: .moderateIntensity),
+//                IntensitySegment(time: 0.4, type: .highIntensity),
+//                IntensitySegment(time: 0.6, type: .veryHighIntensity)
+//            ],
+//        ]
+//    )
+//    .frame(height: 400)
+//}

@@ -8,11 +8,11 @@
 import Foundation
 
 protocol MSLineChartCardViewModelProtocol: ObservableObject {
-    associatedtype ActivityEntryType
+    associatedtype EntryType
     
-    var activityPeriods: [ActivityEntryType] { get set }
+    var activityPeriods: [EntryType] { get set }
     var selectedPeriodIndex: Int { get set }
-    var selectedPeriodActivity: ActivityEntryType { get }
+    var selectedPeriodActivity: EntryType { get }
     var formattedSelectedDate: String { get }
     var formattedSelectedValue: String { get }
     var selectedActivityUnit: String { get }
@@ -38,12 +38,12 @@ class BaseLineChartViewModel<T: HealthEntry>: MSLineChartCardViewModelProtocol {
         return formatter
     }()
     
-    init(activityPeriods: [ActivityEntryType]) {
+    init(activityPeriods: [EntryType]) {
         self.activityPeriods = activityPeriods
         self.selectedPeriodIndex = activityPeriods.count - 1
     }
     
-    var selectedPeriodActivity: ActivityEntryType {
+    var selectedPeriodActivity: EntryType {
         activityPeriods[selectedPeriodIndex]
     }
     

@@ -13,10 +13,12 @@ private enum Constants {
 
 struct IntensitySegment: Hashable {
     var time: CGFloat
-    var type: IntensityType
+    var type: IntensityLevel
 }
 
 struct MSStackedChartCardView: View {
+    let workoutHistory: HealthData.WorkoutHistory
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: AppConstants.Spacing.large) {
@@ -31,28 +33,7 @@ struct MSStackedChartCardView: View {
                 LegendView(color: Color.veryHighIntensity, text: "Very High")
             }
             .padding(AppConstants.Padding.medium)
-            MSStackedChart(
-                data: [
-                    [
-                        IntensitySegment(time: 0.2, type: .lowIntensity),
-                        IntensitySegment(time: 0.3, type: .moderateIntensity),
-                        IntensitySegment(time: 0.4, type: .lowIntensity),
-                        IntensitySegment(time: 0.1, type: .highIntensity)
-                    ],
-                    [
-                        IntensitySegment(time: 0.5, type: .moderateIntensity),
-                        IntensitySegment(time: 0.2, type: .veryHighIntensity),
-                        IntensitySegment(time: 0.4, type: .highIntensity),
-                        IntensitySegment(time: 0.7, type: .lowIntensity)
-                    ],
-                    [
-                        IntensitySegment(time: 0.3, type: .lowIntensity),
-                        IntensitySegment(time: 0.1, type: .moderateIntensity),
-                        IntensitySegment(time: 0.4, type: .highIntensity),
-                        IntensitySegment(time: 0.6, type: .veryHighIntensity)
-                    ]
-                ]
-            )
+            MSStackedChart(weeklyWorkoutSessions: workoutHistory.last ?? [])
         }
         .background(Color.trainingColor.opacity(0.5))
         .cornerRadius(AppConstants.Radius.large)
@@ -63,7 +44,7 @@ struct MSStackedChartCardView: View {
     }
 }
 
-#Preview {
-    MSStackedChartCardView()
-        .frame(height: 500)
-}
+//#Preview {
+//    MSStackedChartCardView()
+//        .frame(height: 500)
+//}

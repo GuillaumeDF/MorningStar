@@ -24,13 +24,10 @@ struct YAxisLabelsAndGridLines: View {
             ZStack(alignment: .leading) {
                 ForEach(0...Int(maxTime), id: \.self) { i in
                     let reversedIndex = Int(maxTime) - i
+                    let yPosition = yInterval * CGFloat(i)
                     
-                    if i % Constants.labelIntervalY == 0 {
-                        let yPosition = yInterval * CGFloat(i)
-                        
-                        yAxisLabel(title: "\(reversedIndex * 10)", yPosition: yPosition)
-                        gridLine(xPosition: xPosition, yPosition: yPosition)
-                    }
+                    yAxisLabel(title: "\(reversedIndex * 10)", yPosition: yPosition)
+                    gridLine(xPosition: xPosition, yPosition: yPosition)
                 }
             }
         }
