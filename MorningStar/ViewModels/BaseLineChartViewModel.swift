@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol MSLineChartCardViewModelProtocol: ObservableObject {
+protocol MSChartCardViewModelProtocol: ObservableObject {
     associatedtype EntryType
     
     var activityPeriods: [EntryType] { get set }
@@ -24,7 +24,7 @@ protocol MSLineChartCardViewModelProtocol: ObservableObject {
     var canSelectNextPeriod: Bool { get }
 }
 
-class BaseLineChartViewModel<T: HealthEntry>: MSLineChartCardViewModelProtocol {
+class BaseLineChartViewModel<T: HealthEntry>: MSChartCardViewModelProtocol {
     typealias EntryType = PeriodEntry<T>
     
     @Published var selectedPeriodIndex: Int

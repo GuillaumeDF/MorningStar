@@ -15,25 +15,13 @@ struct HeaderView: View {
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-            HStack {
-                MSLogo(size: .medium)
-                Spacer()
-                VStack(alignment: .leading) {
-                    Text("Hello, Guillaume")
-                        .font(.largeTitle)
-                        .foregroundStyle(Color.primaryTextColor)
-                    MSTodayDateTitle()
-                }
-                Spacer()
-                HStack(spacing: AppConstants.Padding.extraLarge) {
-                    MSThemeToggleView(initialTheme: colorScheme)
-                    MSVerticalSeparator()
-                        .padding(.vertical, AppConstants.Padding.extraLarge)
-                    MSRoundImage(imageName: "")
-                        .frame(height: Constants.imageHeight)
-                    
-                }
-            }
+        HStack {
+            MSLogo(size: .medium)
+            Spacer()
+            MSTodayDateTitle()
+            Spacer()
+            MSThemeToggleView(initialTheme: colorScheme)
+        }
     }
 }
 

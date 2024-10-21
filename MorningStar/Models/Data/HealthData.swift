@@ -116,3 +116,4 @@ struct HealthData {
         self.workoutHistory = []
     }
 }
+

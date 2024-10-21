@@ -33,7 +33,7 @@ struct MSStackedChartCardView: View {
                 LegendView(color: Color.veryHighIntensity, text: "Very High")
             }
             .padding(AppConstants.Padding.medium)
-            MSStackedChart(weeklyWorkoutSessions: workoutHistory.last ?? [])
+            MSStackedChart(viewModel: WorkoutStackedChartViewModel(workoutHistory: workoutHistory))
         }
         .background(Color.trainingColor.opacity(0.5))
         .cornerRadius(AppConstants.Radius.large)
