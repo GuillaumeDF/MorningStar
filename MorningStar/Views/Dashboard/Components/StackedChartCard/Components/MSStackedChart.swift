@@ -24,7 +24,7 @@ class WorkoutStackedChartViewModel: MSChartCardViewModelProtocol {
     
     init(workoutHistory: [EntryType]) {
         self.activityPeriods = workoutHistory
-        self.selectedPeriodIndex = workoutHistory.count - 1
+        self.selectedPeriodIndex = 0
     }
     
     var selectedPeriodActivity: EntryType {
@@ -111,14 +111,13 @@ struct MSStackedChart: View {
                             }
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(.trailing, Constants.stackSpacingHorizontaly)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, Constants.stackSpacingHorizontaly)
                     .padding(.bottom, Constants.textXHeight)
                     .tag(index)
                 }
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-            .environment(\.layoutDirection, .rightToLeft)
 
             XAxisLabels(
                 labels: viewModel.activityDates,
