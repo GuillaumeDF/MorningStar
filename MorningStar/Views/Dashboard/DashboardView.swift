@@ -27,11 +27,15 @@ struct DashboardView: View {
                     Spacer()
                     MSDashboardHeaderMetricView(
                         title: "Total workout this week",
-                        value: "3457 hours"
+                        value: healthData.totalWorkoutHoursThisWeek.minutes == 0 ?
+                        "\(healthData.totalWorkoutHoursThisWeek.hours) hr" : "\(healthData.totalWorkoutHoursThisWeek.hours) hr \(healthData.totalWorkoutHoursThisWeek.minutes)"
                     )
                     MSVerticalSeparator()
                         .frame(height: 50)
-                    MSNewActivityButton()
+                    MSDashboardHeaderMetricView(
+                        title: "Total step this week",
+                        value: "\(healthData.totalStepThisWeek) steps"
+                    )
                 }
                 
                 GeometryReader { geometry in

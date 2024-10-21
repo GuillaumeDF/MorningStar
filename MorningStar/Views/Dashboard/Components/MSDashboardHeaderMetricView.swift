@@ -24,5 +24,5 @@ struct MSDashboardHeaderMetricView: View {
 }
 
 #Preview {
-    MSDashboardHeaderMetricView(title: "Title", value: "Value")
+    MSDashboardHeaderMetricView(title: "Title", value: "value")
 }

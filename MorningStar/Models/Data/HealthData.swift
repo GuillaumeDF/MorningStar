@@ -107,6 +107,8 @@ struct HealthData {
     var calorieBurnHistory: [PeriodEntry<ActivityEntry>]
     var sleepHistory: [PeriodEntry<SleepEntry>]
     var workoutHistory: WorkoutHistory
+    var totalWorkoutHoursThisWeek: (hours: Int, minutes: Int)
+    var totalStepThisWeek: Int
     
     init() {
         self.weightHistory = []
@@ -114,6 +116,8 @@ struct HealthData {
         self.calorieBurnHistory = []
         self.sleepHistory = []
         self.workoutHistory = []
+        self.totalWorkoutHoursThisWeek = (0, 0)
+        self.totalStepThisWeek = 0
     }
 }
 

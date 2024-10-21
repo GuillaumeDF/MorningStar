@@ -33,7 +33,6 @@
 		F05330442C6AA58200F628C5 /* MSRoundImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330432C6AA58200F628C5 /* MSRoundImage.swift */; };
 		F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */; };
 		F053CF6D2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF6C2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift */; };
-		F053CF6F2C6B9C7B000E2EFD /* MSNewActivityButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF6E2C6B9C7B000E2EFD /* MSNewActivityButton.swift */; };
 		F076E42C2C7E37DF0080BA83 /* MSThemeToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E42B2C7E37DF0080BA83 /* MSThemeToggleView.swift */; };
 		F076E42F2C7E37F30080BA83 /* MSThemeToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E42E2C7E37F30080BA83 /* MSThemeToggleButton.swift */; };
 		F076E4312C7E386C0080BA83 /* ColorSheme+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */; };
@@ -110,7 +109,6 @@
 		F05330432C6AA58200F628C5 /* MSRoundImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSRoundImage.swift; sourceTree = "<group>"; };
 		F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSVerticalSeparator.swift; sourceTree = "<group>"; };
 		F053CF6C2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSDashboardHeaderMetricView.swift; sourceTree = "<group>"; };
-		F053CF6E2C6B9C7B000E2EFD /* MSNewActivityButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSNewActivityButton.swift; sourceTree = "<group>"; };
 		F076E42B2C7E37DF0080BA83 /* MSThemeToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeToggleView.swift; sourceTree = "<group>"; };
 		F076E42E2C7E37F30080BA83 /* MSThemeToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeToggleButton.swift; sourceTree = "<group>"; };
 		F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ColorSheme+Theme.swift"; sourceTree = "<group>"; };
@@ -330,7 +328,6 @@
 				F0FF79CC2C7E45E800DA3A54 /* StackedChartCard */,
 				F0FF79CA2C7E426A00DA3A54 /* LineChartCard */,
 				F053CF6C2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift */,
-				F053CF6E2C6B9C7B000E2EFD /* MSNewActivityButton.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -620,7 +617,6 @@
 				F083A01E2CBDBAB30085C1D0 /* GenericHealthDataManager.swift in Sources */,
 				F0FF79D12C7E958D00DA3A54 /* XAxisLabels.swift in Sources */,
 				F05330442C6AA58200F628C5 /* MSRoundImage.swift in Sources */,
-				F053CF6F2C6B9C7B000E2EFD /* MSNewActivityButton.swift in Sources */,
 				F02581862C62C292006CB2E6 /* Item.swift in Sources */,
 				F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */,
 				F08576542CA46268003B2252 /* MSSelectionTimePeriodView.swift in Sources */,

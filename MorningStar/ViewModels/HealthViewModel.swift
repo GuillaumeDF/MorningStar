@@ -61,6 +61,7 @@ class HealthViewModel: ObservableObject {
                 switch result {
                 case .success(let entries):
                     self?.healthData.stepCountHistory = entries
+                    self?.healthData.totalStepThisWeek = self?.calculateTotalStepThisWeek(periodEntry: entries.first) ?? 0
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                 }
@@ -121,10 +122,60 @@ class HealthViewModel: ObservableObject {
                 switch result {
                 case .success(let entries):
                     self?.healthData.workoutHistory = entries
+                    self?.healthData.totalWorkoutHoursThisWeek = self?.calculateTotalWorkoutHoursThisWeek(weeklyWorkoutSessions: entries.first) ?? (0, 0)
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                 }
             }
         }
+    }
+    
+    private func calculateTotalWorkoutHoursThisWeek(weeklyWorkoutSessions: HealthData.WeeklyWorkoutSessions?) -> (hours: Int, minutes: Int) {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        guard let workoutSessions = weeklyWorkoutSessions,
+              let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)),
+              let weekEnd = calendar.date(byAdding: .day, value: 6, to: weekStart) else {
+            return (0, 0)
+        }
+        
+        let totalDurationInSeconds = workoutSessions.flatMap { $0 }
+            .flatMap { $0 }
+            .reduce(0.0) { total, workoutEntry in
+                if workoutEntry.startDate >= weekStart && workoutEntry.endDate <= weekEnd {
+                    return total + workoutEntry.duration
+                }
+                return total
+            }
+        
+        let hours = Int(totalDurationInSeconds / 3600)
+        let minutes = Int((totalDurationInSeconds.truncatingRemainder(dividingBy: 3600)) / 60)
+        
+        return (hours, minutes)
+    }
+    
+    private func calculateTotalStepThisWeek(periodEntry: PeriodEntry<HealthData.ActivityEntry>?) -> Int {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        guard let entries = periodEntry?.entries,
+              !entries.isEmpty,
+              let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)),
+              let weekEnd = calendar.date(byAdding: .day, value: 6, to: weekStart) else {
+            return 0
+        }
+        
+        var total: Double = 0.0
+        
+        for entry in entries {
+            if entry.startDate >= weekStart && entry.endDate <= weekEnd {
+                total += entry.value
+            } else if entry.startDate < weekStart {
+                break
+            }
+        }
+        
+        return Int(total)
     }
 }
