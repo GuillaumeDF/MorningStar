@@ -37,7 +37,7 @@ class WorkoutDataManagerFactory {
                 }
             }
             
-            return HealthDataProcessor.groupWorkoutsByDayAndWeek(workoutsWithIntensity)
+            return HealthDataProcessor.sortAndgroupWorkoutsByDayAndWeek(workoutsWithIntensity)
         }
         
         return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)

@@ -12,14 +12,23 @@ private enum Constants {
 }
 
 struct XAxisLabels: View {
-    let labels: [String]
+    let labels: DateRepresentation
     let textWidth: CGFloat
     let labelStartX: CGFloat
+    
+    private var dateLabel: [String] {
+        switch labels {
+        case .single(let singleDate):
+            return [singleDate]
+        case .multiple(let dates):
+            return dates
+        }
+    }
 
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: labelStartX) {
-                ForEach(Array(labels.enumerated()), id: \.offset) { _, label in
+                ForEach(Array(dateLabel.enumerated()), id: \.offset) { _, label in
                     let xPosition = labelStartX + (textWidth / 2)
                     
                     Text(label)

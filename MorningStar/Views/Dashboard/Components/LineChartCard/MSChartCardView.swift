@@ -17,10 +17,10 @@ struct MSLineChartCardView<T: HealthEntry>: View {
     let arrowDirection: ArrowDirection
     let backgroundColor: Color
     
-    @StateObject private var viewModel: BaseLineChartViewModel<T>
+    @StateObject private var viewModel: LineChartViewModel<T>
     @State private var sliderPosition: CGFloat = 0.5
     
-     init(imageName: String, title: String, viewModel: BaseLineChartViewModel<T>, backgroundColor: Color, arrowDirection: ArrowDirection) {
+     init(imageName: String, title: String, viewModel: LineChartViewModel<T>, backgroundColor: Color, arrowDirection: ArrowDirection) {
          self.imageName = imageName
          self.title = title
          self.backgroundColor = backgroundColor
@@ -31,7 +31,7 @@ struct MSLineChartCardView<T: HealthEntry>: View {
     var body: some View {
         VStack {
             VStack(alignment: .leading, spacing: AppConstants.Padding.medium) {
-                MSDateNavigationView(date: viewModel.formattedSelectedDate, onPreviousDay: viewModel.selectPreviousPeriod, onNextDay: viewModel.selectNextPeriod)
+                MSDateNavigationView(date: viewModel.currentDateLabel, onPreviousDay: viewModel.selectPreviousPeriod, onNextDay: viewModel.selectNextPeriod)
                 
                 HStack {
                     MSRoundImageWithTitle(
@@ -42,7 +42,7 @@ struct MSLineChartCardView<T: HealthEntry>: View {
                     MSUpDownArrow(direction: arrowDirection)
                 }
                 
-                Text("\(viewModel.formattedSelectedValue) \(viewModel.selectedActivityUnit)")
+                Text("\(viewModel.currentValueLabel) \(viewModel.unitLabel)")
                     .font(.title)
                     .foregroundStyle(Color.primaryTextColor)
             }
@@ -51,8 +51,8 @@ struct MSLineChartCardView<T: HealthEntry>: View {
             MSLineChartView(
                 sliderPosition: $sliderPosition,
                 backgroundColor: backgroundColor,
-                data: viewModel.activityValues,
-                yAxisLabel: viewModel.selectedActivityUnit
+                data: viewModel.allValues,
+                yAxisLabel: viewModel.unitLabel
             )
         }
         .background(backgroundColor.opacity(0.3))

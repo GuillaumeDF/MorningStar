@@ -7,76 +7,6 @@
 
 import SwiftUI
 
-class WorkoutStackedChartViewModel: MSChartCardViewModelProtocol {
-    typealias EntryType = HealthData.WeeklyWorkoutSessions
-    
-    @Published var selectedPeriodIndex: Int
-    
-    var activityPeriods: [EntryType]
-    
-    let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        
-        formatter.dateFormat = "dd/MM"
-        
-        return formatter
-    }()
-    
-    init(workoutHistory: [EntryType]) {
-        self.activityPeriods = workoutHistory
-        self.selectedPeriodIndex = 0
-    }
-    
-    var selectedPeriodActivity: EntryType {
-        activityPeriods[selectedPeriodIndex]
-    }
-    
-    var formattedSelectedDate: String { "" }
-    
-    var formattedSelectedValue: String { "" }
-    
-    var selectedActivityUnit: String { "" }
-    
-    var activityValues: [Double] { [] }
-    
-    var activityDates: [String] {
-        activityPeriods[selectedPeriodIndex]
-            .flatMap { $0 }
-            .map { workoutPhases in
-                if let startDate = workoutPhases.first?.startDate {
-                    return dateFormatter.string(from: startDate)
-                } else {
-                    return "???"
-                }
-            }
-    }
-    
-    func selectPreviousPeriod() { }
-    
-    func selectNextPeriod() { }
-    
-    var canSelectPreviousPeriod: Bool {
-        selectedPeriodIndex > 0
-    }
-    
-    var canSelectNextPeriod: Bool {
-        selectedPeriodIndex < activityPeriods.count - 1
-    }
-    
-    var maxTime: CGFloat {
-        return (
-            activityPeriods[selectedPeriodIndex]
-                .flatMap { $0 }
-                .map { workoutPhases in
-                    workoutPhases.reduce(0) { total, phase in
-                        total + phase.endDate.timeIntervalSince(phase.startDate)
-                    }
-                }
-                .max() ?? 0
-        ) / 60
-    }
-}
-
 private enum Constants {
     static let stackSpacingHorizontaly: CGFloat = 25.0
     static let stackWidth: CGFloat = 25.0
@@ -101,8 +31,8 @@ struct MSStackedChart: View {
             )
             .padding(.bottom, Constants.textXHeight)
             
-            TabView(selection: $viewModel.selectedPeriodIndex) {
-                ForEach(Array(viewModel.activityPeriods.enumerated()), id: \.offset) { index, weeklyWorkoutSessions in
+            TabView(selection: $viewModel.index) {
+                ForEach(Array(viewModel.periods.enumerated()), id: \.offset) { index, weeklyWorkoutSessions in
                     HStack(spacing: Constants.stackSpacingHorizontaly) {
                         ForEach(weeklyWorkoutSessions, id: \.self) { dailyWorkoutSessions in
                             ForEach(dailyWorkoutSessions, id: \.self) { workoutPhaseEntries in
@@ -121,7 +51,7 @@ struct MSStackedChart: View {
             .environment(\.layoutDirection, .rightToLeft)
 
             XAxisLabels(
-                labels: viewModel.activityDates,
+                labels: viewModel.currentDateLabel,
                 textWidth: 40, //stackWidth,
                 labelStartX: Constants.stackSpacingHorizontaly
             )

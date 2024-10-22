@@ -8,7 +8,12 @@
 import Foundation
 import HealthKit
 
+private enum Constants {
+    static let isNightSleep: TimeInterval = 4
+}
+
 struct HealthDataProcessor {
+    
     static func groupActivitiesByDay(for statsCollection: HKStatisticsCollection, from startDate: Date, to endDate: Date, unit: HKUnit) -> [PeriodEntry<HealthData.ActivityEntry>] {
         var dailyActivities: [PeriodEntry<HealthData.ActivityEntry>] = []
         var currentDayActivities: [HealthData.ActivityEntry] = []
@@ -25,13 +30,15 @@ struct HealthDataProcessor {
                 currentDayActivities = []
             }
             
-            let entry = HealthData.ActivityEntry(
-                startDate: statistics.startDate,
-                endDate: statistics.endDate,
-                value: statistics.sumQuantity()?.doubleValue(for: unit) ?? -1,
-                unit: unit.unitString
-            )
-            currentDayActivities.append(entry)
+            if let value = statistics.sumQuantity()?.doubleValue(for: unit) {
+                let entry = HealthData.ActivityEntry(
+                    startDate: statistics.startDate,
+                    endDate: statistics.endDate,
+                    value: value,
+                    unit: unit.unitString
+                )
+                currentDayActivities.append(entry)
+            }
         }
         
         if !currentDayActivities.isEmpty {
@@ -49,7 +56,7 @@ struct HealthDataProcessor {
         for sample in samples {
             guard let categorySample = sample as? HKCategorySample else { continue }
             
-            if let lastEnd = lastSampleEndDate, categorySample.startDate.timeIntervalSince(lastEnd) > 4 * 60 * 60 {
+            if let lastEnd = lastSampleEndDate, categorySample.startDate.timeIntervalSince(lastEnd) > Constants.isNightSleep * 60 * 60 {
                 if !currentNightActivities.isEmpty {
                     nightlyActivities.insert(PeriodEntry(entries: currentNightActivities), at: 0)
                     currentNightActivities = []
@@ -109,7 +116,7 @@ struct HealthDataProcessor {
         return weeklyActivities
     }
     
-    static func groupWorkoutsByDayAndWeek(_ workouts: [HealthData.WorkoutPhaseEntries]) -> HealthData.WorkoutHistory {
+    static func sortAndgroupWorkoutsByDayAndWeek(_ workouts: [HealthData.WorkoutPhaseEntries]) -> HealthData.WorkoutHistory {
         let calendar = Calendar.current
         
         let sortedWorkouts = workouts.sorted {

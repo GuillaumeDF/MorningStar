@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MSDateNavigationView: View {
-    var date: String
+    var date: DateRepresentation
     let onPreviousDay: () -> Void
     let onNextDay: () -> Void
     
@@ -23,9 +23,16 @@ struct MSDateNavigationView: View {
     }
     
     private var dateLabel: some View {
-        Text(date)
-            .foregroundColor(Color.primaryTextColor)
-            .font(.headline)
+        switch date {
+        case .single(let singleDate):
+            return Text(singleDate)
+                .foregroundColor(Color.primaryTextColor)
+                .font(.headline)
+        case .multiple(let dates):
+            return Text(dates.joined(separator: ", "))
+                .foregroundColor(Color.primaryTextColor)
+                .font(.headline)
+        }
     }
     
     private func navigationButton(direction: NavigationDirection) -> some View {
@@ -59,7 +66,7 @@ private enum NavigationDirection {
 
 #Preview {
     MSDateNavigationView(
-        date: "03 Décembre 1995",
+        date:.single("03 Décembre 1995"),
         onPreviousDay: {},
         onNextDay: {}
     )
