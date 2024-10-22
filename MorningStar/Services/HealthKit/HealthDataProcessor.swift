@@ -19,7 +19,7 @@ struct HealthDataProcessor {
             
             if currentDay != day {
                 if !currentDayActivities.isEmpty {
-                    dailyActivities.append(PeriodEntry(entries: currentDayActivities))
+                    dailyActivities.insert(PeriodEntry(entries: currentDayActivities), at: 0)
                 }
                 currentDay = day
                 currentDayActivities = []
@@ -35,7 +35,7 @@ struct HealthDataProcessor {
         }
         
         if !currentDayActivities.isEmpty {
-            dailyActivities.append(PeriodEntry(entries: currentDayActivities))
+            dailyActivities.insert(PeriodEntry(entries: currentDayActivities), at: 0)
         }
         
         return dailyActivities
@@ -51,7 +51,7 @@ struct HealthDataProcessor {
             
             if let lastEnd = lastSampleEndDate, categorySample.startDate.timeIntervalSince(lastEnd) > 4 * 60 * 60 {
                 if !currentNightActivities.isEmpty {
-                    nightlyActivities.append(PeriodEntry(entries: currentNightActivities))
+                    nightlyActivities.insert(PeriodEntry(entries: currentNightActivities), at: 0)
                     currentNightActivities = []
                 }
             }
@@ -67,7 +67,7 @@ struct HealthDataProcessor {
         }
         
         if !currentNightActivities.isEmpty {
-            nightlyActivities.append(PeriodEntry(entries: currentNightActivities))
+            nightlyActivities.insert(PeriodEntry(entries: currentNightActivities), at: 0)
         }
         
         return nightlyActivities
@@ -86,7 +86,7 @@ struct HealthDataProcessor {
             
             if currentWeek != week {
                 if !currentWeekActivities.isEmpty {
-                    weeklyActivities.append(PeriodEntry(entries: currentWeekActivities))
+                    weeklyActivities.insert(PeriodEntry(entries: currentWeekActivities), at: 0)
                 }
                 currentWeek = week
                 currentWeekActivities = []
@@ -103,7 +103,7 @@ struct HealthDataProcessor {
         }
         
         if !currentWeekActivities.isEmpty {
-            weeklyActivities.append(PeriodEntry(entries: currentWeekActivities))
+            weeklyActivities.insert(PeriodEntry(entries: currentWeekActivities), at: 0)
         }
         
         return weeklyActivities
@@ -159,7 +159,7 @@ struct HealthDataProcessor {
             weeklyGroups.append(currentWeekDailyGroups)
         }
         
-        printWeeklyGroups(weeklyGroups)
+        //printWeeklyGroups(weeklyGroups)
         
         return weeklyGroups
     }

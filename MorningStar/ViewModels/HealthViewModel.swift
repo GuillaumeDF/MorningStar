@@ -61,7 +61,7 @@ class HealthViewModel: ObservableObject {
                 switch result {
                 case .success(let entries):
                     self?.healthData.stepCountHistory = entries
-                    self?.healthData.totalStepThisWeek = self?.calculateTotalStepThisWeek(periodEntry: entries.first) ?? 0
+                    self?.healthData.totalStepThisWeek = self?.calculateTotalStepThisWeek(periodsEntry: entries) ?? 0
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                 }
@@ -155,12 +155,11 @@ class HealthViewModel: ObservableObject {
         return (hours, minutes)
     }
     
-    private func calculateTotalStepThisWeek(periodEntry: PeriodEntry<HealthData.ActivityEntry>?) -> Int {
+    private func calculateTotalStepThisWeek(periodsEntry: [PeriodEntry<HealthData.ActivityEntry>]) -> Int {
         let calendar = Calendar.current
         let now = Date()
         
-        guard let entries = periodEntry?.entries,
-              !entries.isEmpty,
+        guard !periodsEntry.isEmpty,
               let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)),
               let weekEnd = calendar.date(byAdding: .day, value: 6, to: weekStart) else {
             return 0
@@ -168,11 +167,13 @@ class HealthViewModel: ObservableObject {
         
         var total: Double = 0.0
         
-        for entry in entries {
-            if entry.startDate >= weekStart && entry.endDate <= weekEnd {
-                total += entry.value
-            } else if entry.startDate < weekStart {
-                break
+        for periodEntry in periodsEntry {
+            for entry in periodEntry.entries {
+                if entry.startDate >= weekStart && entry.endDate <= weekEnd {
+                    total += entry.value
+                } else if entry.startDate < weekStart {
+                    break
+                }
             }
         }
         

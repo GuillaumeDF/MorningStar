@@ -40,7 +40,7 @@ class BaseLineChartViewModel<T: HealthEntry>: MSChartCardViewModelProtocol {
     
     init(activityPeriods: [EntryType]) {
         self.activityPeriods = activityPeriods
-        self.selectedPeriodIndex = activityPeriods.count - 1
+        self.selectedPeriodIndex = 0
     }
     
     var selectedPeriodActivity: EntryType {
@@ -69,20 +69,20 @@ class BaseLineChartViewModel<T: HealthEntry>: MSChartCardViewModelProtocol {
     
     func selectPreviousPeriod() {
         guard canSelectPreviousPeriod else { return }
-        selectedPeriodIndex -= 1
+        selectedPeriodIndex += 1
     }
     
     func selectNextPeriod() {
         guard canSelectNextPeriod else { return }
-        selectedPeriodIndex += 1
+        selectedPeriodIndex -= 1
     }
     
     var canSelectPreviousPeriod: Bool {
-        selectedPeriodIndex > 0
+        selectedPeriodIndex < activityPeriods.count - 1
     }
     
     var canSelectNextPeriod: Bool {
-        selectedPeriodIndex < activityPeriods.count - 1
+        selectedPeriodIndex > 0
     }
 }
 

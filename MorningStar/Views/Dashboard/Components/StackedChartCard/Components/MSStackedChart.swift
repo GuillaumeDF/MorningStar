@@ -102,7 +102,7 @@ struct MSStackedChart: View {
             .padding(.bottom, Constants.textXHeight)
             
             TabView(selection: $viewModel.selectedPeriodIndex) {
-                ForEach(viewModel.activityPeriods.enumerated().reversed(), id: \.offset) { index, weeklyWorkoutSessions in
+                ForEach(Array(viewModel.activityPeriods.enumerated()), id: \.offset) { index, weeklyWorkoutSessions in
                     HStack(spacing: Constants.stackSpacingHorizontaly) {
                         ForEach(weeklyWorkoutSessions, id: \.self) { dailyWorkoutSessions in
                             ForEach(dailyWorkoutSessions, id: \.self) { workoutPhaseEntries in
@@ -111,17 +111,18 @@ struct MSStackedChart: View {
                             }
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.leading, Constants.stackSpacingHorizontaly)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.trailing, Constants.stackSpacingHorizontaly)
                     .padding(.bottom, Constants.textXHeight)
                     .tag(index)
                 }
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            .environment(\.layoutDirection, .rightToLeft)
 
             XAxisLabels(
                 labels: viewModel.activityDates,
-                textWidth: 40, // stackWidth
+                textWidth: 40, //stackWidth,
                 labelStartX: Constants.stackSpacingHorizontaly
             )
         }

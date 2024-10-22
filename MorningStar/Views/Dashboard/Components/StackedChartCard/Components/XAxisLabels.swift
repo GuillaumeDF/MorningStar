@@ -19,7 +19,7 @@ struct XAxisLabels: View {
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: labelStartX) {
-                ForEach(labels, id: \.self) { label in
+                ForEach(Array(labels.enumerated()), id: \.offset) { _, label in
                     let xPosition = labelStartX + (textWidth / 2)
                     
                     Text(label)
