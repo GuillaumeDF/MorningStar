@@ -64,13 +64,13 @@ struct MSLineChartCardView<T: HealthEntry>: View {
     }
 }
 
-//#Preview {
-//    MSLineChartCardView(
-//        imageName: "weightIcon",
-//        title: "Weight",
-//        dailyActivities: HealthData.fakeStepCountHistory(),
-//        arrowDirection: .up,
-//        backgroundColor: Color.weightColor
-//    )
-//    .frame(width: 250, height: 400)
-//}
+#Preview {
+    MSLineChartCardView(
+        imageName: "stepIcon", title: "Step",
+        viewModel:
+            LineChartViewModel(activityPeriods: HealthData.fakeStepCountHistory()),
+        backgroundColor: Color.stepColor,
+        arrowDirection: .up
+    )
+    .frame(width: 250, height: 400)
+}

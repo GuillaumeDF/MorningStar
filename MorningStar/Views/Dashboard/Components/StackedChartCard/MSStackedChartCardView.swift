@@ -44,7 +44,7 @@ struct MSStackedChartCardView: View {
     }
 }
 
-//#Preview {
-//    MSStackedChartCardView()
-//        .frame(height: 500)
-//}
+#Preview {
+    MSStackedChartCardView(workoutHistory: WorkoutMockData.fullHistory)
+        .frame(height: 400)
+}

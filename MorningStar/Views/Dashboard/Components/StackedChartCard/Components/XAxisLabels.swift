@@ -43,6 +43,11 @@ struct XAxisLabels: View {
     }
 }
 
-//#Preview {
-//    XAxisLabels(dataCount: 10, textWidth: 25, labelStartX: 25)
-//}
+#Preview {
+    XAxisLabels(
+        labels: .multiple(["03/12", "04/12", "05/12"]),
+        textWidth: 100,
+        labelStartX: 45,
+        defaultStackWidth: 50
+    )
+}

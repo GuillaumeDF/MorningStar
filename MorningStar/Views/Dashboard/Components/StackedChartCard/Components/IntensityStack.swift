@@ -41,13 +41,7 @@ struct IntensityStack: View {
     }
 }
 
-//#Preview {
-//    IntensityStack(segments: [
-//        IntensitySegment(time: 0.2, type: .veryHighIntensity),
-//        IntensitySegment(time: 0.3, type: .moderateIntensity),
-//        IntensitySegment(time: 0.4, type: .lowIntensity),
-//        IntensitySegment(time: 0.1, type: .highIntensity)
-//    ],
-//                   maxTime: 12
-//    )
-//}
+#Preview {
+    IntensityStack(workoutPhaseEntries: WorkoutMockData.hiitWorkout, maxTime: 35)
+        .frame(width: 40)
+}
