@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+private enum Constants {
+    static let dividerHeight: CGFloat = 1
+}
+
 struct IntensityStack: View {
     let workoutPhaseEntries: HealthData.WorkoutPhaseEntries
     let maxTime: CGFloat
@@ -17,24 +21,23 @@ struct IntensityStack: View {
                 Spacer(minLength: 0)
                 ForEach(Array(workoutPhaseEntries.enumerated()), id: \.element) { index, workoutEntry in
                     VStack(spacing: 0) {
-                        // Ajoute un séparateur noir sauf pour la première itération
                         if index != 0 {
                             Divider()
-                                .frame(height: 1)
+                                .frame(height: Constants.dividerHeight)
                                 .background(Color.borderColor)
                         }
                         
                         Rectangle()
                             .fill(workoutEntry.value.color)
-                            .frame(height: calculateHeight(for: workoutEntry, with: geometry))
+                            .frame(height: calculateHeight(for: workoutEntry, with: geometry, isFirstIndex: index == 0))
                     }
                 }
             }
         }
     }
     
-    private func calculateHeight(for workoutEntry: HealthData.WorkoutEntry, with geometry: GeometryProxy) -> CGFloat {
-        (geometry.size.height * workoutEntry.duration) / (maxTime * 60)
+    private func calculateHeight(for workoutEntry: HealthData.WorkoutEntry, with geometry: GeometryProxy, isFirstIndex: Bool) -> CGFloat {
+        (geometry.size.height * workoutEntry.duration) / (maxTime * 60) - (isFirstIndex ? 0 : Constants.dividerHeight)
     }
 }
 

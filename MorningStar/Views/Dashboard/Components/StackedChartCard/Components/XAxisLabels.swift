@@ -15,6 +15,7 @@ struct XAxisLabels: View {
     let labels: DateRepresentation
     let textWidth: CGFloat
     let labelStartX: CGFloat
+    let defaultStackWidth: CGFloat
     
     private var dateLabel: [String] {
         switch labels {
@@ -27,15 +28,15 @@ struct XAxisLabels: View {
 
     var body: some View {
         GeometryReader { geometry in
-            HStack(spacing: labelStartX) {
+            HStack(spacing: 0) {
                 ForEach(Array(dateLabel.enumerated()), id: \.offset) { _, label in
-                    let xPosition = labelStartX + (textWidth / 2)
+                    let xPosition = labelStartX + (defaultStackWidth / 2)
                     
                     Text(label)
                         .font(.caption)
                         .foregroundColor(Color.secondaryTextColor)
                         .position(x: xPosition, y: geometry.size.height - (Constants.textHeight / 2))
-                        .frame(width: textWidth, height: Constants.textHeight)
+                        .frame(width: textWidth, height: Constants.textHeight, alignment: .center)
                 }
             }
         }

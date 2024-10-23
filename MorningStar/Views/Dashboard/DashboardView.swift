@@ -34,7 +34,7 @@ struct DashboardView: View {
                         .frame(height: 50)
                     MSDashboardHeaderMetricView(
                         title: "Total step this week",
-                        value: "\(healthData.totalStepThisWeek) steps"
+                        value: "\(healthData.totalStepThisWeek)"
                     )
                 }
                 

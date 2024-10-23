@@ -8,9 +8,20 @@
 import SwiftUI
 
 private enum Constants {
-    static let stackSpacingHorizontaly: CGFloat = 25.0
-    static let stackWidth: CGFloat = 25.0
-    static let textXHeight: CGFloat = 25.0
+    enum Spacing {
+        static let horizontalStack: CGFloat = 30.0
+        static let trailingPadding: CGFloat = 15.0
+    }
+    
+    enum Size {
+        static let defaultStackWidth: CGFloat = 25.0
+        static let xAxisLabelHeight: CGFloat = 25.0
+        static let xAxisTextWidth: CGFloat = 15.0
+    }
+    
+    enum Layout {
+        static let contentPadding: CGFloat = AppConstants.Padding.medium
+    }
 }
 
 struct MSStackedChart: View {
@@ -18,7 +29,10 @@ struct MSStackedChart: View {
     
     @StateObject private var viewModel: WorkoutStackedChartViewModel
     
-    init(viewModel: WorkoutStackedChartViewModel, stackWidth: CGFloat = Constants.stackWidth) {
+    init(
+        viewModel: WorkoutStackedChartViewModel,
+        stackWidth: CGFloat = Constants.Size.defaultStackWidth
+    ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.stackWidth = stackWidth
     }
@@ -27,36 +41,40 @@ struct MSStackedChart: View {
         ZStack(alignment: .topLeading) {
             YAxisLabelsAndGridLines(
                 maxTime: Int(viewModel.maxTime / 10),
-                gridLineStartX: Constants.stackSpacingHorizontaly
+                gridLineStartX: Constants.Spacing.horizontalStack
             )
-            .padding(.bottom, Constants.textXHeight)
+            .padding(.bottom, Constants.Size.xAxisLabelHeight)
             
             TabView(selection: $viewModel.index) {
                 ForEach(Array(viewModel.periods.enumerated()), id: \.offset) { index, weeklyWorkoutSessions in
-                    HStack(spacing: Constants.stackSpacingHorizontaly) {
+                    HStack(spacing: Constants.Spacing.horizontalStack) {
                         ForEach(weeklyWorkoutSessions, id: \.self) { dailyWorkoutSessions in
                             ForEach(dailyWorkoutSessions, id: \.self) { workoutPhaseEntries in
-                                IntensityStack(workoutPhaseEntries: workoutPhaseEntries, maxTime: viewModel.maxTime)
-                                    .frame(width: stackWidth)
+                                IntensityStack(
+                                    workoutPhaseEntries: workoutPhaseEntries,
+                                    maxTime: viewModel.maxTime
+                                )
+                                .frame(width: stackWidth)
                             }
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(.trailing, Constants.stackSpacingHorizontaly)
-                    .padding(.bottom, Constants.textXHeight)
+                    .padding(.trailing, Constants.Spacing.horizontalStack + Constants.Spacing.trailingPadding)
+                    .padding(.bottom, Constants.Size.xAxisLabelHeight)
                     .tag(index)
                 }
             }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
             .environment(\.layoutDirection, .rightToLeft)
 
             XAxisLabels(
                 labels: viewModel.currentDateLabel,
-                textWidth: 40, //stackWidth,
-                labelStartX: Constants.stackSpacingHorizontaly
+                textWidth: Constants.Size.xAxisTextWidth + stackWidth + (Constants.Spacing.horizontalStack / 2),
+                labelStartX: Constants.Spacing.horizontalStack + Constants.Spacing.trailingPadding,
+                defaultStackWidth: Constants.Size.defaultStackWidth
             )
         }
-        .padding([.top, .leading], AppConstants.Padding.medium)
+        .padding([.top, .leading], Constants.Layout.contentPadding)
     }
 }
 
