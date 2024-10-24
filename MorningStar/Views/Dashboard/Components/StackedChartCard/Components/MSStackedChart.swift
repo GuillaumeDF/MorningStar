@@ -41,7 +41,8 @@ struct MSStackedChart: View {
         ZStack(alignment: .topLeading) {
             YAxisLabelsAndGridLines(
                 maxTime: Int(viewModel.maxTime / 10),
-                gridLineStartX: Constants.Spacing.horizontalStack
+                gridLineStartX: Constants.Spacing.horizontalStack,
+                trailingPadding: Constants.Spacing.trailingPadding
             )
             .padding(.bottom, Constants.Size.xAxisLabelHeight)
             

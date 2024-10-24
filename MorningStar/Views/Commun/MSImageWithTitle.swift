@@ -1,5 +1,5 @@
 //
-//  MSRoundImageWithTitle.swift
+//  MSImageWithTitle.swift
 //  MorningStar
 //
 //  Created by Guillaume Djaider Fornari on 28/08/2024.
@@ -8,18 +8,18 @@
 import SwiftUI
 
 private enum Constants {
-    static let imageHeight: CGFloat = 25
+    static let imageHeight: CGFloat = 35
 }
 
-struct MSRoundImageWithTitle: View {
+struct MSImageWithTitle: View {
     var title: String
     var imageName: String
 
     var body: some View {
         HStack {
-            MSRoundImage(imageName: imageName)
+            MSImage(imageName: imageName)
             Text(title)
-                .font(.subheadline)
+                .font(.headline)
                 .foregroundColor(.primary)
         }
         .frame(height: Constants.imageHeight)
@@ -27,5 +27,5 @@ struct MSRoundImageWithTitle: View {
 }
 
 #Preview {
-    MSRoundImageWithTitle(title: "title", imageName: "stepIcon")
+    MSImageWithTitle(title: "title", imageName: "stepIcon")
 }

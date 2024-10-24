@@ -26,7 +26,8 @@ struct DashboardView: View {
                 MSDashboardHeaderMetricView(
                     title: "Total workout this week",
                     value: healthData.totalWorkoutHoursThisWeek.minutes == 0 ?
-                    "\(healthData.totalWorkoutHoursThisWeek.hours) hr" : "\(healthData.totalWorkoutHoursThisWeek.hours) hr \(healthData.totalWorkoutHoursThisWeek.minutes)"
+                    "\(healthData.totalWorkoutHoursThisWeek.hours) hr" : 
+                        "\(healthData.totalWorkoutHoursThisWeek.hours) hr \(healthData.totalWorkoutHoursThisWeek.minutes)"
                 )
                 MSVerticalSeparator()
                     .frame(height: 50)

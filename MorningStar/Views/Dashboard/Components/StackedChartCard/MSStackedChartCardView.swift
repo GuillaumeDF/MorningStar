@@ -30,16 +30,16 @@ struct MSStackedChartCardView: View {
             } else {
                 VStack(spacing: 0) {
                     HStack(spacing: AppConstants.Spacing.large) {
-                        MSRoundImageWithTitle(
+                        MSImageWithTitle(
                             title: "Workouts",
                             imageName: "workoutIcon"
                         )
                         Spacer()
-                        LegendView(color: Color.lowIntensity, text: "Low")
-                        LegendView(color: Color.moderateIntensity, text: "Moderate")
-                        LegendView(color: Color.highIntensity, text: "High")
-                        LegendView(color: Color.veryHighIntensity, text: "Very High")
-                        LegendView(color: Color.undeterminedIntensity, text: "Undetermined")
+                        LegendView(color: Color.lowIntensityColor, text: "Low")
+                        LegendView(color: Color.moderateIntensityColor, text: "Moderate")
+                        LegendView(color: Color.highIntensityColor, text: "High")
+                        LegendView(color: Color.veryHighIntensityColor, text: "Very High")
+                        LegendView(color: Color.undeterminedIntensityColor, text: "Undetermined")
                     }
                     .padding(AppConstants.Padding.medium)
                     MSStackedChart(viewModel: viewModel)

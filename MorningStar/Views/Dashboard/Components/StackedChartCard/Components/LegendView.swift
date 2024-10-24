@@ -29,5 +29,5 @@ struct LegendView: View {
 }
 
 #Preview {
-    LegendView(color: Color.lowIntensity, text: "low intensity")
+    LegendView(color: Color.lowIntensityColor, text: "low intensity")
 }

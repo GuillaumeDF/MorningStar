@@ -15,6 +15,7 @@ private enum Constants {
 struct YAxisLabelsAndGridLines: View {
     let maxTime: Int
     let gridLineStartX: CGFloat
+    let trailingPadding: CGFloat
 
     var body: some View {
         GeometryReader { geometry in
@@ -44,12 +45,12 @@ struct YAxisLabelsAndGridLines: View {
     private func gridLine(xPosition: CGFloat, yPosition: CGFloat) -> some View {
         Path { path in
             path.move(to: CGPoint(x: gridLineStartX, y: yPosition))
-            path.addLine(to: CGPoint(x: xPosition, y: yPosition))
+            path.addLine(to: CGPoint(x: xPosition - trailingPadding, y: yPosition))
         }
         .stroke(Color.secondaryTextColor, lineWidth: 1)
     }
 }
 
 #Preview {
-    YAxisLabelsAndGridLines(maxTime: 4, gridLineStartX: 50)
+    YAxisLabelsAndGridLines(maxTime: 4, gridLineStartX: 50, trailingPadding: 15)
 }

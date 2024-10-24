@@ -23,11 +23,11 @@ enum IntensityLevel: Hashable {
     
     var color: Color {
         switch self {
-        case .undetermined: return Color.undeterminedIntensity
-        case .low: return Color.lowIntensity
-        case .moderate: return Color.moderateIntensity
-        case .high: return Color.highIntensity
-        case .veryHigh: return Color.veryHighIntensity
+        case .undetermined: return Color.undeterminedIntensityColor
+        case .low: return Color.lowIntensityColor
+        case .moderate: return Color.moderateIntensityColor
+        case .high: return Color.highIntensityColor
+        case .veryHigh: return Color.veryHighIntensityColor
         }
     }
 }

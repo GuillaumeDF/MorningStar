@@ -38,7 +38,7 @@ struct MSLineChartCardView<T: HealthEntry>: View {
                         MSDateNavigationView(date: viewModel.currentDateLabel, onPreviousDay: viewModel.selectPreviousPeriod, onNextDay: viewModel.selectNextPeriod)
                         
                         HStack {
-                            MSRoundImageWithTitle(
+                            MSImageWithTitle(
                                 title: title,
                                 imageName: imageName
                             )

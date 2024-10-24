@@ -1,5 +1,5 @@
 //
-//  MSRoundImage.swift
+//  MSImage.swift
 //  MorningStar
 //
 //  Created by Guillaume Djaider Fornari on 12/08/2024.
@@ -12,7 +12,7 @@ private enum Constants {
     static let borderWidth: CGFloat = 1
 }
 
-struct MSRoundImage: View {
+struct MSImage: View {
     var imageName: String
     var padding: CGFloat = Constants.padding
     var borderWidth: CGFloat = Constants.borderWidth
@@ -22,19 +22,11 @@ struct MSRoundImage: View {
             .resizable()
             .scaledToFill()
             .padding(padding)
-            .clipShape(Circle())
-            .overlay(
-                Circle()
-                    .stroke(
-                        Color.primaryTextColor,
-                        lineWidth: borderWidth
-                    )
-            )
             .aspectRatio(contentMode: .fit)
             .foregroundColor(Color.primaryTextColor)
     }
 }
 
 #Preview {
-    MSRoundImage(imageName: "stepIcon")
+    MSImage(imageName: "stepIcon")
 }
