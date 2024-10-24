@@ -43,7 +43,7 @@ struct MSLineChartCardView<T: HealthEntry>: View {
                                 imageName: imageName
                             )
                             Spacer()
-                            MSUpDownArrow(direction: arrowDirection)
+                            MSUpDownArrow(direction: viewModel.activityTrend)
                         }
                         
                         Text("\(viewModel.currentValueLabel) \(viewModel.unitLabel)")

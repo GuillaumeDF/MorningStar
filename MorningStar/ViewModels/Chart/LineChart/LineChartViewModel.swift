@@ -73,4 +73,26 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
     var canSelectNextPeriod: Bool {
         index > 0
     }
+    
+    var activityTrend: ArrowDirection {
+        guard canSelectPreviousPeriod else {
+            return .up
+        }
+        
+        let previousEntries = periods[index + 1].entries
+        
+        let totalPreviousEntries = previousEntries.reduce(0) { sum, entry in
+            if let value = entry.value as? Double {
+                return sum + value
+            } else if let timeIntervalValue = entry.value as? TimeInterval {
+                return sum + Double(timeIntervalValue)
+            } else {
+                return sum
+            }
+        }
+        
+        let totalCurrentEntries = allValues.reduce(0, +)
+        
+        return totalPreviousEntries > totalCurrentEntries ? .down : .up
+    }
 }

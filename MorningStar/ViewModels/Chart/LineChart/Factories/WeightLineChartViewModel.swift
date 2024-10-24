@@ -25,4 +25,14 @@ class WeightLineChartViewModel: LineChartViewModel<HealthData.WeightEntry> {
         
         return String(format: "%.2f", roundedValue)
    }
+    
+    override var activityTrend: ArrowDirection {
+        guard canSelectPreviousPeriod,
+              let previousEntry = periods[index + 1].entries.last,
+              let currentEntry = periods[index].entries.last else {
+            return .up
+        }
+        
+        return previousEntry.value > currentEntry.value ? .down : .up
+    }
 }
