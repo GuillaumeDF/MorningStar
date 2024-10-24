@@ -17,30 +17,41 @@ struct IntensitySegment: Hashable {
 }
 
 struct MSStackedChartCardView: View {
-    let workoutHistory: HealthData.WorkoutHistory
+    @ObservedObject private var viewModel: WorkoutStackedChartViewModel
+    
+    init(workoutHistory: HealthData.WorkoutHistory) {
+        _viewModel = ObservedObject(wrappedValue: WorkoutStackedChartViewModel(workoutHistory: workoutHistory))
+    }
     
     var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: AppConstants.Spacing.large) {
-                MSRoundImageWithTitle(
-                    title: "Workouts with Intense Phases",
-                    imageName: "workoutIcon"
+        Group {
+            if viewModel.isEmpty {
+                MSStackedChartCardSkeletonView()
+            } else {
+                VStack(spacing: 0) {
+                    HStack(spacing: AppConstants.Spacing.large) {
+                        MSRoundImageWithTitle(
+                            title: "Workouts",
+                            imageName: "workoutIcon"
+                        )
+                        Spacer()
+                        LegendView(color: Color.lowIntensity, text: "Low")
+                        LegendView(color: Color.moderateIntensity, text: "Moderate")
+                        LegendView(color: Color.highIntensity, text: "High")
+                        LegendView(color: Color.veryHighIntensity, text: "Very High")
+                        LegendView(color: Color.undeterminedIntensity, text: "Undetermined")
+                    }
+                    .padding(AppConstants.Padding.medium)
+                    MSStackedChart(viewModel: viewModel)
+                }
+                .background(Color.trainingColor.opacity(0.5))
+                .cornerRadius(AppConstants.Radius.large)
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppConstants.Radius.large)
+                        .stroke(Color.borderColor, lineWidth: 2)
                 )
-                Spacer()
-                LegendView(color: Color.lowIntensity, text: "Low")
-                LegendView(color: Color.moderateIntensity, text: "Moderate")
-                LegendView(color: Color.highIntensity, text: "High")
-                LegendView(color: Color.veryHighIntensity, text: "Very High")
             }
-            .padding(AppConstants.Padding.medium)
-            MSStackedChart(viewModel: WorkoutStackedChartViewModel(workoutHistory: workoutHistory))
         }
-        .background(Color.trainingColor.opacity(0.5))
-        .cornerRadius(AppConstants.Radius.large)
-        .overlay(
-            RoundedRectangle(cornerRadius: AppConstants.Radius.large)
-                .stroke(Color.borderColor, lineWidth: 2)
-        )
     }
 }
 

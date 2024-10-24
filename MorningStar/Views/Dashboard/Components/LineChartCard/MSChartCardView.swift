@@ -17,7 +17,7 @@ struct MSLineChartCardView<T: HealthEntry>: View {
     let arrowDirection: ArrowDirection
     let backgroundColor: Color
     
-    @StateObject private var viewModel: LineChartViewModel<T>
+    @ObservedObject private var viewModel: LineChartViewModel<T>
     @State private var sliderPosition: CGFloat = 0.5
     
      init(imageName: String, title: String, viewModel: LineChartViewModel<T>, backgroundColor: Color, arrowDirection: ArrowDirection) {
@@ -25,42 +25,48 @@ struct MSLineChartCardView<T: HealthEntry>: View {
          self.title = title
          self.backgroundColor = backgroundColor
          self.arrowDirection = arrowDirection
-         _viewModel = StateObject(wrappedValue: viewModel)
+         _viewModel = ObservedObject(wrappedValue: viewModel)
      }
     
     var body: some View {
-        VStack {
-            VStack(alignment: .leading, spacing: AppConstants.Padding.medium) {
-                MSDateNavigationView(date: viewModel.currentDateLabel, onPreviousDay: viewModel.selectPreviousPeriod, onNextDay: viewModel.selectNextPeriod)
-                
-                HStack {
-                    MSRoundImageWithTitle(
-                        title: title,
-                        imageName: imageName
+        Group {
+            if viewModel.isEmpty {
+                MSLineChartCardSkeletonView(backgroundColor: backgroundColor)
+            } else {
+                VStack {
+                    VStack(alignment: .leading, spacing: AppConstants.Padding.medium) {
+                        MSDateNavigationView(date: viewModel.currentDateLabel, onPreviousDay: viewModel.selectPreviousPeriod, onNextDay: viewModel.selectNextPeriod)
+                        
+                        HStack {
+                            MSRoundImageWithTitle(
+                                title: title,
+                                imageName: imageName
+                            )
+                            Spacer()
+                            MSUpDownArrow(direction: arrowDirection)
+                        }
+                        
+                        Text("\(viewModel.currentValueLabel) \(viewModel.unitLabel)")
+                            .font(.title)
+                            .foregroundStyle(Color.primaryTextColor)
+                    }
+                    .padding(AppConstants.Padding.medium)
+                    
+                    MSLineChartView(
+                        sliderPosition: $sliderPosition,
+                        backgroundColor: backgroundColor,
+                        data: viewModel.allValues,
+                        yAxisLabel: viewModel.unitLabel
                     )
-                    Spacer()
-                    MSUpDownArrow(direction: arrowDirection)
                 }
-                
-                Text("\(viewModel.currentValueLabel) \(viewModel.unitLabel)")
-                    .font(.title)
-                    .foregroundStyle(Color.primaryTextColor)
+                .background(backgroundColor.opacity(0.3))
+                .cornerRadius(AppConstants.Radius.large)
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppConstants.Radius.large)
+                        .stroke(Color.borderColor, lineWidth: 2)
+                )
             }
-            .padding(AppConstants.Padding.medium)
-            
-            MSLineChartView(
-                sliderPosition: $sliderPosition,
-                backgroundColor: backgroundColor,
-                data: viewModel.allValues,
-                yAxisLabel: viewModel.unitLabel
-            )
         }
-        .background(backgroundColor.opacity(0.3))
-        .cornerRadius(AppConstants.Radius.large)
-        .overlay(
-            RoundedRectangle(cornerRadius: AppConstants.Radius.large)
-                .stroke(Color.borderColor, lineWidth: 2)
-        )
     }
 }
 

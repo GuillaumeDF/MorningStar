@@ -11,8 +11,13 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
     typealias EntryType = PeriodEntry<T>
     
     @Published var index: Int
+    @Published var periods: [EntryType] {
+        didSet {
+            isEmpty = periods.isEmpty
+        }
+    }
     
-    var periods: [EntryType]
+    var isEmpty: Bool
     
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -24,6 +29,7 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
     init(activityPeriods: [EntryType]) {
         self.periods = activityPeriods
         self.index = 0
+        self.isEmpty = activityPeriods.isEmpty
     }
     
     var currentPeriod: EntryType {

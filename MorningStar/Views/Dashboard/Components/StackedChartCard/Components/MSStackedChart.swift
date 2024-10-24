@@ -27,13 +27,13 @@ private enum Constants {
 struct MSStackedChart: View {
     var stackWidth: CGFloat
     
-    @StateObject private var viewModel: WorkoutStackedChartViewModel
+    @ObservedObject private var viewModel: WorkoutStackedChartViewModel
     
     init(
         viewModel: WorkoutStackedChartViewModel,
         stackWidth: CGFloat = Constants.Size.defaultStackWidth
     ) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+        _viewModel = ObservedObject(wrappedValue: viewModel)
         self.stackWidth = stackWidth
     }
     

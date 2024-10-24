@@ -28,6 +28,8 @@
 		F0512F112C8513D100FA033F /* SliderBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F0A2C8513D100FA033F /* SliderBar.swift */; };
 		F0512F122C8513D100FA033F /* ValueDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F0B2C8513D100FA033F /* ValueDisplay.swift */; };
 		F0512F132C8513D100FA033F /* MSLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F0D2C8513D100FA033F /* MSLineChartView.swift */; };
+		F052A14D2CCAE6D800101521 /* MSStackedChartCardSkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F052A14C2CCAE6D800101521 /* MSStackedChartCardSkeletonView.swift */; };
+		F052A14F2CCAE71D00101521 /* MSLineChartCardSkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F052A14E2CCAE71D00101521 /* MSLineChartCardSkeletonView.swift */; };
 		F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053303E2C6A9E2C00F628C5 /* HeaderView.swift */; };
 		F05330422C6A9FF800F628C5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330412C6A9FF800F628C5 /* ContentView.swift */; };
 		F05330442C6AA58200F628C5 /* MSRoundImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330432C6AA58200F628C5 /* MSRoundImage.swift */; };
@@ -113,6 +115,8 @@
 		F0512F0A2C8513D100FA033F /* SliderBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderBar.swift; sourceTree = "<group>"; };
 		F0512F0B2C8513D100FA033F /* ValueDisplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueDisplay.swift; sourceTree = "<group>"; };
 		F0512F0D2C8513D100FA033F /* MSLineChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSLineChartView.swift; sourceTree = "<group>"; };
+		F052A14C2CCAE6D800101521 /* MSStackedChartCardSkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSStackedChartCardSkeletonView.swift; sourceTree = "<group>"; };
+		F052A14E2CCAE71D00101521 /* MSLineChartCardSkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLineChartCardSkeletonView.swift; sourceTree = "<group>"; };
 		F053303E2C6A9E2C00F628C5 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		F05330412C6A9FF800F628C5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F05330432C6AA58200F628C5 /* MSRoundImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSRoundImage.swift; sourceTree = "<group>"; };
@@ -270,7 +274,6 @@
 		F03AA6D62C642614003C1BB3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				F076E4292C7E318A0080BA83 /* Share */,
 				F076E4282C7E31140080BA83 /* Commun */,
 				F053303D2C6A9DF900F628C5 /* Header */,
 				F03AA6D72C64261E003C1BB3 /* Dashboard */,
@@ -400,13 +403,6 @@
 			path = Commun;
 			sourceTree = "<group>";
 		};
-		F076E4292C7E318A0080BA83 /* Share */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Share;
-			sourceTree = "<group>";
-		};
 		F076E42A2C7E37C60080BA83 /* ThemeToggle */ = {
 			isa = PBXGroup;
 			children = (
@@ -514,6 +510,7 @@
 				F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */,
 				F08576532CA46268003B2252 /* MSSelectionTimePeriodView.swift */,
 				F0D69FD22CA4ACB5005F329C /* MSDateNavigationView.swift */,
+				F052A14E2CCAE71D00101521 /* MSLineChartCardSkeletonView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -535,6 +532,7 @@
 				F0FF79D22C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift */,
 				F0FF79D42C7E973000DA3A54 /* IntensityStack.swift */,
 				F03599882C7FD2E4008715FF /* LegendView.swift */,
+				F052A14C2CCAE6D800101521 /* MSStackedChartCardSkeletonView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -693,9 +691,11 @@
 				F08576542CA46268003B2252 /* MSSelectionTimePeriodView.swift in Sources */,
 				F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */,
 				F0FF79D52C7E973000DA3A54 /* IntensityStack.swift in Sources */,
+				F052A14F2CCAE71D00101521 /* MSLineChartCardSkeletonView.swift in Sources */,
 				F03599872C7FD1B3008715FF /* MSRoundImageWithTitle.swift in Sources */,
 				F083A01C2CBDB99A0085C1D0 /* QueryDescriptor.swift in Sources */,
 				F05330422C6A9FF800F628C5 /* ContentView.swift in Sources */,
+				F052A14D2CCAE6D800101521 /* MSStackedChartCardSkeletonView.swift in Sources */,
 				F083A02F2CBDD4190085C1D0 /* HealthKitError.swift in Sources */,
 				F077C4102CC824CB00A88556 /* WeightLineChartViewModel.swift in Sources */,
 				F083A0192CBD40D50085C1D0 /* HealthDataProcessor.swift in Sources */,

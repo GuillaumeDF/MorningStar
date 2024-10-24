@@ -11,8 +11,13 @@ class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, I
     typealias EntryType = HealthData.WeeklyWorkoutSessions
     
     @Published var index: Int
+    @Published var periods: [EntryType] {
+        didSet {
+            isEmpty = periods.isEmpty
+        }
+    }
     
-    var periods: [EntryType]
+    var isEmpty: Bool
     
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -23,6 +28,7 @@ class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, I
     init(workoutHistory: [EntryType]) {
         self.periods = workoutHistory
         self.index = 0
+        self.isEmpty = workoutHistory.isEmpty
     }
     
     var currentPeriod: EntryType {

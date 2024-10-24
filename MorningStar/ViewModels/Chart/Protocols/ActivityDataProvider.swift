@@ -12,4 +12,5 @@ protocol ActivityDataProvider: ObservableObject {
     var periods: [EntryType] { get set }
     var currentPeriod: EntryType { get }
     var allValues: [Double] { get }
+    var isEmpty: Bool { get }
 }
