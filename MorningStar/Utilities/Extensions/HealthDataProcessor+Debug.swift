@@ -8,17 +8,17 @@
 import Foundation
 
 extension HealthDataProcessor {
-    static func printWeeklyGroups(_ weeklyGroups: HealthData.WorkoutHistory) {
+    static func printWeeklyGroups(_ weeklyGroups: [WeeklyWorkouts]) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
         
         for (weekIndex, week) in weeklyGroups.enumerated() {
-            print("Semaine \(weekIndex + 1): \(week.hashValue)")
-            for (dayIndex, day) in week.enumerated() {
-                print("  Jour \(dayIndex + 1): \(day.hashValue)")
-                for (entryIndex, entries) in day.enumerated() {
-                    print("    Entrée \(entryIndex + 1): \(entries.hashValue)")
-                    for entry in entries {
+            print("Semaine \(weekIndex + 1)")
+            for (dayIndex, day) in week.dailyWorkouts.enumerated() {
+                print("  Jour \(dayIndex + 1)")
+                for (entryIndex, entries) in day.workouts.enumerated() {
+                    print("    Entrée \(entryIndex + 1)")
+                    for entry in entries.phaseEntries {
                         print("      Hash: \(entry.hashValue)")
                         print("      Début: \(dateFormatter.string(from: entry.startDate))")
                         print("      Fin: \(dateFormatter.string(from: entry.endDate))")

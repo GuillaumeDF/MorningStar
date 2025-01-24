@@ -19,7 +19,7 @@ struct IntensitySegment: Hashable {
 struct MSStackedChartCardView: View {
     @ObservedObject private var viewModel: WorkoutStackedChartViewModel
     
-    init(workoutHistory: HealthData.WorkoutHistory) {
+    init(workoutHistory: [WeeklyWorkouts]) {
         _viewModel = ObservedObject(wrappedValue: WorkoutStackedChartViewModel(workoutHistory: workoutHistory))
     }
     

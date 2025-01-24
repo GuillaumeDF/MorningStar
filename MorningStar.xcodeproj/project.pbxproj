@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581812C62C292006CB2E6 /* MorningStarApp.swift */; };
-		F02581862C62C292006CB2E6 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581852C62C292006CB2E6 /* Item.swift */; };
 		F02581882C62C293006CB2E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F02581872C62C293006CB2E6 /* Assets.xcassets */; };
 		F025818C2C62C293006CB2E6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F025818B2C62C293006CB2E6 /* Preview Assets.xcassets */; };
 		F02581962C62C293006CB2E6 /* MorningStarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581952C62C293006CB2E6 /* MorningStarTests.swift */; };
@@ -30,6 +29,7 @@
 		F0512F132C8513D100FA033F /* MSLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F0D2C8513D100FA033F /* MSLineChartView.swift */; };
 		F052A14D2CCAE6D800101521 /* MSStackedChartCardSkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F052A14C2CCAE6D800101521 /* MSStackedChartCardSkeletonView.swift */; };
 		F052A14F2CCAE71D00101521 /* MSLineChartCardSkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F052A14E2CCAE71D00101521 /* MSLineChartCardSkeletonView.swift */; };
+		F052A1532CCBE77F00101521 /* HealthDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F052A1512CCBE77F00101521 /* HealthDataModel.xcdatamodeld */; };
 		F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053303E2C6A9E2C00F628C5 /* HeaderView.swift */; };
 		F05330422C6A9FF800F628C5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330412C6A9FF800F628C5 /* ContentView.swift */; };
 		F05330442C6AA58200F628C5 /* MSImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330432C6AA58200F628C5 /* MSImage.swift */; };
@@ -67,6 +67,7 @@
 		F0D5E0142C6E66EA00EE647B /* MSStackedChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D5E0132C6E66EA00EE647B /* MSStackedChart.swift */; };
 		F0D5E0162C6E66F500EE647B /* MSStackedChartCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D5E0152C6E66F500EE647B /* MSStackedChartCardView.swift */; };
 		F0D69FD32CA4ACB5005F329C /* MSDateNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D69FD22CA4ACB5005F329C /* MSDateNavigationView.swift */; };
+		F0D8FB962CCEE82A00E5C1F0 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D8FB952CCEE82A00E5C1F0 /* CoreDataManager.swift */; };
 		F0FF79D12C7E958D00DA3A54 /* XAxisLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FF79D02C7E958D00DA3A54 /* XAxisLabels.swift */; };
 		F0FF79D32C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FF79D22C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift */; };
 		F0FF79D52C7E973000DA3A54 /* IntensityStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FF79D42C7E973000DA3A54 /* IntensityStack.swift */; };
@@ -92,7 +93,6 @@
 /* Begin PBXFileReference section */
 		F025817E2C62C292006CB2E6 /* MorningStar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorningStar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F02581812C62C292006CB2E6 /* MorningStarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningStarApp.swift; sourceTree = "<group>"; };
-		F02581852C62C292006CB2E6 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		F02581872C62C293006CB2E6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F02581892C62C293006CB2E6 /* MorningStar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MorningStar.entitlements; sourceTree = "<group>"; };
 		F025818B2C62C293006CB2E6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -117,6 +117,8 @@
 		F0512F0D2C8513D100FA033F /* MSLineChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSLineChartView.swift; sourceTree = "<group>"; };
 		F052A14C2CCAE6D800101521 /* MSStackedChartCardSkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSStackedChartCardSkeletonView.swift; sourceTree = "<group>"; };
 		F052A14E2CCAE71D00101521 /* MSLineChartCardSkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLineChartCardSkeletonView.swift; sourceTree = "<group>"; };
+		F052A1522CCBE77F00101521 /* HealthDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HealthDataModel.xcdatamodel; sourceTree = "<group>"; };
+		F052A1552CCC387D00101521 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 		F053303E2C6A9E2C00F628C5 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		F05330412C6A9FF800F628C5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F05330432C6AA58200F628C5 /* MSImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSImage.swift; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 		F0D5E0132C6E66EA00EE647B /* MSStackedChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSStackedChart.swift; sourceTree = "<group>"; };
 		F0D5E0152C6E66F500EE647B /* MSStackedChartCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSStackedChartCardView.swift; sourceTree = "<group>"; };
 		F0D69FD22CA4ACB5005F329C /* MSDateNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSDateNavigationView.swift; sourceTree = "<group>"; };
+		F0D8FB952CCEE82A00E5C1F0 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		F0FF79D02C7E958D00DA3A54 /* XAxisLabels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XAxisLabels.swift; sourceTree = "<group>"; };
 		F0FF79D22C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YAxisLabelsAndGridLines.swift; sourceTree = "<group>"; };
 		F0FF79D42C7E973000DA3A54 /* IntensityStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntensityStack.swift; sourceTree = "<group>"; };
@@ -190,6 +193,7 @@
 				F02581802C62C292006CB2E6 /* MorningStar */,
 				F02581942C62C293006CB2E6 /* MorningStarTests */,
 				F025819E2C62C293006CB2E6 /* MorningStarUITests */,
+				F052A1542CCC387D00101521 /* Frameworks */,
 				F025817F2C62C292006CB2E6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -249,8 +253,8 @@
 		F03AA6D32C6425E6003C1BB3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				F052A1502CCBE73F00101521 /* CoreData */,
 				F03AA6D52C6425FF003C1BB3 /* Data */,
-				F03AA6D42C6425F3003C1BB3 /* Entities */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -258,7 +262,6 @@
 		F03AA6D42C6425F3003C1BB3 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				F02581852C62C292006CB2E6 /* Item.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -302,17 +305,10 @@
 		F03AA6DA2C642638003C1BB3 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				F0D8FB942CCEE7A200E5C1F0 /* CoreData */,
 				F083A0152CBD406F0085C1D0 /* HealthKit */,
-				F03AA6DB2C64263F003C1BB3 /* Network */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		F03AA6DB2C64263F003C1BB3 /* Network */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Network;
 			sourceTree = "<group>";
 		};
 		F03AA6DC2C642682003C1BB3 /* Utilities */ = {
@@ -372,6 +368,23 @@
 				F0512F0C2C8513D100FA033F /* Components */,
 			);
 			path = LineChart;
+			sourceTree = "<group>";
+		};
+		F052A1502CCBE73F00101521 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				F03AA6D42C6425F3003C1BB3 /* Entities */,
+				F052A1512CCBE77F00101521 /* HealthDataModel.xcdatamodeld */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		F052A1542CCC387D00101521 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F052A1552CCC387D00101521 /* CoreData.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		F053303D2C6A9DF900F628C5 /* Header */ = {
@@ -472,9 +485,9 @@
 			isa = PBXGroup;
 			children = (
 				F083A01F2CBDBAD20085C1D0 /* Factories */,
-				F083A0162CBD40960085C1D0 /* WorkoutIntensityAnalyzer.swift */,
 				F083A01B2CBDB99A0085C1D0 /* QueryDescriptor.swift */,
 				F083A0182CBD40D50085C1D0 /* HealthDataProcessor.swift */,
+				F083A0162CBD40960085C1D0 /* WorkoutIntensityAnalyzer.swift */,
 				F083A01D2CBDBAB30085C1D0 /* GenericHealthDataManager.swift */,
 				F083A02E2CBDD4190085C1D0 /* HealthKitError.swift */,
 			);
@@ -492,6 +505,14 @@
 				F083A02C2CBDD3DB0085C1D0 /* CalorieBurnedDataManagerFactory.swift */,
 			);
 			path = Factories;
+			sourceTree = "<group>";
+		};
+		F0D8FB942CCEE7A200E5C1F0 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				F0D8FB952CCEE82A00E5C1F0 /* CoreDataManager.swift */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 		F0FF79CA2C7E426A00DA3A54 /* LineChartCard */ = {
@@ -686,7 +707,6 @@
 				F077C4122CC824E200A88556 /* ActivityLineChartViewModel.swift in Sources */,
 				F0FF79D12C7E958D00DA3A54 /* XAxisLabels.swift in Sources */,
 				F05330442C6AA58200F628C5 /* MSImage.swift in Sources */,
-				F02581862C62C292006CB2E6 /* Item.swift in Sources */,
 				F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */,
 				F08576542CA46268003B2252 /* MSSelectionTimePeriodView.swift in Sources */,
 				F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */,
@@ -694,6 +714,7 @@
 				F052A14F2CCAE71D00101521 /* MSLineChartCardSkeletonView.swift in Sources */,
 				F03599872C7FD1B3008715FF /* MSImageWithTitle.swift in Sources */,
 				F083A01C2CBDB99A0085C1D0 /* QueryDescriptor.swift in Sources */,
+				F0D8FB962CCEE82A00E5C1F0 /* CoreDataManager.swift in Sources */,
 				F05330422C6A9FF800F628C5 /* ContentView.swift in Sources */,
 				F052A14D2CCAE6D800101521 /* MSStackedChartCardSkeletonView.swift in Sources */,
 				F083A02F2CBDD4190085C1D0 /* HealthKitError.swift in Sources */,
@@ -709,6 +730,7 @@
 				F083A02B2CBDD3B30085C1D0 /* StepDataManagerFactory.swift in Sources */,
 				F0D69FD32CA4ACB5005F329C /* MSDateNavigationView.swift in Sources */,
 				F077C41A2CC9684B00A88556 /* WorkoutMockData.swift in Sources */,
+				F052A1532CCBE77F00101521 /* HealthDataModel.xcdatamodeld in Sources */,
 				F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */,
 				F0D5E0162C6E66F500EE647B /* MSStackedChartCardView.swift in Sources */,
 				F04A78BA2C664A3000E8FB1C /* MSLogo.swift in Sources */,
@@ -1091,6 +1113,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		F052A1512CCBE77F00101521 /* HealthDataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				F052A1522CCBE77F00101521 /* HealthDataModel.xcdatamodel */,
+			);
+			currentVersion = F052A1522CCBE77F00101521 /* HealthDataModel.xcdatamodel */;
+			path = HealthDataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = F02581762C62C292006CB2E6 /* Project object */;
 }

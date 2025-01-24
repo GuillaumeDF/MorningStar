@@ -7,33 +7,132 @@
 
 import Foundation
 import HealthKit
+import CoreData
 
-class HeartRateDataManagerFactory {
-    static func createSampleManager(healthStore: HKHealthStore, from startDate: Date, to endDate: Date = Date()) -> HealthDataManager<SampleQueryDescriptor<PeriodEntry<HealthData.HeartRateEntry>>> {
-        let queryDescriptor = SampleQueryDescriptor<PeriodEntry<HealthData.HeartRateEntry>>(
-            sampleType: HKQuantityType.quantityType(forIdentifier: .heartRate)!,
-            predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
-            limit: HKObjectQueryNoLimit,
-            sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
-        ) { samples in
-            let heartRateUnit = HKUnit.count().unitDivided(by: HKUnit.minute())
-            
-            let heartRateEntries: [HealthData.HeartRateEntry] = samples.compactMap { sample in
-                guard let quantitySample = sample as? HKQuantitySample else { return nil }
-                let heartRateValue = quantitySample.quantity.doubleValue(for: heartRateUnit)
-                
-                return HealthData.HeartRateEntry(
-                    startDate: quantitySample.startDate,
-                    endDate: quantitySample.endDate,
-                    value: heartRateValue
-                )
+//struct HeartRateDataManagerFactory {
+//    static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<SampleQueryDescriptor<PeriodEntry<HealthData.HeartRateEntry>>>? {
+//        let queryDescriptor = SampleQueryDescriptor<PeriodEntry<HealthData.HeartRateEntry>>(
+//            sampleType: HKQuantityType.quantityType(forIdentifier: .heartRate)!,
+//            predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
+//            limit: HKObjectQueryNoLimit,
+//            sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
+//        ) { samples in
+//            let heartRateUnit = HKUnit.count().unitDivided(by: HKUnit.minute())
+//            
+//            let heartRateEntries: [HealthData.HeartRateEntry] = samples.compactMap { sample in
+//                guard let quantitySample = sample as? HKQuantitySample else { return nil }
+//                let heartRateValue = quantitySample.quantity.doubleValue(for: heartRateUnit)
+//                
+//                return HealthData.HeartRateEntry(
+//                    startDate: quantitySample.startDate,
+//                    endDate: quantitySample.endDate,
+//                    value: heartRateValue
+//                )
+//            }
+//            
+//            let heartRates = PeriodEntry<HealthData.HeartRateEntry>(entries: heartRateEntries)
+//            
+//            return heartRates
+//        }
+//        
+//        return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
+//    }
+//}
+
+struct HeartRateDataManagerFactory: HealthDataFactoryProtocol {
+    typealias HealthKitDataType = HeartRatePeriod
+    typealias CoreDataType = PeriodEntryMO
+    
+    static var healthKitSampleType: HKSampleType? {
+        HKQuantityType.quantityType(forIdentifier: .heartRate)
+    }
+    
+    static var id: HealthDataType {
+        .heartRate
+    }
+    
+    static var predicateCoreData: NSPredicate? {
+        nil
+    }
+    
+    static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<SampleQueryDescriptor<[HeartRatePeriod]>>? {
+           let queryDescriptor = SampleQueryDescriptor<[HeartRatePeriod]>(
+               sampleType: HKQuantityType.quantityType(forIdentifier: .heartRate)!,
+               predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
+               limit: HKObjectQueryNoLimit,
+               sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
+           ) { samples in
+               let heartRateUnit = HKUnit.count().unitDivided(by: HKUnit.minute())
+   
+               let heartRateEntries: [HealthData.HeartRateEntry] = samples.compactMap { sample in
+                   guard let quantitySample = sample as? HKQuantitySample else { return nil }
+                   let heartRateValue = quantitySample.quantity.doubleValue(for: heartRateUnit)
+   
+                   return HealthData.HeartRateEntry(
+                       startDate: quantitySample.startDate,
+                       endDate: quantitySample.endDate,
+                       value: heartRateValue
+                   )
+               }
+   
+               let heartRates = PeriodEntry<HealthData.HeartRateEntry>(entries: heartRateEntries)
+   
+               return [heartRates]
+           }
+   
+           return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
+       }
+    
+    static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[HeartRatePeriod]>>? {
+        nil
+    }
+    
+    static func transformHealthKitToCoreData(_ healthKitData: [HeartRatePeriod], context: NSManagedObjectContext) {
+        healthKitData.forEach { heartRatePeriod in
+            guard let startDate = heartRatePeriod.entries.first?.startDate,
+                  let endDate = heartRatePeriod.entries.last?.endDate else {
+                return
             }
             
-            let heartRates = PeriodEntry<HealthData.HeartRateEntry>(entries: heartRateEntries)
+            let periodEntity = PeriodEntryMO(context: context)
             
-            return heartRates
+            periodEntity.id = heartRatePeriod.id
+            periodEntity.startDate = startDate
+            periodEntity.endDate = endDate
+            
+            let heartRateEntries: [HeartRateEntryMO] = heartRatePeriod.entries.map { heartRateEntry in
+                let newEntry = HeartRateEntryMO(context: context)
+                
+                newEntry.id = heartRateEntry.id
+                newEntry.startDate = heartRateEntry.startDate
+                newEntry.endDate = heartRateEntry.endDate
+                newEntry.value = heartRateEntry.value
+                newEntry.unit = heartRateEntry.unit
+                newEntry.periodEntry = periodEntity
+                
+                return newEntry
+            }
+            
+            periodEntity.addToHeartRateEntries(NSOrderedSet(array: heartRateEntries))
         }
-        
-        return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
     }
+    
+     static func transformCoreDataToHealthKit(_ coreDataEntry: [PeriodEntryMO]) -> [HeartRatePeriod] {
+         return coreDataEntry.map { periodEntity in
+             let heartRateEntries: [HealthData.HeartRateEntry] = (periodEntity.heartRateEntries)?.compactMap { entry in
+                 guard let heartRateEntity = entry as? HeartRateEntryMO else {
+                     return nil
+                 }
+                 
+                 return HealthData.HeartRateEntry(
+                     id: heartRateEntity.id ?? UUID(),
+                     startDate: heartRateEntity.startDate ?? Date(),
+                     endDate: heartRateEntity.endDate ?? Date(),
+                     value: heartRateEntity.value
+                 )
+             } ?? []
+             
+             return PeriodEntry(entries: heartRateEntries)
+         }
+     }
 }

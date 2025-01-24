@@ -13,18 +13,20 @@ private enum Constants {
 }
 
 struct ContentView: View {
-    @StateObject private var viewModel = HealthViewModel()
+    @StateObject private var viewModel = HealthDashboardFactory.makeViewModel()
     
     var body: some View {
         ZStack {
-            if viewModel.authorizationStatus == .authorized {
+            // TODO: Refaire le status d'authorization
+//            if viewModel.authorizationStatus == .authorized {
+            if true {
                 Color.backgroundColor.edgesIgnoringSafeArea(.all)
                 GeometryReader { geometry in
                     VStack {
                         HeaderView()
                             .frame(height: geometry.size.height * Constants.headerHeight)
                         
-                        DashboardView(healthData: $viewModel.healthData)
+                        DashboardView(healthMetrics: $viewModel.healthMetrics)
                             .frame(height: geometry.size.height * Constants.dashboardHeight)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -36,7 +38,7 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            viewModel.fetchAllHealthData()
+            viewModel.initialize()
         }
     }
 }

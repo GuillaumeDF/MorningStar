@@ -8,7 +8,7 @@
 import Foundation
 
 class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, IndexManageable {
-    typealias EntryType = HealthData.WeeklyWorkoutSessions
+    typealias EntryType = WeeklyWorkouts
     
     @Published var index: Int
     @Published var periods: [EntryType] {
@@ -39,9 +39,9 @@ class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, I
     var currentDateLabel: DateRepresentation {
         .multiple(
             periods[index]
-                .flatMap { $0 }
+                .dailyWorkouts
                 .map { workoutPhases in
-                    if let startDate = workoutPhases.first?.startDate {
+                    if let startDate = workoutPhases.startDate {
                         return dateFormatter.string(from: startDate)
                     } else {
                         return "???"
@@ -53,10 +53,14 @@ class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, I
     var maxTime: CGFloat {
         return (
             periods[index]
-                .flatMap { $0 }
+                .dailyWorkouts
                 .map { workoutPhases in
-                    workoutPhases.reduce(0) { total, phase in
-                        total + phase.endDate.timeIntervalSince(phase.startDate)
+                    workoutPhases.workouts.reduce(0) { total, phase in
+                        if let startDate = phase.startDate, let endDate = phase.endDate {
+                            total + endDate.timeIntervalSince(startDate)
+                        } else {
+                            total + 0
+                        }
                     }
                 }
                 .max() ?? 0

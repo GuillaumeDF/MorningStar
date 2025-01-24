@@ -9,6 +9,16 @@ import Foundation
 import HealthKit
 import SwiftUICore
 
+typealias WeightPeriod = PeriodEntry<HealthData.WeightEntry>
+typealias CaloriesPeriod = PeriodEntry<HealthData.ActivityEntry>
+typealias StepPeriod = PeriodEntry<HealthData.ActivityEntry>
+typealias SleepPeriod = PeriodEntry<HealthData.SleepEntry>
+typealias HeartRatePeriod = PeriodEntry<HealthData.HeartRateEntry>
+
+typealias WeeklyWorkouts = HealthData.WeeklyWorkouts
+typealias DailyWorkouts = HealthData.DailyWorkouts
+typealias Workout = HealthData.Workout
+
 protocol HealthEntry: Identifiable, Hashable {
     associatedtype T
     
@@ -18,8 +28,12 @@ protocol HealthEntry: Identifiable, Hashable {
     var unit: String { get }
 }
 
-enum IntensityLevel: Hashable {
-    case undetermined, low, moderate, high, veryHigh
+enum IntensityLevel: Int, Hashable {
+    case undetermined = 0
+    case low = 1
+    case moderate = 2
+    case high = 3
+    case veryHigh = 4
     
     var color: Color {
         switch self {
@@ -37,36 +51,53 @@ struct PeriodEntry<T: HealthEntry>: Identifiable {
     var entries: [T]
 }
 
-struct HealthData {
-    typealias WorkoutPhaseEntries = [WorkoutEntry]
-    typealias DailyWorkoutSessions = [WorkoutPhaseEntries]
-    typealias WeeklyWorkoutSessions = [DailyWorkoutSessions]
-    typealias WorkoutHistory = [WeeklyWorkoutSessions]
-    
+struct HealthData { }
+
+extension HealthData {
     struct WeightEntry: HealthEntry {
         typealias T = Double
         
-        let id = UUID()
+        let id: UUID
         let startDate: Date
         let endDate: Date
         let value: T
         let unit: String
+        
+        init(id: UUID = UUID(), startDate: Date, endDate: Date, value: T, unit: String) {
+            self.id = id
+            self.startDate = startDate
+            self.endDate = endDate
+            self.value = value
+            self.unit = unit
+        }
     }
-    
+}
+
+extension HealthData {
     struct ActivityEntry: HealthEntry {
         typealias T = Double
-        
-        let id = UUID()
+
+        let id: UUID
         let startDate: Date
         let endDate: Date
         let value: T
         let unit: String
+
+        init(id: UUID = UUID(), startDate: Date, endDate: Date, value: T, unit: String) {
+            self.id = id
+            self.startDate = startDate
+            self.endDate = endDate
+            self.value = value
+            self.unit = unit
+        }
     }
-    
+}
+
+extension HealthData {
     struct SleepEntry: HealthEntry {
         typealias T = TimeInterval
         
-        let id = UUID()
+        let id: UUID
         let startDate: Date
         let endDate: Date
         let unit: String
@@ -74,50 +105,121 @@ struct HealthData {
         var value: T {
             return endDate.timeIntervalSince(startDate)
         }
+        
+        init(id: UUID = UUID(), startDate: Date, endDate: Date, unit: String = "") {
+            self.id = id
+            self.startDate = startDate
+            self.endDate = endDate
+            self.unit = unit
+        }
+    }
+}
+
+extension HealthData {
+    struct HeartRateEntry: HealthEntry {
+        typealias T = Double
+        
+        let id: UUID
+        let startDate: Date
+        let endDate: Date
+        let value: T
+        let unit: String
+        
+        init(id: UUID = UUID(), startDate: Date, endDate: Date, value: T, unit: String = "") {
+            self.id = id
+            self.startDate = startDate
+            self.endDate = endDate
+            self.value = value
+            self.unit = unit
+        }
+    }
+}
+
+extension HealthData {
+    struct WeeklyWorkouts: Hashable {
+        let id: UUID
+        var dailyWorkouts: [DailyWorkouts]
+        
+        var startDate: Date? {
+            dailyWorkouts.first?.startDate
+        }
+        
+        var endDate: Date? {
+            dailyWorkouts.last?.endDate
+        }
+        
+        init(id: UUID = UUID(), dailyWorkouts: [DailyWorkouts]) {
+            self.id = id
+            self.dailyWorkouts = dailyWorkouts
+        }
     }
     
-    struct WorkoutEntry: HealthEntry {
+    struct DailyWorkouts: Hashable {
+        let id: UUID
+        var workouts: [Workout]
+        
+        var startDate: Date? {
+            workouts.first?.startDate
+        }
+        
+        var endDate: Date? {
+            workouts.last?.endDate
+        }
+        
+        init(id: UUID = UUID(), workouts: [Workout]) {
+            self.id = id
+            self.workouts = workouts
+        }
+    }
+    
+    struct Workout: Hashable {
+        let id: UUID
+        var phaseEntries: [WorkoutPhaseEntry]
+        
+        var startDate: Date? {
+            phaseEntries.first?.startDate
+        }
+        
+        var endDate: Date? {
+            phaseEntries.last?.endDate
+        }
+        
+        init(id: UUID = UUID(), phaseEntries: [WorkoutPhaseEntry]) {
+            self.id = id
+            self.phaseEntries = phaseEntries
+        }
+    }
+    
+    struct WorkoutPhaseEntry: HealthEntry {
         typealias T = IntensityLevel
         
-        let id = UUID()
+        let id: UUID
         let startDate: Date
         var endDate: Date
         let value: T
-        let unit: String = ""
+        let unit: String
         let averageHeartRate: Double
         let caloriesBurned: Double
         
         var duration: Double {
             return endDate.timeIntervalSince(startDate)
         }
-    }
-    
-    struct HeartRateEntry: HealthEntry {
-        typealias T = Double
         
-        let id = UUID()
-        let startDate: Date
-        let endDate: Date
-        let value: T
-        let unit: String = ""
-    }
-    
-    var weightHistory: [PeriodEntry<WeightEntry>]
-    var stepCountHistory: [PeriodEntry<ActivityEntry>]
-    var calorieBurnHistory: [PeriodEntry<ActivityEntry>]
-    var sleepHistory: [PeriodEntry<SleepEntry>]
-    var workoutHistory: WorkoutHistory
-    var totalWorkoutHoursThisWeek: (hours: Int, minutes: Int)
-    var totalStepThisWeek: Int
-    
-    init() {
-        self.weightHistory = []
-        self.stepCountHistory = []
-        self.calorieBurnHistory = []
-        self.sleepHistory = []
-        self.workoutHistory = []
-        self.totalWorkoutHoursThisWeek = (0, 0)
-        self.totalStepThisWeek = 0
+        init(id: UUID = UUID(),
+             startDate: Date,
+             endDate: Date,
+             value: T,
+             unit: String = "",
+             averageHeartRate: Double,
+             caloriesBurned: Double) {
+            self.id = id
+            self.startDate = startDate
+            self.endDate = endDate
+            self.value = value
+            self.unit = unit
+            self.averageHeartRate = averageHeartRate
+            self.caloriesBurned = caloriesBurned
+        }
     }
 }
 

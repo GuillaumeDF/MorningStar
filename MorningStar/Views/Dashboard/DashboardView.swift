@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @Binding var healthData: HealthData
+    @Binding var healthMetrics: HealthMetrics
     
     var body: some View {
         VStack(spacing: AppConstants.Padding.extraLarge) {
@@ -23,18 +23,20 @@ struct DashboardView: View {
                         .foregroundStyle(Color.secondaryTextColor)
                 }
                 Spacer()
-                MSDashboardHeaderMetricView(
-                    title: "Total workout this week",
-                    value: healthData.totalWorkoutHoursThisWeek.minutes == 0 ?
-                    "\(healthData.totalWorkoutHoursThisWeek.hours) hr" : 
-                        "\(healthData.totalWorkoutHoursThisWeek.hours) hr \(healthData.totalWorkoutHoursThisWeek.minutes)"
-                )
+                // TODO: Reimplenter Total workout this week
+//                MSDashboardHeaderMetricView(
+//                    title: "Total workout this week",
+//                    value: healthData.totalWorkoutHoursThisWeek.minutes == 0 ?
+//                    "\(healthData.totalWorkoutHoursThisWeek.hours) hr" : 
+//                        "\(healthData.totalWorkoutHoursThisWeek.hours) hr \(healthData.totalWorkoutHoursThisWeek.minutes)"
+//                )
                 MSVerticalSeparator()
                     .frame(height: 50)
-                MSDashboardHeaderMetricView(
-                    title: "Total step this week",
-                    value: "\(healthData.totalStepThisWeek)"
-                )
+                // TODO: Reimplenter Total step this week
+//                MSDashboardHeaderMetricView(
+//                    title: "Total step this week",
+//                    value: "\(healthData.totalStepThisWeek)"
+//                )
             }
             
             GeometryReader { geometry in
@@ -42,12 +44,12 @@ struct DashboardView: View {
                     MSLineChartCardView(
                         imageName: "weightIcon",
                         title: "Weight",
-                        viewModel: WeightLineChartViewModel(activityPeriods: healthData.weightHistory),
+                        viewModel: WeightLineChartViewModel(activityPeriods: healthMetrics.weightHistory),
                         backgroundColor: Color.weightColor,
                         arrowDirection: .up
                     )
                     .frame(width: (geometry.size.width - 100) / 3)
-                    MSStackedChartCardView(workoutHistory: healthData.workoutHistory)
+                    MSStackedChartCardView(workoutHistory: healthMetrics.workoutHistory)
                 }
             }
             
@@ -55,21 +57,21 @@ struct DashboardView: View {
                 MSLineChartCardView(
                     imageName: "caloriesIcon",
                     title: "Calorie burned",
-                    viewModel: ActivityLineChartViewModel(activityPeriods: healthData.calorieBurnHistory),
+                    viewModel: ActivityLineChartViewModel(activityPeriods: healthMetrics.calorieBurnedHistory),
                     backgroundColor: Color.calorieColor,
                     arrowDirection: .up
                 )
                 MSLineChartCardView(
                     imageName: "stepIcon",
                     title: "Step",
-                    viewModel: ActivityLineChartViewModel(activityPeriods: healthData.stepCountHistory),
+                    viewModel: ActivityLineChartViewModel(activityPeriods: healthMetrics.stepCountHistory),
                     backgroundColor: Color.stepColor,
                     arrowDirection: .up
                 )
                 MSLineChartCardView(
                     imageName: "sleepIcon",
                     title: "Sleep",
-                    viewModel: SleepLineChartViewModel(activityPeriods: healthData.sleepHistory),
+                    viewModel: SleepLineChartViewModel(activityPeriods: healthMetrics.sleepHistory),
                     backgroundColor: Color.blue,
                     arrowDirection: .down
                 )
@@ -78,6 +80,6 @@ struct DashboardView: View {
     }
 }
 
-#Preview {
-    DashboardView(healthData: .constant(HealthData()))
-}
+//#Preview {
+//    DashboardView(healthMetrics: .constant(HealthMetrics.empty))
+//}

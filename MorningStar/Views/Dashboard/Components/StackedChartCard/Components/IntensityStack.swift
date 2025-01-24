@@ -12,14 +12,14 @@ private enum Constants {
 }
 
 struct IntensityStack: View {
-    let workoutPhaseEntries: HealthData.WorkoutPhaseEntries
+    let workout: Workout
     let maxTime: CGFloat
     
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
-                ForEach(Array(workoutPhaseEntries.enumerated()), id: \.element) { index, workoutEntry in
+                ForEach(Array(workout.phaseEntries.enumerated()), id: \.element) { index, workoutPhaseEntry in
                     VStack(spacing: 0) {
                         if index != 0 {
                             Divider()
@@ -28,20 +28,20 @@ struct IntensityStack: View {
                         }
                         
                         Rectangle()
-                            .fill(workoutEntry.value.color)
-                            .frame(height: calculateHeight(for: workoutEntry, with: geometry, isFirstIndex: index == 0))
+                            .fill(workoutPhaseEntry.value.color)
+                            .frame(height: calculateHeight(for: workoutPhaseEntry, with: geometry, isFirstIndex: index == 0))
                     }
                 }
             }
         }
     }
     
-    private func calculateHeight(for workoutEntry: HealthData.WorkoutEntry, with geometry: GeometryProxy, isFirstIndex: Bool) -> CGFloat {
-        (geometry.size.height * workoutEntry.duration) / (maxTime * 60) - (isFirstIndex ? 0 : Constants.dividerHeight)
+    private func calculateHeight(for workoutPhaseEntry: HealthData.WorkoutPhaseEntry, with geometry: GeometryProxy, isFirstIndex: Bool) -> CGFloat {
+        (geometry.size.height * workoutPhaseEntry.duration) / (maxTime * 60) - (isFirstIndex ? 0 : Constants.dividerHeight)
     }
 }
 
 #Preview {
-    IntensityStack(workoutPhaseEntries: WorkoutMockData.hiitWorkout, maxTime: 35)
+    IntensityStack(workout: WorkoutMockData.hiitWorkout, maxTime: 35)
         .frame(width: 40)
 }

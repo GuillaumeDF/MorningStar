@@ -116,53 +116,53 @@ struct HealthDataProcessor {
         return weeklyActivities
     }
     
-    static func sortAndgroupWorkoutsByDayAndWeek(_ workouts: [HealthData.WorkoutPhaseEntries]) -> HealthData.WorkoutHistory {
+    static func sortAndgroupWorkoutsByDayAndWeek(_ workouts: [Workout]) -> [WeeklyWorkouts]{
         let calendar = Calendar.current
         
         let sortedWorkouts = workouts.sorted {
-            ($0.first?.startDate ?? Date.distantPast) > ($1.first?.startDate ?? Date.distantPast)
+            ($0.startDate ?? Date.distantPast) > ($1.startDate ?? Date.distantPast)
         }
         
-        var weeklyGroups: HealthData.WorkoutHistory = []
-        var currentWeekDailyGroups: HealthData.WeeklyWorkoutSessions = []
-        var currentDayWorkouts: HealthData.DailyWorkoutSessions = []
+        var weeklyGroups: [WeeklyWorkouts] = []
+        var currentWeekDailyGroups: WeeklyWorkouts = WeeklyWorkouts(dailyWorkouts: [])
+        var currentDayWorkouts: DailyWorkouts = DailyWorkouts(workouts: [])
         var currentWeekStart: Date?
         var currentDayStart: Date?
         
         for workout in sortedWorkouts {
-            guard let firstPhase = workout.first else { continue }
+            guard let firstPhase = workout.phaseEntries.first else { continue }
             
             let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: firstPhase.startDate))!
             let dayStart = calendar.startOfDay(for: firstPhase.startDate)
             
             if currentWeekStart != weekStart {
-                if !currentDayWorkouts.isEmpty {
-                    currentWeekDailyGroups.insert(currentDayWorkouts, at: 0)
-                    currentDayWorkouts = []
+                if !currentDayWorkouts.workouts.isEmpty {
+                    currentWeekDailyGroups.dailyWorkouts.insert(currentDayWorkouts, at: 0)
+                    currentDayWorkouts.workouts = []
                 }
-                if !currentWeekDailyGroups.isEmpty {
+                if !currentWeekDailyGroups.dailyWorkouts.isEmpty {
                     weeklyGroups.append(currentWeekDailyGroups)
-                    currentWeekDailyGroups = []
+                    currentWeekDailyGroups.dailyWorkouts = []
                 }
                 currentWeekStart = weekStart
                 currentDayStart = nil
             }
             
             if currentDayStart != dayStart {
-                if !currentDayWorkouts.isEmpty {
-                    currentWeekDailyGroups.insert(currentDayWorkouts, at: 0)
-                    currentDayWorkouts = []
+                if !currentDayWorkouts.workouts.isEmpty {
+                    currentWeekDailyGroups.dailyWorkouts.insert(currentDayWorkouts, at: 0)
+                    currentDayWorkouts.workouts = []
                 }
                 currentDayStart = dayStart
             }
             
-            currentDayWorkouts.append(workout)
+            currentDayWorkouts.workouts.append(workout)
         }
         
-        if !currentDayWorkouts.isEmpty {
-            currentWeekDailyGroups.insert(currentDayWorkouts, at: 0)
+        if !currentDayWorkouts.workouts.isEmpty {
+            currentWeekDailyGroups.dailyWorkouts.insert(currentDayWorkouts, at: 0)
         }
-        if !currentWeekDailyGroups.isEmpty {
+        if !currentWeekDailyGroups.dailyWorkouts.isEmpty {
             weeklyGroups.append(currentWeekDailyGroups)
         }
         
