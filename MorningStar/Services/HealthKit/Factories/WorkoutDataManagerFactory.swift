@@ -55,42 +55,38 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func fetchDataForWorkout(healthStore: HKHealthStore, sample: HKSample) async -> Workout? {
-        return await withCheckedContinuation { continuation in
-            HeartRateDataManagerFactory.createSampleQueryManager(
+        do {
+            guard let heartRateEntries = try await HeartRateDataManagerFactory.createSampleQueryManager(
                 for: healthStore,
                 from: sample.startDate,
                 to: sample.endDate
-            )?.fetchData { heartRateResult in
-                switch heartRateResult {
-                case .success(let heartRateEntries):
-                    CalorieBurnedDataManagerFactory.createSampleQueryManager(
-                        for: healthStore,
-                        from: sample.startDate,
-                        to: sample.endDate
-                    )?.fetchData { calorieResult in
-                        switch calorieResult {
-                        case .success(let calorieEntries):
-                            let heartRates = heartRateEntries.first?.entries ?? []
-                            let caloriesBurned = calorieEntries.first?.entries ?? []
-                            
-                            let workoutsWithIntensity = WorkoutIntensityAnalyzer().generateIntensityPhases(
-                                sample: sample,
-                                heartRates: heartRates,
-                                caloriesBurned: caloriesBurned
-                            )
-                            
-                            continuation.resume(returning: workoutsWithIntensity)
-                            
-                        case .failure(let error):
-                            print("Failed to process calorie entries: \(error.localizedDescription)")
-                            continuation.resume(returning: nil)
-                        }
-                    }
-                case .failure(let error):
-                    print("Failed to process heart rate entries: \(error.localizedDescription)")
-                    continuation.resume(returning: nil)
-                }
+            )?.fetchData() else {
+                print("Failed to fetch heart rate data")
+                return nil
             }
+            
+            guard let calorieEntries = try await CalorieBurnedDataManagerFactory.createSampleQueryManager(
+                for: healthStore,
+                from: sample.startDate,
+                to: sample.endDate
+            )?.fetchData() else {
+                print("Failed to fetch calorie burned data")
+                return nil
+            }
+            
+            let heartRates = heartRateEntries.first?.entries ?? []
+            let caloriesBurned = calorieEntries.first?.entries ?? []
+            
+            let workoutsWithIntensity = WorkoutIntensityAnalyzer().generateIntensityPhases(
+                sample: sample,
+                heartRates: heartRates,
+                caloriesBurned: caloriesBurned
+            )
+            
+            return workoutsWithIntensity
+        } catch {
+            print("Error during workout data fetching: \(error.localizedDescription)")
+            return nil
         }
     }
     

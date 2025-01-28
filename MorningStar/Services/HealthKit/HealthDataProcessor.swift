@@ -13,7 +13,6 @@ private enum Constants {
 }
 
 struct HealthDataProcessor {
-    
     static func groupActivitiesByDay(for statsCollection: HKStatisticsCollection, from startDate: Date, to endDate: Date, unit: HKUnit) -> [PeriodEntry<HealthData.ActivityEntry>] {
         var dailyActivities: [PeriodEntry<HealthData.ActivityEntry>] = []
         var currentDayActivities: [HealthData.ActivityEntry] = []

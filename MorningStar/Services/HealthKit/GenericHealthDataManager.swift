@@ -14,13 +14,17 @@ protocol HealthDataManageable {
     var healthStore: HKHealthStore { get }
     var queryDescriptor: QueryDescriptorType { get }
     
-    func fetchData(completion: @escaping (Result<QueryDescriptorType.ResultType, Error>) -> Void)
+    func fetchData() async throws -> QueryDescriptorType.ResultType
 }
 
 extension HealthDataManageable {
-    func fetchData(completion: @escaping (Result<QueryDescriptorType.ResultType, Error>) -> Void) {
-        let query = queryDescriptor.createQuery(completion: completion)
-        healthStore.execute(query)
+    func fetchData() async throws -> QueryDescriptorType.ResultType {
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = queryDescriptor.createQuery { result in
+                continuation.resume(with: result)
+            }
+            healthStore.execute(query)
+        }
     }
 }
 

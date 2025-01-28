@@ -9,36 +9,6 @@ import Foundation
 import HealthKit
 import CoreData
 
-//struct HeartRateDataManagerFactory {
-//    static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<SampleQueryDescriptor<PeriodEntry<HealthData.HeartRateEntry>>>? {
-//        let queryDescriptor = SampleQueryDescriptor<PeriodEntry<HealthData.HeartRateEntry>>(
-//            sampleType: HKQuantityType.quantityType(forIdentifier: .heartRate)!,
-//            predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
-//            limit: HKObjectQueryNoLimit,
-//            sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
-//        ) { samples in
-//            let heartRateUnit = HKUnit.count().unitDivided(by: HKUnit.minute())
-//            
-//            let heartRateEntries: [HealthData.HeartRateEntry] = samples.compactMap { sample in
-//                guard let quantitySample = sample as? HKQuantitySample else { return nil }
-//                let heartRateValue = quantitySample.quantity.doubleValue(for: heartRateUnit)
-//                
-//                return HealthData.HeartRateEntry(
-//                    startDate: quantitySample.startDate,
-//                    endDate: quantitySample.endDate,
-//                    value: heartRateValue
-//                )
-//            }
-//            
-//            let heartRates = PeriodEntry<HealthData.HeartRateEntry>(entries: heartRateEntries)
-//            
-//            return heartRates
-//        }
-//        
-//        return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
-//    }
-//}
-
 struct HeartRateDataManagerFactory: HealthDataFactoryProtocol {
     typealias HealthKitDataType = HeartRatePeriod
     typealias CoreDataType = PeriodEntryMO
@@ -48,7 +18,7 @@ struct HeartRateDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static var id: HealthDataType {
-        .heartRate
+        .calories // TODO: Trouver une solution pour retirer
     }
     
     static var predicateCoreData: NSPredicate? {

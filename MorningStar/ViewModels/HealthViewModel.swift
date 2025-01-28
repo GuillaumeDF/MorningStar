@@ -8,13 +8,14 @@
 import HealthKit
 import CoreData
 
+// TODO: Verifier l'autorisation de heartRate
 enum HealthDataType: CaseIterable, CustomStringConvertible {
     case steps
     case calories
     case weight
     case sleep
     case workouts
-    case heartRate
+    //case heartRate
     
     var description: String {
         switch self {
@@ -23,7 +24,7 @@ enum HealthDataType: CaseIterable, CustomStringConvertible {
         case .weight: return "weight"
         case .sleep: return "sleep"
         case .workouts: return "workouts"
-        case .heartRate: return "heartRate"
+            //case .heartRate: return "heartRate"
         }
     }
     
@@ -34,7 +35,7 @@ enum HealthDataType: CaseIterable, CustomStringConvertible {
         case .weight: return WeightDataManagerFactory.self
         case .sleep: return SleepDataManagerFactory.self
         case .workouts: return WorkoutDataManagerFactory.self
-        case .heartRate: return HeartRateDataManagerFactory.self // TODO: A vérifier
+            //case .heartRate: return HeartRateDataManagerFactory.self // TODO: A vérifier
         }
     }
 }
@@ -56,20 +57,19 @@ protocol HealthDataFactoryProtocol {
 
 protocol HealthRepositoryProtocol {
     func fetchCoreData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthKitDataType]
-    func fetchHealthKit<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date, completion: @escaping (Result<[T.HealthKitDataType], Error>) -> Void)
-    func saveData<T: HealthDataFactoryProtocol>(_ factory: T.Type, items: [T.HealthKitDataType]) async throws
-    func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws
+    func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async -> Result<[T.HealthKitDataType], Error>
 }
 
 // MARK: - Data Sources
 protocol CoreDataSourceProtocol {
     func create<T: HealthDataFactoryProtocol>(_ factory: T.Type, items: [T.HealthKitDataType])
     func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, options: CoreDataSource.SortOrder) async throws -> [T.CoreDataType]
+    func getFetchedRecords<T: HealthDataFactoryProtocol>(_ factory: T.Type) -> [T.CoreDataType]
     func save() async throws
 }
 
 protocol HealthKitSourceProtocol {
-    func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date, completion: @escaping (Result<[T.HealthKitDataType], Error>) -> Void)
+    func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date) async throws -> [T.HealthKitDataType]
 }
 
 enum HealthError: Error {
@@ -173,8 +173,8 @@ class CoreDataSource: CoreDataSourceProtocol {
     }
     
     static let shared = CoreDataSource()
-    
     private(set) var persistentContainer: NSPersistentContainer
+    private(set) var fetchedRecords: [HealthDataType: [NSManagedObject]] = [:]
 
     private init() {
         persistentContainer = NSPersistentContainer(name: "HealthDataModel")
@@ -188,6 +188,10 @@ class CoreDataSource: CoreDataSourceProtocol {
 
     var context: NSManagedObjectContext {
         persistentContainer.viewContext
+    }
+    
+    func getFetchedRecords<T: HealthDataFactoryProtocol>(_ factory: T.Type) -> [T.CoreDataType] {
+        fetchedRecords[factory.id] as? [T.CoreDataType] ?? []
     }
     
     func create<T: HealthDataFactoryProtocol>(_ factory: T.Type, items: [T.HealthKitDataType]) { // TODO ajouter un throws avec gestion d'erreurs (CoreDataError)
@@ -215,6 +219,7 @@ class CoreDataSource: CoreDataSourceProtocol {
         context.performAndWait {
             do {
                 results = try context.fetch(fetchRequest)
+                fetchedRecords[factory.id] = results
             } catch let error {
                 fetchError = error
             }
@@ -265,23 +270,33 @@ class HealthKitSource: HealthKitSourceProtocol {
         self.healthStore = healthStore
     }
     
-    func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date, completion: @escaping (Result<[T.HealthKitDataType], Error>) -> Void) {
-        switch factory.id {
-        case .workouts, .sleep, .weight:
-            let manager = factory.createSampleQueryManager(for: healthStore, from: startDate, to: Date())
-            
-            manager?.fetchData { result in
-                completion(result)
-            }
-        case .steps, .calories:
-            let manager = factory.createStatisticsQueryManager(for: healthStore, from: startDate, to: Date())
-            
-            manager?.fetchData { result in
-                completion(result)
-            }
-        case .heartRate:
-            return
-        }
+    func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date) async throws -> [T.HealthKitDataType] {
+       switch factory.id {
+       case .workouts, .sleep, .weight:
+           guard let manager = factory.createSampleQueryManager(
+               for: healthStore,
+               from: startDate,
+               to: Date()
+           ) else {
+               throw HealthKitError.managerCreationFailed
+           }
+               
+           return try await manager.fetchData()
+           
+       case .steps, .calories:
+           guard let manager = factory.createStatisticsQueryManager(
+               for: healthStore,
+               from: startDate,
+               to: Date()
+           ) else {
+               throw HealthKitError.managerCreationFailed
+           }
+               
+           return try await manager.fetchData()
+           
+//       case .heartRate:
+//           return []
+       }
     }
 }
 
@@ -307,15 +322,16 @@ class HealthRepository: HealthRepositoryProtocol {
     
     func fetchCoreData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthKitDataType] {
         let localData = try await coreDataSource.fetch(factory, options: .dateDescending)
-        let healthData = factory.transformCoreDataToHealthKit(localData) // TODO: Rename
+        let healthData = factory.transformCoreDataToHealthKit(localData)
         
         return healthData
     }
     
-    func fetchHealthKit<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date, completion: @escaping (Result<[T.HealthKitDataType], Error>) -> Void) {
-        healthKitSource.fetch(factory, from: startDate) { result in
-            completion(result)
-        }
+    func fetchHealthKit<T: HealthDataFactoryProtocol>(
+        _ factory: T.Type,
+        from startDate: Date
+    ) async throws -> [T.HealthKitDataType] {
+        return try await healthKitSource.fetch(factory, from: startDate)
     }
     
     func saveData<T: HealthDataFactoryProtocol>(_ factory: T.Type, items: [T.HealthKitDataType]) async throws { // TODO: Faire le save des items
@@ -326,53 +342,45 @@ class HealthRepository: HealthRepositoryProtocol {
         print("Les données de \(factory.id.description) vient d'être saved dans CoreData")
     }
 
-    func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws {
+    //        let today = Date()
+    //        let lastSync = Calendar.current.date(byAdding: .month, value: -1, to: today)
+    func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async -> Result<[T.HealthKitDataType], Error> {
         let lastSync = await syncStorage.getLastSync(for: factory.id)
         print("Le last sync pour \(factory.id.description) est le \(lastSync ?? Date.distantPast)")
-//        let today = Date()
-//        let lastSync = Calendar.current.date(byAdding: .month, value: -1, to: today)
 
         guard syncStrategy.shouldSync(lastSync: lastSync) else {
             print("Pas de synchronisation nécessaire")
-            return
+            return .success([])
         }
 
-        try await withCheckedThrowingContinuation { continuation in
-            fetchHealthKit(factory, from: lastSync ?? .distantPast) { [weak self] result in
-                switch result {
-                case .success(let items):
-                    Task {
-                        do {
-                            try await self?.saveData(factory, items: items)
-                            continuation.resume()
-                        } catch {
-                            continuation.resume(throwing: HealthError.syncFailed)
-                        }
-                    }
-                case .failure:
-                    continuation.resume(throwing: HealthError.syncFailed)
-                }
+        do {
+            // Récupération des données HealthKit
+            let newItems = try await fetchHealthKit(factory, from: lastSync ?? .distantPast)
+            guard !newItems.isEmpty else {
+                print("Aucun nouvel élément récupéré depuis HealthKit pour \(factory.id)")
+                return .success([])
             }
-        }
+            //let localDataFetched = coreDataSource.getFetchedRecords(factory)
+            
+            //let newItemsMerged = merger newItem and localDataFetched
+            
+            // Sauvegarde les données récupérées
+            try await saveData(factory, items: newItems) // TODO: Remplace par newItemsMerged
 
-        //await syncStorage.updateLastSync(for: factory.id)
-        //print("Le last sync pour \(factory.id.description) vient d'être saved")
+            // Mise à jour du dernier temps de synchronisation
+             await syncStorage.updateLastSync(for: factory.id)
+             print("Le last sync pour \(factory.id.description) vient d'être saved")
+            
+            //let healthData = factory.transformCoreDataToHealthKit(localData)
+            //return .success(healthData)
+            
+            return .success(newItems)
+        } catch {
+            print("Erreur lors de la synchronisation : \(error)")
+            return .failure(error)
+        }
     }
 }
-
-//class HealthMetrics: ObservableObject {
-//    @Published private var data: [HealthDataType: [Any]] = [:]
-//
-//    // Getter générique
-//    func get<T>(_ type: HealthDataType) -> [T]? {
-//        return data[type] as? [T]
-//    }
-//
-//    // Setter générique (déclenche automatiquement SwiftUI)
-//    func set<T>(_ type: HealthDataType, items: [T]) {
-//        data[type] = items
-//    }
-//}
 
 struct HealthMetrics {
     var stepCountHistory: [StepPeriod] = []
@@ -393,14 +401,14 @@ struct HealthMetrics {
             sleepHistory = items as? [SleepPeriod] ?? []
         case .workouts:
             workoutHistory = items as? [WeeklyWorkouts] ?? []
-        default:
-            break
         }
     }
 }
-// MARK: - View Model Implementation
+
 @MainActor
 class HealthDashboardViewModel: ObservableObject {
+    // MARK: - Types
+    
     enum State {
         case initial
         case loading
@@ -408,74 +416,101 @@ class HealthDashboardViewModel: ObservableObject {
         case error(Error)
     }
     
+    // MARK: - Properties
+    
     @Published var healthMetrics = HealthMetrics()
-    /*@Published*/ var state: State = .initial
+    /*@Published*/ private(set) var state: State = .initial
     
     private let repository: HealthRepositoryProtocol
     private let authorizationManager: HealthKitAuthorizationManager
+    
+    // MARK: - Initialization
     
     init(repository: HealthRepositoryProtocol, authorizationManager: HealthKitAuthorizationManager) {
         self.repository = repository
         self.authorizationManager = authorizationManager
     }
     
+    // MARK: - Public Methods
+    
     func initialize() {
-        print("Initializing HealthDashboardViewModel...")
         Task { [weak self] in
             guard let self = self else { return }
             do {
-                self.state = .loading
                 try await self.authorizationManager.requestAuthorization()
-                await self.loadData()
+                await self.loadAndSyncData()
             } catch {
                 self.state = .error(error)
             }
         }
     }
     
-    func loadData() async {
-        self.state = .loading
-        
-        do {
-            try await withThrowingTaskGroup(of: Void.self) { group in
-                for type in HealthDataType.allCases {
-                    group.addTask {
-                        let data = try await self.repository.fetchCoreData(type.healthKitFactory)
-                        print("Les données de \(type.description) vient d'être fetch de CoreData")
-                        
-                        await MainActor.run {
-                            self.healthMetrics.set(type, items: data)
-                            print("Les données de \(type.description) vient d'être set pour être affichées")
-                        }
-                    }
+    // MARK: - Private Methods
+    
+    private func loadAndSyncData() async {
+        await loadAllLocalData()
+        await syncAllHealthData()
+    }
+    
+    private func loadAllLocalData() async {
+        await withTaskGroup(of: Void.self) { group in
+            for type in HealthDataType.allCases {
+                group.addTask {
+                    await self.loadLocalData(type.healthKitFactory)
                 }
-                
-                try await group.waitForAll()
             }
-            state = .loaded
-            
-            //await syncData()
-        } catch {
-            state = .error(error)
         }
     }
     
-    private func syncData() async {
+    private func loadLocalData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async {
         do {
-            try await withThrowingTaskGroup(of: Void.self) { group in
-                for type in HealthDataType.allCases {
-                    group.addTask {
-                        try await self.repository.syncData(type.healthKitFactory)
-                    }
-                }
-
-                try await group.waitForAll()
+            let localData = try await repository.fetchCoreData(factory)
+            print("Data loaded \(factory.id.description)")
+            
+            await MainActor.run {
+                healthMetrics.set(factory.id, items: localData)
+                print("Data displayed \(factory.id.description)")
             }
             
-            // Reload data after successful sync // Remettre la recusivité loadData avec la syncStrategy
-            //await loadData()
         } catch {
-            state = .error(error)
+            print("Failed to load data for \(factory.id.description): \(error)")
+            await MainActor.run { state = .error(error) }
+        }
+    }
+    
+    private func syncAllHealthData() async {
+        Task.detached { [weak self] in
+            guard let self = self else { return }
+            
+            while true {
+                await withTaskGroup(of: Void.self) { group in
+                    for type in HealthDataType.allCases {
+                        group.addTask {
+                            await self.syncHealthData(type.healthKitFactory)
+                        }
+                    }
+                }
+                try? await Task.sleep(nanoseconds: 10 * 1_000_000_000)
+            }
+        }
+    }
+    
+    private func syncHealthData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async {
+        let result = await repository.syncData(factory)
+        
+        switch result {
+        case .success(let updatedData):
+            if (!updatedData.isEmpty) {
+                await MainActor.run {
+                    healthMetrics.set(factory.id, items: updatedData)
+                }
+            }
+            
+        case .failure(let error):
+            print("Sync failed for \(factory.id.description): \(error)")
+            await MainActor.run {
+                self.state = .error(error)
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ enum HealthKitError: Error {
     case dataProcessingFailed
     case unsupportedDataType
     case queryFailed(Error)
+    case managerCreationFailed
     
     var localizedDescription: String {
         switch self {
@@ -20,6 +21,8 @@ enum HealthKitError: Error {
             return "dataProcessingFailed"
         case .queryFailed(let error):
             return error.localizedDescription
+        case .managerCreationFailed:
+            return "managerCreationFailed"
         }
     }
 }
