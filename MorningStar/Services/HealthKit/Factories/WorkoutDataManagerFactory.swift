@@ -94,7 +94,9 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
         nil
     }
     
-    static func transformHealthKitToCoreData(_ healthKitData: [WeeklyWorkouts], context: NSManagedObjectContext) {
+    static func mapHealthKitToCoreData(_ healthKitData: [WeeklyWorkouts], context: NSManagedObjectContext) -> [WeeklyWorkoutsMO] {
+        var weeklyWorkoutEntries: [WeeklyWorkoutsMO] = []
+        
         healthKitData.forEach { weeklyWorkout in
             let weeklyWorkoutEntity = WeeklyWorkoutsMO(context: context)
             
@@ -142,10 +144,13 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
                 return dailyWorkoutEntity
             }
             weeklyWorkoutEntity.addToDailyWorkouts(NSOrderedSet(array: dailyWorkoutEntities))
+            weeklyWorkoutEntries.append(weeklyWorkoutEntity)
         }
+        
+        return weeklyWorkoutEntries
     }
     
-    static func transformCoreDataToHealthKit(_ coreDataEntry: [WeeklyWorkoutsMO]) -> [WeeklyWorkouts] {
+    static func mapCoreDataToHealthKit(_ coreDataEntry: [WeeklyWorkoutsMO]) -> [WeeklyWorkouts] {
         return coreDataEntry.map { weeklyWorkoutEntity in
             let dailyWorkoutEntries: [DailyWorkouts] = (weeklyWorkoutEntity.dailyWorkouts)?.compactMap { dailyWorkoutEntry in
                 guard let dailyWorkoutEntity = dailyWorkoutEntry as? DailyWorkoutsMO else {
@@ -180,5 +185,9 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
             
             return WeeklyWorkouts(id: weeklyWorkoutEntity.id ?? UUID(), dailyWorkouts: dailyWorkoutEntries)
         }
+    }
+    
+    static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [WeeklyWorkoutsMO], with healthKitData: [WeeklyWorkouts], in context: NSManagedObjectContext) -> [WeeklyWorkoutsMO] {
+        []
     }
 }

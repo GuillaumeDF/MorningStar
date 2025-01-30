@@ -51,8 +51,10 @@ protocol HealthDataFactoryProtocol {
     static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<SampleQueryDescriptor<[HealthKitDataType]>>?
     static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[HealthKitDataType]>>?
     
-    static func transformHealthKitToCoreData(_ healthKitData: [HealthKitDataType], context: NSManagedObjectContext)
-    static func transformCoreDataToHealthKit(_ coreDataEntry: [CoreDataType]) -> [HealthKitDataType]
+    static func mapHealthKitToCoreData(_ healthKitData: [HealthKitDataType], context: NSManagedObjectContext) -> [CoreDataType]
+    static func mapCoreDataToHealthKit(_ coreDataEntry: [CoreDataType]) -> [HealthKitDataType]
+    
+    static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [CoreDataType], with healthKitData: [HealthKitDataType], in context: NSManagedObjectContext) -> [CoreDataType]
 }
 
 protocol HealthRepositoryProtocol {
@@ -64,7 +66,8 @@ protocol HealthRepositoryProtocol {
 protocol CoreDataSourceProtocol {
     func create<T: HealthDataFactoryProtocol>(_ factory: T.Type, items: [T.HealthKitDataType])
     func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, options: CoreDataSource.SortOrder) async throws -> [T.CoreDataType]
-    func getFetchedRecords<T: HealthDataFactoryProtocol>(_ factory: T.Type) -> [T.CoreDataType]
+    func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) -> [T.CoreDataType]
+    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthKitDataType]) -> [T.CoreDataType]
     func save() async throws
 }
 
@@ -174,7 +177,7 @@ class CoreDataSource: CoreDataSourceProtocol {
     
     static let shared = CoreDataSource()
     private(set) var persistentContainer: NSPersistentContainer
-    private(set) var fetchedRecords: [HealthDataType: [NSManagedObject]] = [:]
+    private(set) var fetchHistory: [HealthDataType: [NSManagedObject]] = [:]
 
     private init() {
         persistentContainer = NSPersistentContainer(name: "HealthDataModel")
@@ -190,13 +193,19 @@ class CoreDataSource: CoreDataSourceProtocol {
         persistentContainer.viewContext
     }
     
-    func getFetchedRecords<T: HealthDataFactoryProtocol>(_ factory: T.Type) -> [T.CoreDataType] {
-        fetchedRecords[factory.id] as? [T.CoreDataType] ?? []
+    func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) -> [T.CoreDataType] {
+        fetchHistory[factory.id] as? [T.CoreDataType] ?? []
     }
     
     func create<T: HealthDataFactoryProtocol>(_ factory: T.Type, items: [T.HealthKitDataType]) { // TODO ajouter un throws avec gestion d'erreurs (CoreDataError)
         context.performAndWait {
-            factory.transformHealthKitToCoreData(items, context: context)
+            _ = factory.mapHealthKitToCoreData(items, context: context)
+        }
+    }
+    
+    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthKitDataType]) -> [T.CoreDataType] {
+        context.performAndWait {
+           return factory.mergeCoreDataWithHealthKitData(localData, with: healthKitData, in: context)
         }
     }
     
@@ -219,7 +228,7 @@ class CoreDataSource: CoreDataSourceProtocol {
         context.performAndWait {
             do {
                 results = try context.fetch(fetchRequest)
-                fetchedRecords[factory.id] = results
+                fetchHistory[factory.id] = results
             } catch let error {
                 fetchError = error
             }
@@ -322,18 +331,16 @@ class HealthRepository: HealthRepositoryProtocol {
     
     func fetchCoreData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthKitDataType] {
         let localData = try await coreDataSource.fetch(factory, options: .dateDescending)
-        let healthData = factory.transformCoreDataToHealthKit(localData)
+        let healthData = factory.mapCoreDataToHealthKit(localData)
         
         return healthData
     }
     
-    func fetchHealthKit<T: HealthDataFactoryProtocol>(
-        _ factory: T.Type,
-        from startDate: Date
-    ) async throws -> [T.HealthKitDataType] {
+    func fetchHealthKit<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date) async throws -> [T.HealthKitDataType] {
         return try await healthKitSource.fetch(factory, from: startDate)
     }
     
+    // TODO: Deprecated ?
     func saveData<T: HealthDataFactoryProtocol>(_ factory: T.Type, items: [T.HealthKitDataType]) async throws { // TODO: Faire le save des items
         coreDataSource.create(factory, items: items)
         print("Les données de \(factory.id.description) vient d'être créer dans CoreData")
@@ -341,9 +348,14 @@ class HealthRepository: HealthRepositoryProtocol {
         try await coreDataSource.save()
         print("Les données de \(factory.id.description) vient d'être saved dans CoreData")
     }
+    
+    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthKitDataType]) async throws -> [T.HealthKitDataType] {
+        let newEntries = coreDataSource.mergeCoreDataWithHealthKitData(factory, localData: localData, with: healthKitData)
+        try await coreDataSource.save()
+        
+        return factory.mapCoreDataToHealthKit(newEntries)
+    }
 
-    //        let today = Date()
-    //        let lastSync = Calendar.current.date(byAdding: .month, value: -1, to: today)
     func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async -> Result<[T.HealthKitDataType], Error> {
         let lastSync = await syncStorage.getLastSync(for: factory.id)
         print("Le last sync pour \(factory.id.description) est le \(lastSync ?? Date.distantPast)")
@@ -354,27 +366,19 @@ class HealthRepository: HealthRepositoryProtocol {
         }
 
         do {
-            // Récupération des données HealthKit
-            let newItems = try await fetchHealthKit(factory, from: lastSync ?? .distantPast)
-            guard !newItems.isEmpty else {
+            let newItemsHealhKit = try await fetchHealthKit(factory, from: lastSync ?? .distantPast)
+            guard !newItemsHealhKit.isEmpty else {
                 print("Aucun nouvel élément récupéré depuis HealthKit pour \(factory.id)")
                 return .success([])
             }
-            //let localDataFetched = coreDataSource.getFetchedRecords(factory)
             
-            //let newItemsMerged = merger newItem and localDataFetched
+            let dataFetched = coreDataSource.getDataFetched(factory)
+            let newItemsMerged = try await mergeCoreDataWithHealthKitData(factory, localData: dataFetched, with: newItemsHealhKit)
             
-            // Sauvegarde les données récupérées
-            try await saveData(factory, items: newItems) // TODO: Remplace par newItemsMerged
-
-            // Mise à jour du dernier temps de synchronisation
              await syncStorage.updateLastSync(for: factory.id)
              print("Le last sync pour \(factory.id.description) vient d'être saved")
             
-            //let healthData = factory.transformCoreDataToHealthKit(localData)
-            //return .success(healthData)
-            
-            return .success(newItems)
+            return .success(newItemsMerged)
         } catch {
             print("Erreur lors de la synchronisation : \(error)")
             return .failure(error)

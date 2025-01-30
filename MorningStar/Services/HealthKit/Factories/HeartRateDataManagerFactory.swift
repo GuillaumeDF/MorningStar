@@ -57,7 +57,10 @@ struct HeartRateDataManagerFactory: HealthDataFactoryProtocol {
         nil
     }
     
-    static func transformHealthKitToCoreData(_ healthKitData: [HeartRatePeriod], context: NSManagedObjectContext) {
+    
+    static func mapHealthKitToCoreData(_ healthKitData: [HeartRatePeriod], context: NSManagedObjectContext) -> [PeriodEntryMO] {
+        var periodEntries: [PeriodEntryMO] = []
+        
         healthKitData.forEach { heartRatePeriod in
             guard let startDate = heartRatePeriod.entries.first?.startDate,
                   let endDate = heartRatePeriod.entries.last?.endDate else {
@@ -84,10 +87,13 @@ struct HeartRateDataManagerFactory: HealthDataFactoryProtocol {
             }
             
             periodEntity.addToHeartRateEntries(NSOrderedSet(array: heartRateEntries))
+            periodEntries.append(periodEntity)
         }
+        
+        return periodEntries
     }
     
-     static func transformCoreDataToHealthKit(_ coreDataEntry: [PeriodEntryMO]) -> [HeartRatePeriod] {
+     static func mapCoreDataToHealthKit(_ coreDataEntry: [PeriodEntryMO]) -> [HeartRatePeriod] {
          return coreDataEntry.map { periodEntity in
              let heartRateEntries: [HealthData.HeartRateEntry] = (periodEntity.heartRateEntries)?.compactMap { entry in
                  guard let heartRateEntity = entry as? HeartRateEntryMO else {
@@ -105,4 +111,8 @@ struct HeartRateDataManagerFactory: HealthDataFactoryProtocol {
              return PeriodEntry(entries: heartRateEntries)
          }
      }
+    
+    static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [PeriodEntryMO], with healthKitData: [HeartRatePeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
+        []
+    }
 }

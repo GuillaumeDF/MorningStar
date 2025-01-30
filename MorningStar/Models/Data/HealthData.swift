@@ -49,6 +49,14 @@ enum IntensityLevel: Int, Hashable {
 struct PeriodEntry<T: HealthEntry>: Identifiable {
     let id = UUID()
     var entries: [T]
+    
+    var startDate: Date? {
+        entries.first?.startDate
+    }
+    
+    var endDate: Date? {
+        entries.last?.endDate
+    }
 }
 
 struct HealthData { }

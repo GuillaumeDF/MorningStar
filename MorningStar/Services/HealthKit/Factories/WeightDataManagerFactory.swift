@@ -42,7 +42,9 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
         nil
     }
     
-    static func transformHealthKitToCoreData(_ healthKitData: [WeightPeriod], context: NSManagedObjectContext) {
+    static func mapHealthKitToCoreData(_ healthKitData: [WeightPeriod], context: NSManagedObjectContext) -> [PeriodEntryMO] {
+        var periodEntries: [PeriodEntryMO] = []
+        
         healthKitData.forEach { weightPeriod in
             guard let startDate = weightPeriod.entries.first?.startDate,
                   let endDate = weightPeriod.entries.last?.endDate else {
@@ -68,10 +70,13 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
                 return newEntry
             }
             periodEntity.addToWeightEntries(NSOrderedSet(array: weightEntries))
+            periodEntries.append(periodEntity)
         }
+        
+        return periodEntries
     }
     
-    static func transformCoreDataToHealthKit(_ coreDataEntry: [PeriodEntryMO]) -> [WeightPeriod] {
+    static func mapCoreDataToHealthKit(_ coreDataEntry: [PeriodEntryMO]) -> [WeightPeriod] {
         return coreDataEntry.map { periodEntity in
             let weightEntries: [HealthData.WeightEntry] = (periodEntity.weightEntries)?.compactMap { entry in
                 guard let weightEntity = entry as? WeightEntryMO else {
@@ -89,5 +94,9 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
             
             return PeriodEntry(entries: weightEntries)
         }
+    }
+    
+    static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [PeriodEntryMO], with healthKitData: [WeightPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
+        []
     }
 }

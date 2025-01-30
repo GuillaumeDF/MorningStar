@@ -42,7 +42,9 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
         nil
     }
     
-    static func transformHealthKitToCoreData(_ healthKitData: [SleepPeriod], context: NSManagedObjectContext) {
+    static func mapHealthKitToCoreData(_ healthKitData: [SleepPeriod], context: NSManagedObjectContext) -> [PeriodEntryMO] {
+        var periodEntries: [PeriodEntryMO] = []
+        
         healthKitData.forEach { sleepPeriod in
             guard let startDate = sleepPeriod.entries.first?.startDate,
                   let endDate = sleepPeriod.entries.last?.endDate else {
@@ -67,10 +69,13 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
                 return newEntry
             }
             periodEntity.addToSleepEntries(NSOrderedSet(array: sleepEntities))
+            periodEntries.append(periodEntity)
         }
+        
+        return periodEntries
     }
     
-    static func transformCoreDataToHealthKit(_ coreDataEntry: [PeriodEntryMO]) -> [SleepPeriod] {
+    static func mapCoreDataToHealthKit(_ coreDataEntry: [PeriodEntryMO]) -> [SleepPeriod] {
         return coreDataEntry.map { periodEntity in
             let sleepEntries: [HealthData.SleepEntry] = (periodEntity.sleepEntries)?.compactMap { entry in
                 guard let sleepEntity = entry as? SleepEntryMO else {
@@ -87,5 +92,9 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
             
             return PeriodEntry(entries: sleepEntries)
         }
+    }
+    
+    static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [PeriodEntryMO], with healthKitData: [SleepPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
+        []
     }
 }
