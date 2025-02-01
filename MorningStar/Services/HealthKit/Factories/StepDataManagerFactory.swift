@@ -94,7 +94,7 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
                 )
             } ?? []
             
-            return PeriodEntry(entries: stepEntries)
+            return PeriodEntry(id: periodEntity.id ?? UUID(), entries: stepEntries)
         }
     }
     
@@ -108,7 +108,7 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         }
         
         var mergedEntries = coreDataEntry
-        guard let healthKitMostRecentDay = healthKitData.last?.startDate,
+        guard let healthKitMostRecentDay = healthKitData.last?.endDate,
               let coreDataMostRecentDay = coreDataEntry.first?.startDate,
               let lastHealthKitDay = healthKitData.last,
               let firstCoreDataEntry = mergedEntries.first

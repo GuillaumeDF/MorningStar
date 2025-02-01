@@ -46,8 +46,8 @@ enum IntensityLevel: Int, Hashable {
     }
 }
 
-struct PeriodEntry<T: HealthEntry>: Identifiable {
-    let id = UUID()
+struct PeriodEntry<T: HealthEntry>: Identifiable, Equatable {
+    let id: UUID
     var entries: [T]
     
     var startDate: Date? {
@@ -56,6 +56,11 @@ struct PeriodEntry<T: HealthEntry>: Identifiable {
     
     var endDate: Date? {
         entries.last?.endDate
+    }
+    
+    init(id: UUID = UUID(), entries: [T]) {
+        self.id = id
+        self.entries = entries
     }
 }
 

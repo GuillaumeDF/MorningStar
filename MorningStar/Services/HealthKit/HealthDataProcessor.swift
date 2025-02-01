@@ -115,7 +115,7 @@ struct HealthDataProcessor {
         return weeklyActivities
     }
     
-    static func sortAndgroupWorkoutsByDayAndWeek(_ workouts: [Workout]) -> [WeeklyWorkouts]{
+    static func sortAndgroupWorkoutsByDayAndWeek(_ workouts: [Workout]) -> [WeeklyWorkouts] {
         let calendar = Calendar.current
         
         let sortedWorkouts = workouts.sorted {
@@ -164,9 +164,7 @@ struct HealthDataProcessor {
         if !currentWeekDailyGroups.dailyWorkouts.isEmpty {
             weeklyGroups.append(currentWeekDailyGroups)
         }
-        
-        //printWeeklyGroups(weeklyGroups)
-        
+
         return weeklyGroups
     }
 }

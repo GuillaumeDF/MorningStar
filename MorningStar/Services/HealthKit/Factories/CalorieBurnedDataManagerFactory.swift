@@ -114,7 +114,7 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
                 )
             } ?? []
             
-            return PeriodEntry(entries: calorieEntries)
+            return PeriodEntry(id: periodEntity.id ?? UUID(), entries: calorieEntries)
         }
     }
     
@@ -128,7 +128,7 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
         }
         
         var mergedEntries = coreDataEntry
-        guard let healthKitMostRecentDay = healthKitData.last?.startDate,
+        guard let healthKitMostRecentDay = healthKitData.last?.endDate,
               let coreDataMostRecentDay = coreDataEntry.first?.startDate,
               let lastHealthKitDay = healthKitData.last,
               let firstCoreDataEntry = mergedEntries.first

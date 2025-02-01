@@ -188,6 +188,96 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [WeeklyWorkoutsMO], with healthKitData: [WeeklyWorkouts], in context: NSManagedObjectContext) -> [WeeklyWorkoutsMO] {
-        []
+        // Si pas de nouvelles données HealthKit, retourner les données CoreData existantes
+        guard !healthKitData.isEmpty else {
+            return coreDataEntry
+        }
+        
+        // Si pas de données CoreData, convertir toutes les données HealthKit
+        guard !coreDataEntry.isEmpty else {
+            return mapHealthKitToCoreData(healthKitData, context: context)
+        }
+        
+        var mergedEntries = coreDataEntry
+        
+        // Récupérer les dates de la semaine la plus récente pour la comparaison
+        guard let healthKitMostRecentWeek = healthKitData.first?.dailyWorkouts.first?.workouts.first?.phaseEntries.first?.startDate,
+              let coreDataMostRecentWeek = coreDataEntry.first?.dailyWorkouts?.firstObject as? DailyWorkoutsMO,
+              let coreDataMostRecentDate = coreDataMostRecentWeek.workouts?.firstObject as? WorkoutMO,
+              let coreDataStartDate = coreDataMostRecentDate.workoutPhaseEntries?.firstObject as? WorkoutPhaseEntryMO,
+              let firstCoreDataEntry = mergedEntries.first,
+              let lastHealthKitWeek = healthKitData.first
+        else {
+            // Si une des conversions échoue, ajouter simplement les nouvelles données
+            let newEntries = mapHealthKitToCoreData(healthKitData, context: context)
+            mergedEntries.insert(contentsOf: newEntries, at: 0)
+            return mergedEntries
+        }
+        
+        let calendar = Calendar.current
+        let healthKitWeekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: healthKitMostRecentWeek))!
+        let coreDataWeekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: coreDataStartDate.startDate!))!
+        
+        if healthKitWeekStart == coreDataWeekStart {
+            // Mise à jour de la semaine existante
+            updateWeeklyWorkouts(firstCoreDataEntry, with: lastHealthKitWeek, in: context)
+            
+            // Traiter les données historiques
+            let historicalData = Array(healthKitData.dropFirst())
+            if !historicalData.isEmpty {
+                let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
+                mergedEntries.insert(contentsOf: historicalEntries, at: 0)
+            }
+        } else {
+            // Ajouter les nouvelles semaines
+            let newEntries = mapHealthKitToCoreData(healthKitData, context: context)
+            mergedEntries.insert(contentsOf: newEntries, at: 0)
+        }
+        
+        return mergedEntries
+    }
+
+    // Fonction helper pour mettre à jour une semaine existante
+    private static func updateWeeklyWorkouts(_ weeklyWorkout: WeeklyWorkoutsMO, with healthKitWeek: WeeklyWorkouts, in context: NSManagedObjectContext) {
+        // Supprimer les anciennes données
+        weeklyWorkout.dailyWorkouts = nil
+        
+        // Créer les nouveaux daily workouts
+        let dailyWorkouts = healthKitWeek.dailyWorkouts.map { dailyWorkout -> DailyWorkoutsMO in
+            let newDailyWorkout = DailyWorkoutsMO(context: context)
+            
+            // Créer les workouts pour chaque jour
+            let workouts = dailyWorkout.workouts.map { workout -> WorkoutMO in
+                let workoutEntity = WorkoutMO(context: context)
+                workoutEntity.id = workout.id
+                
+                // Créer les phases pour chaque workout
+                let phases = workout.phaseEntries.map { phaseEntry in
+                    let newEntry = WorkoutPhaseEntryMO(context: context)
+                    
+                    newEntry.id = phaseEntry.id
+                    newEntry.averageHeartRate = phaseEntry.averageHeartRate
+                    newEntry.caloriesBurned = phaseEntry.caloriesBurned
+                    newEntry.value = Int16(phaseEntry.value.rawValue)
+                    newEntry.startDate = phaseEntry.startDate
+                    newEntry.endDate = phaseEntry.endDate
+                    newEntry.workout = workoutEntity
+                    
+                    return newEntry
+                }
+                
+                workoutEntity.workoutPhaseEntries = NSOrderedSet(array: phases)
+                workoutEntity.dailyWorkouts = newDailyWorkout
+                
+                return workoutEntity
+            }
+            
+            newDailyWorkout.workouts = NSOrderedSet(array: workouts)
+            newDailyWorkout.weeklyWorkout = weeklyWorkout
+            
+            return newDailyWorkout
+        }
+        
+        weeklyWorkout.dailyWorkouts = NSOrderedSet(array: dailyWorkouts)
     }
 }
