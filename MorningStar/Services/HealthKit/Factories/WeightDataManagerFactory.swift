@@ -111,8 +111,7 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
         guard let lastHealthKitWeek = healthKitData.last,
               let firstCoreDataEntry = mergedEntries.first,
               let coreDataMostRecentWeekStart = firstCoreDataEntry.startDate,
-              let lastHealthKitWeekStart = lastHealthKitWeek.endDate
-        else {
+              let lastHealthKitWeekStart = lastHealthKitWeek.endDate else {
             let newEntries = mapHealthKitToCoreData(healthKitData, context: context)
             
             mergedEntries.insert(contentsOf: newEntries, at: 0)

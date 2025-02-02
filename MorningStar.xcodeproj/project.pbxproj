@@ -18,6 +18,7 @@
 		F027557A2D4D7ADB000B3524 /* CalorieDataManagerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02755792D4D7ADB000B3524 /* CalorieDataManagerFactoryTests.swift */; };
 		F027557C2D4D80E3000B3524 /* WeightDataManagerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F027557B2D4D80E3000B3524 /* WeightDataManagerFactoryTests.swift */; };
 		F027557E2D4D9E3A000B3524 /* SleepDataManagerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F027557D2D4D9E3A000B3524 /* SleepDataManagerFactoryTests.swift */; };
+		F02755802D4E6953000B3524 /* WorkoutDataManagerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F027557F2D4E6953000B3524 /* WorkoutDataManagerFactoryTests.swift */; };
 		F03599872C7FD1B3008715FF /* MSImageWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03599862C7FD1B3008715FF /* MSImageWithTitle.swift */; };
 		F03599892C7FD2E4008715FF /* LegendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03599882C7FD2E4008715FF /* LegendView.swift */; };
 		F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03AA6E02C6426F2003C1BB3 /* Color+Theme.swift */; };
@@ -110,6 +111,7 @@
 		F02755792D4D7ADB000B3524 /* CalorieDataManagerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieDataManagerFactoryTests.swift; sourceTree = "<group>"; };
 		F027557B2D4D80E3000B3524 /* WeightDataManagerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightDataManagerFactoryTests.swift; sourceTree = "<group>"; };
 		F027557D2D4D9E3A000B3524 /* SleepDataManagerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepDataManagerFactoryTests.swift; sourceTree = "<group>"; };
+		F027557F2D4E6953000B3524 /* WorkoutDataManagerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDataManagerFactoryTests.swift; sourceTree = "<group>"; };
 		F03599862C7FD1B3008715FF /* MSImageWithTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSImageWithTitle.swift; sourceTree = "<group>"; };
 		F03599882C7FD2E4008715FF /* LegendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegendView.swift; sourceTree = "<group>"; };
 		F03AA6E02C6426F2003C1BB3 /* Color+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
@@ -249,6 +251,7 @@
 				F02755792D4D7ADB000B3524 /* CalorieDataManagerFactoryTests.swift */,
 				F027557B2D4D80E3000B3524 /* WeightDataManagerFactoryTests.swift */,
 				F027557D2D4D9E3A000B3524 /* SleepDataManagerFactoryTests.swift */,
+				F027557F2D4E6953000B3524 /* WorkoutDataManagerFactoryTests.swift */,
 			);
 			path = MorningStarTests;
 			sourceTree = "<group>";
@@ -768,6 +771,7 @@
 			files = (
 				F02755782D4C3334000B3524 /* StepDataManagerFactoryTests.swift in Sources */,
 				F027557E2D4D9E3A000B3524 /* SleepDataManagerFactoryTests.swift in Sources */,
+				F02755802D4E6953000B3524 /* WorkoutDataManagerFactoryTests.swift in Sources */,
 				F027557A2D4D7ADB000B3524 /* CalorieDataManagerFactoryTests.swift in Sources */,
 				F027557C2D4D80E3000B3524 /* WeightDataManagerFactoryTests.swift in Sources */,
 				F02581962C62C293006CB2E6 /* MorningStarTests.swift in Sources */,

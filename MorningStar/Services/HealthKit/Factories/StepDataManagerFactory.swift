@@ -108,8 +108,9 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         }
         
         var mergedEntries = coreDataEntry
-        guard let healthKitMostRecentDay = healthKitData.last?.endDate,
-              let coreDataMostRecentDay = coreDataEntry.first?.startDate,
+        
+        guard let healthKitLatestDate = healthKitData.last?.endDate,
+              let coreDataMostRecentDate = coreDataEntry.first?.startDate,
               let lastHealthKitDay = healthKitData.last,
               let firstCoreDataEntry = mergedEntries.first
         else {
@@ -120,8 +121,8 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
             return mergedEntries
         }
         
-        if coreDataMostRecentDay.isSameDay(as: healthKitMostRecentDay) {
-            firstCoreDataEntry.endDate = lastHealthKitDay.endDate
+        if coreDataMostRecentDate.isSameDay(as: healthKitLatestDate) {
+            firstCoreDataEntry.endDate = healthKitLatestDate
             
             let stepEntries = lastHealthKitDay.entries.map { stepEntry in
                 let newEntry = StepEntryMO(context: context)
