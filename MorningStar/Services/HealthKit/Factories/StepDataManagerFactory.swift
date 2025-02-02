@@ -98,57 +98,71 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         }
     }
     
-    static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [PeriodEntryMO], with healthKitData: [StepPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        guard !healthKitData.isEmpty else {
-            return coreDataEntry
-        }
-        
-        guard !coreDataEntry.isEmpty else {
+    static func mergeCoreDataWithHealthKitData(
+        _ coreDataEntries: [PeriodEntryMO],
+        with healthKitData: [StepPeriod],
+        in context: NSManagedObjectContext
+    ) -> [PeriodEntryMO] {
+        // Vérification des données HealthKit et de leur chronologie
+        // Si pas de données Core Data, on convertit simplement les données HealthKit
+        guard !coreDataEntries.isEmpty else {
             return mapHealthKitToCoreData(healthKitData, context: context)
         }
         
-        var mergedEntries = coreDataEntry
+        guard !healthKitData.isEmpty,
+              let coreDataLatestDate = coreDataEntries.last?.endDate,
+              let healthKitMostRecentDate = healthKitData.first?.startDate,
+              coreDataLatestDate <= healthKitMostRecentDate else {
+            return coreDataEntries
+        }
         
-        guard let healthKitLatestDate = healthKitData.last?.endDate,
-              let coreDataMostRecentDate = coreDataEntry.first?.startDate,
-              let lastHealthKitDay = healthKitData.last,
-              let firstCoreDataEntry = mergedEntries.first
-        else {
+        var mergedEntries = coreDataEntries
+        
+        // Récupération des dates importantes pour la fusion
+        let healthKitLatestDate = healthKitData.last?.endDate
+        let coreDataMostRecentDate = mergedEntries.first?.startDate
+        let lastHealthKitDay = healthKitData.last
+        let firstCoreDataEntry = mergedEntries.first
+        
+        // Si une des dates est manquante, on ajoute simplement les nouvelles données
+        guard let healthKitLatestDate,
+              let coreDataMostRecentDate,
+              let lastHealthKitDay,
+              let firstCoreDataEntry else {
             let newEntries = mapHealthKitToCoreData(healthKitData, context: context)
-            
             mergedEntries.insert(contentsOf: newEntries, at: 0)
-            
             return mergedEntries
         }
         
+        // Si les données concernent le même jour
         if coreDataMostRecentDate.isSameDay(as: healthKitLatestDate) {
+            // Mise à jour de la date de fin
             firstCoreDataEntry.endDate = healthKitLatestDate
             
+            // Création des nouvelles entrées de pas
             let stepEntries = lastHealthKitDay.entries.map { stepEntry in
                 let newEntry = StepEntryMO(context: context)
-                
                 newEntry.id = stepEntry.id
                 newEntry.startDate = stepEntry.startDate
                 newEntry.endDate = stepEntry.endDate
                 newEntry.value = stepEntry.value
                 newEntry.unit = stepEntry.unit
                 newEntry.periodEntry = firstCoreDataEntry
-                
                 return newEntry
             }
             
+            // Ajout des nouvelles entrées
             firstCoreDataEntry.addToStepEntries(NSOrderedSet(array: stepEntries))
             
+            // Traitement des données historiques si présentes
             let historicalData = Array(healthKitData.dropLast())
-            
             if !historicalData.isEmpty {
                 let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
-                
                 mergedEntries.insert(contentsOf: historicalEntries, at: 0)
             }
         } else {
+            // Si les jours sont différents, on ajoute simplement les nouvelles données
             let newEntries = mapHealthKitToCoreData(healthKitData, context: context)
-            
             mergedEntries.insert(contentsOf: newEntries, at: 0)
         }
         
@@ -167,59 +181,4 @@ extension Date {
         
         return day1 == day2
     }
-}
-
-func arePeriodEntriesConsistent(_ periods: [PeriodEntryMO]) -> Bool {
-    for (index, period) in periods.enumerated() {
-        guard let periodStartDate = period.startDate, let periodEndDate = period.endDate else {
-            print("Erreur : Une période n'a pas de dates valides.")
-            return false
-        }
-
-        // Vérification de l'ordre des périodes principales
-        if index > 0 {
-            let previousPeriod = periods[index - 1]
-            if let previousStartDate = previousPeriod.startDate {
-                if periodStartDate > previousStartDate {
-                    print("Incohérence : La période \(periodStartDate) est après \(previousStartDate).")
-                    return false
-                }
-            }
-        }
-
-        // Vérification des entrées internes
-        let entries = period.stepEntries?.compactMap { $0 as? StepEntryMO } ?? []
-        for (subIndex, entry) in entries.enumerated() {
-            guard let entryStartDate = entry.startDate, let entryEndDate = entry.endDate else {
-                print("[\(index)][\(subIndex)]")
-                print("Erreur : Une entrée interne n'a pas de dates valides.")
-                return false
-            }
-
-            // Vérification que l'entrée est bien contenue dans sa période principale
-            if entryStartDate < periodStartDate || entryEndDate > periodEndDate {
-                print("[\(index)][\(subIndex)]")
-                print("Incohérence : L'entrée (\(entryStartDate) - \(entryEndDate)) dépasse la période principale (\(periodStartDate) - \(periodEndDate)).")
-                for entry in entries {
-                    print(entry)
-                }
-                return false
-            }
-
-            // Vérification du tri interne des entrées
-            if subIndex > 0 {
-                let previousEntry = entries[subIndex - 1]
-                if let previousStartDate = previousEntry.startDate {
-                    if entryStartDate < previousStartDate {
-                        print("[\(index)][\(subIndex)]")
-                        print("Incohérence : L'entrée interne \(entryStartDate) est après \(previousStartDate).")
-                        return false
-                    }
-                }
-            }
-        }
-    }
-    
-    print("Le tableau de [PeriodEntryMO] ainsi ques les entrées de Steps sont correct")
-    return true
 }

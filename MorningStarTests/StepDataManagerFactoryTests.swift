@@ -16,7 +16,7 @@ private enum StepPeriodTestData {
         return formatter
     }()
     
-    static let previousDayMorningPeriod = StepPeriod(
+    static let previousDayMorning = StepPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!,
         entries: [
             HealthData.ActivityEntry(
@@ -36,7 +36,7 @@ private enum StepPeriodTestData {
         ]
     )
     
-    static let previousDayNightPeriod = StepPeriod(
+    static let previousDayNight = StepPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440004")!,
         entries: [
             HealthData.ActivityEntry(
@@ -45,51 +45,73 @@ private enum StepPeriodTestData {
                 endDate: formatter.date(from: "2024-01-29T20:00:00Z")!,
                 value: 150,
                 unit: "steps"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440010")!,
+                startDate: formatter.date(from: "2024-01-29T20:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-29T21:00:00Z")!,
+                value: 180,
+                unit: "steps"
             )
         ]
     )
     
-    static let previousDayMorningAndNightMergedPeriod = StepPeriod(
+    static let previousDayMerged = StepPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!,
-        entries: [
-            HealthData.ActivityEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440002")!,
-                startDate: formatter.date(from: "2024-01-29T10:00:00Z")!,
-                endDate: formatter.date(from: "2024-01-29T11:00:00Z")!,
-                value: 100,
-                unit: "steps"
-            ),
-            HealthData.ActivityEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440003")!,
-                startDate: formatter.date(from: "2024-01-29T11:00:00Z")!,
-                endDate: formatter.date(from: "2024-01-29T12:00:00Z")!,
-                value: 200,
-                unit: "steps"
-            ),
-            HealthData.ActivityEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440005")!,
-                startDate: formatter.date(from: "2024-01-29T19:00:00Z")!,
-                endDate: formatter.date(from: "2024-01-29T20:00:00Z")!,
-                value: 150,
-                unit: "steps"
-            )
-        ]
+        entries: previousDayMorning.entries + previousDayNight.entries
     )
     
-    static let currentDayMorningPeriod = StepPeriod(
+    static let currentDayMorning = StepPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440006")!,
         entries: [
             HealthData.ActivityEntry(
                 id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440007")!,
-                startDate: formatter.date(from: "2024-01-30T11:00:00Z")!,
-                endDate: formatter.date(from: "2024-01-30T12:00:00Z")!,
-                value: 120,
+                startDate: formatter.date(from: "2024-01-30T08:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T09:00:00Z")!,
+                value: 90,
+                unit: "steps"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440008")!,
+                startDate: formatter.date(from: "2024-01-30T09:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T10:00:00Z")!,
+                value: 110,
                 unit: "steps"
             )
         ]
     )
     
-    static let emptyPeriod = StepPeriod(
+    static let currentDayNight = StepPeriod(
+        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440009")!,
+        entries: [
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440011")!,
+                startDate: formatter.date(from: "2024-01-30T21:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T22:00:00Z")!,
+                value: 180,
+                unit: "steps"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440012")!,
+                startDate: formatter.date(from: "2024-01-30T22:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T23:00:00Z")!,
+                value: 130,
+                unit: "steps"
+            )
+        ]
+    )
+    
+    static let currentDayMerged = StepPeriod(
+        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440006")!,
+        entries: currentDayMorning.entries + currentDayNight.entries
+    )
+    
+    static let previousAndCurrentDayMerged = [
+        currentDayMerged,
+        previousDayMerged
+    ]
+    
+    static let periodWithEmptyEntries = StepPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655441006")!,
         entries: []
     )
@@ -113,12 +135,21 @@ final class StepDataManagerFactoryTests: XCTestCase {
         super.tearDown()
     }
     
+    
     func testMapHealthKitToCoreDataWithValidData() {
-        let healthKitData = [StepPeriodTestData.previousDayMorningAndNightMergedPeriod]
-        let coreDataEntries = StepDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
-        let retrievedHealthKitData = StepDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
+        let inputHealthKitPeriods = [StepPeriodTestData.currentDayMerged]
+        let coreDataEntries = StepDataManagerFactory.mapHealthKitToCoreData(inputHealthKitPeriods, context: context)
+        let outputHealthKitPeriods = StepDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
         
-        XCTAssertEqual(healthKitData, retrievedHealthKitData)
+        XCTAssertEqual(inputHealthKitPeriods, outputHealthKitPeriods)
+    }
+    
+    func testMapHealthKitToCoreDataWithMultipleEntries() {
+        let inputHealthKitPeriods = StepPeriodTestData.previousAndCurrentDayMerged
+        let coreDataEntries = StepDataManagerFactory.mapHealthKitToCoreData(inputHealthKitPeriods, context: context)
+        let outputHealthKitPeriods = StepDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
+        
+        XCTAssertEqual(inputHealthKitPeriods, outputHealthKitPeriods)
     }
     
     func testMapHealthKitToCoreDataWithEmptyData() {
@@ -128,8 +159,8 @@ final class StepDataManagerFactoryTests: XCTestCase {
         XCTAssertTrue(coreDataEntries.isEmpty, "Mapping an empty HealthKit dataset should return an empty CoreData dataset")
     }
     
-    func testMapHealthKitToCoreDataWithInvalidData() {
-        let healthKitData = [StepPeriodTestData.emptyPeriod]
+    func testMapHealthKitToCoreDataWithEmptyEntries() {
+        let healthKitData = [StepPeriodTestData.periodWithEmptyEntries]
         let coreDataEntries = StepDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
         
         XCTAssertTrue(coreDataEntries.isEmpty, "HealthKit period without entries should not be mapped")
@@ -143,7 +174,7 @@ final class StepDataManagerFactoryTests: XCTestCase {
     }
     
     func testMergeCoreDataWithHealthKitDataWhenHealthKitIsEmpty() {
-        let coreDataEntries: [PeriodEntryMO] = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.previousDayNightPeriod], context: context)
+        let coreDataEntries: [PeriodEntryMO] = StepDataManagerFactory.mapHealthKitToCoreData(StepPeriodTestData.previousAndCurrentDayMerged, context: context)
         let healthKitData: [StepPeriod] = []
         let mergedEntries = StepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         
@@ -152,7 +183,8 @@ final class StepDataManagerFactoryTests: XCTestCase {
     
     func testMergeCoreDataWithHealthKitDataWhenCoreDataIsEmpty() {
         let coreDataEntries: [PeriodEntryMO] = []
-        let healthKitData: [StepPeriod] = [StepPeriodTestData.previousDayNightPeriod]
+        let healthKitData: [StepPeriod] = StepPeriodTestData.previousAndCurrentDayMerged
+        
         let mergedEntries = StepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         let expectedEntries = StepDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
         
@@ -168,24 +200,35 @@ final class StepDataManagerFactoryTests: XCTestCase {
     }
     
     func testMergeCoreDataWithHealthKitDataWhenDatesAreDifferent() {
-        let coreDataEntries: [PeriodEntryMO] = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.previousDayMorningPeriod], context: context)
-        let healthKitData: [StepPeriod] = [StepPeriodTestData.currentDayMorningPeriod]
+        let coreDataEntries: [PeriodEntryMO] = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.previousDayMerged], context: context)
+        let healthKitData: [StepPeriod] = [StepPeriodTestData.currentDayMerged]
         
         let mergedEntries = StepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
-        let expectedEntries = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.currentDayMorningPeriod, StepPeriodTestData.previousDayMorningPeriod], context: context)
+        let expectedEntries = StepDataManagerFactory.mapHealthKitToCoreData(StepPeriodTestData.previousAndCurrentDayMerged, context: context)
         
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
     
     func testMergeCoreDataWithHealthKitDataWhenDatesAreTheSameDay() {
-        let coreDataEntries: [PeriodEntryMO] = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.previousDayMorningPeriod], context: context)
-        let healthKitData: [StepPeriod] = [StepPeriodTestData.previousDayNightPeriod]
+        let coreDataEntries: [PeriodEntryMO] = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.previousDayMorning], context: context)
+        let healthKitData: [StepPeriod] = [StepPeriodTestData.previousDayNight]
         
         let mergedEntries = StepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
-        let expectedEntries = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.previousDayMorningAndNightMergedPeriod], context: context)
+        let expectedEntries = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.previousDayMerged], context: context)
         
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
+    
+    func testMergeCoreDataWithHealthKitDataWithIdenticalPeriods() {
+        let coreDataEntries = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.currentDayMerged], context: context)
+        let healthKitData = [StepPeriodTestData.currentDayMerged]
+        
+        let mergedEntries = StepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
+        
+        XCTAssertEqual(mergedEntries, coreDataEntries, "Merging identical data should not create duplicates.")
+    }
+    
+
 }
 
 extension StepDataManagerFactoryTests {
