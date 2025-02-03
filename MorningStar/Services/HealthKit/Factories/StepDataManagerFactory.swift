@@ -99,14 +99,14 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mergeCoreDataWithHealthKitData(
-        _ coreDataEntries: [PeriodEntryMO],
+        _ coreDataEntry: [PeriodEntryMO],
         with healthKitData: [StepPeriod],
         in context: NSManagedObjectContext
     ) -> [PeriodEntryMO] {
         // Si pas de données Core Data, on convertit simplement les données HealthKit
-        guard  let coreDataMostRecentDay = coreDataEntries.first,
+        guard  let coreDataMostRecentDay = coreDataEntry.first,
             let coreDataMostRecentDate = coreDataMostRecentDay.startDate,
-              let coreDataLatestDate = coreDataEntries.last?.endDate else {
+              let coreDataLatestDate = coreDataEntry.last?.endDate else {
             return mapHealthKitToCoreData(healthKitData, context: context)
         }
         
@@ -115,10 +115,10 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
               let healthKitLatestDay = healthKitData.last,
               let healthKitLatestDate = healthKitLatestDay.endDate,
               coreDataLatestDate <= healthKitMostRecentDate else {
-            return coreDataEntries
+            return coreDataEntry
         }
         
-        var mergedEntries = coreDataEntries
+        var mergedEntries = coreDataEntry
         
         // Si les données concernent le même jour
         if coreDataMostRecentDate.isSameDay(as: healthKitLatestDate) {

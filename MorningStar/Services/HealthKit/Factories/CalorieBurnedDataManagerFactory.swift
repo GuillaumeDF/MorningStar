@@ -119,57 +119,37 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [PeriodEntryMO], with healthKitData: [CaloriesPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        guard !healthKitData.isEmpty else {
-            return coreDataEntry
+        guard  let coreDataMostRecentDay = coreDataEntry.first,
+            let coreDataMostRecentDate = coreDataMostRecentDay.startDate,
+              let coreDataLatestDate = coreDataEntry.last?.endDate else {
+            return mapHealthKitToCoreData(healthKitData, context: context)
         }
         
-        guard !coreDataEntry.isEmpty else {
-            return mapHealthKitToCoreData(healthKitData, context: context)
+        guard let healthKitMostRecentDate = healthKitData.first?.startDate,
+              let healthKitLatestDay = healthKitData.last,
+              let healthKitLatestDate = healthKitLatestDay.endDate,
+              coreDataLatestDate <= healthKitMostRecentDate else {
+            return coreDataEntry
         }
         
         var mergedEntries = coreDataEntry
         
-        guard let healthKitLatestDate = healthKitData.last?.endDate,
-              let coreDataMostRecentDate = coreDataEntry.first?.startDate,
-              let lastHealthKitDay = healthKitData.last,
-              let firstCoreDataEntry = mergedEntries.first
-        else {
-            let newEntries = mapHealthKitToCoreData(healthKitData, context: context)
-            
-            mergedEntries.insert(contentsOf: newEntries, at: 0)
-            
-            return mergedEntries
-        }
-        
         if coreDataMostRecentDate.isSameDay(as: healthKitLatestDate) {
-            firstCoreDataEntry.endDate = healthKitLatestDate
+            coreDataMostRecentDay.endDate = healthKitLatestDate
+
+            let newCalorieEntries = mapHealthKitToCoreData([healthKitLatestDay], context: context).first?.calorieEntries ?? []
             
-            let calorieEntries = lastHealthKitDay.entries.map { calorieEntry in
-                let newEntry = CalorieEntryMO(context: context)
-                
-                newEntry.id = calorieEntry.id
-                newEntry.startDate = calorieEntry.startDate
-                newEntry.endDate = calorieEntry.endDate
-                newEntry.value = calorieEntry.value
-                newEntry.unit = calorieEntry.unit
-                newEntry.periodEntry = firstCoreDataEntry
-                
-                return newEntry
-            }
-            
-            firstCoreDataEntry.addToCalorieEntries(NSOrderedSet(array: calorieEntries))
+            coreDataMostRecentDay.addToCalorieEntries(newCalorieEntries)
             
             let historicalData = Array(healthKitData.dropLast())
             
             if !historicalData.isEmpty {
                 let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
-                
                 mergedEntries.insert(contentsOf: historicalEntries, at: 0)
             }
         } else {
-            let newEntries = mapHealthKitToCoreData(healthKitData, context: context)
-            
-            mergedEntries.insert(contentsOf: newEntries, at: 0)
+            let newCalorieEntries = mapHealthKitToCoreData(healthKitData, context: context)
+            mergedEntries.insert(contentsOf: newCalorieEntries, at: 0)
         }
         
         return mergedEntries

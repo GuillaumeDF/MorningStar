@@ -16,7 +16,7 @@ private enum CaloriePeriodTestData {
         return formatter
     }()
     
-    static let previousDayMorningPeriod = CaloriesPeriod(
+    static let previousDayMorning = CaloriesPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!,
         entries: [
             HealthData.ActivityEntry(
@@ -36,7 +36,7 @@ private enum CaloriePeriodTestData {
         ]
     )
     
-    static let previousDayNightPeriod = CaloriesPeriod(
+    static let previousDayNight = CaloriesPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440004")!,
         entries: [
             HealthData.ActivityEntry(
@@ -45,51 +45,73 @@ private enum CaloriePeriodTestData {
                 endDate: formatter.date(from: "2024-01-29T20:00:00Z")!,
                 value: 150,
                 unit: "kcal"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440010")!,
+                startDate: formatter.date(from: "2024-01-29T20:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-29T21:00:00Z")!,
+                value: 180,
+                unit: "kcal"
             )
         ]
     )
     
-    static let previousDayMorningAndNightMergedPeriod = CaloriesPeriod(
+    static let previousDayMerged = CaloriesPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!,
-        entries: [
-            HealthData.ActivityEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440002")!,
-                startDate: formatter.date(from: "2024-01-29T10:00:00Z")!,
-                endDate: formatter.date(from: "2024-01-29T11:00:00Z")!,
-                value: 100,
-                unit: "kcal"
-            ),
-            HealthData.ActivityEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440003")!,
-                startDate: formatter.date(from: "2024-01-29T11:00:00Z")!,
-                endDate: formatter.date(from: "2024-01-29T12:00:00Z")!,
-                value: 200,
-                unit: "kcal"
-            ),
-            HealthData.ActivityEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440005")!,
-                startDate: formatter.date(from: "2024-01-29T19:00:00Z")!,
-                endDate: formatter.date(from: "2024-01-29T20:00:00Z")!,
-                value: 150,
-                unit: "kcal"
-            )
-        ]
+        entries: previousDayMorning.entries + previousDayNight.entries
     )
     
-    static let currentDayMorningPeriod = CaloriesPeriod(
+    static let currentDayMorning = CaloriesPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440006")!,
         entries: [
             HealthData.ActivityEntry(
                 id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440007")!,
-                startDate: formatter.date(from: "2024-01-30T11:00:00Z")!,
-                endDate: formatter.date(from: "2024-01-30T12:00:00Z")!,
-                value: 120,
+                startDate: formatter.date(from: "2024-01-30T08:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T09:00:00Z")!,
+                value: 90,
+                unit: "kcal"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440008")!,
+                startDate: formatter.date(from: "2024-01-30T09:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T10:00:00Z")!,
+                value: 110,
                 unit: "kcal"
             )
         ]
     )
     
-    static let emptyPeriod = CaloriesPeriod(
+    static let currentDayNight = CaloriesPeriod(
+        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440009")!,
+        entries: [
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440011")!,
+                startDate: formatter.date(from: "2024-01-30T21:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T22:00:00Z")!,
+                value: 180,
+                unit: "kcal"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440012")!,
+                startDate: formatter.date(from: "2024-01-30T22:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T23:00:00Z")!,
+                value: 130,
+                unit: "kcal"
+            )
+        ]
+    )
+    
+    static let currentDayMerged = CaloriesPeriod(
+        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440006")!,
+        entries: currentDayMorning.entries + currentDayNight.entries
+    )
+    
+    static let previousAndCurrentDayMerged = [
+        currentDayMerged,
+        previousDayMerged
+    ]
+    
+    static let periodWithEmptyEntries = CaloriesPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655441006")!,
         entries: []
     )
@@ -113,12 +135,21 @@ final class CalorieDataManagerFactoryTests: XCTestCase {
         super.tearDown()
     }
     
+    
     func testMapHealthKitToCoreDataWithValidData() {
-        let healthKitData = [CaloriePeriodTestData.previousDayMorningAndNightMergedPeriod]
-        let coreDataEntries = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
-        let retrievedHealthKitData = CalorieBurnedDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
+        let inputHealthKitPeriods = [CaloriePeriodTestData.currentDayMerged]
+        let coreDataEntries = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData(inputHealthKitPeriods, context: context)
+        let outputHealthKitPeriods = CalorieBurnedDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
         
-        XCTAssertEqual(healthKitData, retrievedHealthKitData)
+        XCTAssertEqual(inputHealthKitPeriods, outputHealthKitPeriods)
+    }
+    
+    func testMapHealthKitToCoreDataWithMultipleEntries() {
+        let inputHealthKitPeriods = CaloriePeriodTestData.previousAndCurrentDayMerged
+        let coreDataEntries = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData(inputHealthKitPeriods, context: context)
+        let outputHealthKitPeriods = CalorieBurnedDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
+        
+        XCTAssertEqual(inputHealthKitPeriods, outputHealthKitPeriods)
     }
     
     func testMapHealthKitToCoreDataWithEmptyData() {
@@ -128,8 +159,8 @@ final class CalorieDataManagerFactoryTests: XCTestCase {
         XCTAssertTrue(coreDataEntries.isEmpty, "Mapping an empty HealthKit dataset should return an empty CoreData dataset")
     }
     
-    func testMapHealthKitToCoreDataWithInvalidData() {
-        let healthKitData = [CaloriePeriodTestData.emptyPeriod]
+    func testMapHealthKitToCoreDataWithEmptyEntries() {
+        let healthKitData = [CaloriePeriodTestData.periodWithEmptyEntries]
         let coreDataEntries = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
         
         XCTAssertTrue(coreDataEntries.isEmpty, "HealthKit period without entries should not be mapped")
@@ -143,16 +174,17 @@ final class CalorieDataManagerFactoryTests: XCTestCase {
     }
     
     func testMergeCoreDataWithHealthKitDataWhenHealthKitIsEmpty() {
-        let coreDataEntries: [PeriodEntryMO] = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData([CaloriePeriodTestData.previousDayNightPeriod], context: context)
+        let coreDataEntries: [PeriodEntryMO] = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData(CaloriePeriodTestData.previousAndCurrentDayMerged, context: context)
         let healthKitData: [CaloriesPeriod] = []
         let mergedEntries = CalorieBurnedDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         
-        XCTAssertEqual(mergedEntries, coreDataEntries, "When HealthKit data is empty, the CoreData entries should remain unchanged.")
+        checkPeriodEntriesEqual(mergedEntries, coreDataEntries)
     }
     
     func testMergeCoreDataWithHealthKitDataWhenCoreDataIsEmpty() {
         let coreDataEntries: [PeriodEntryMO] = []
-        let healthKitData: [CaloriesPeriod] = [CaloriePeriodTestData.previousDayNightPeriod]
+        let healthKitData: [CaloriesPeriod] = CaloriePeriodTestData.previousAndCurrentDayMerged
+        
         let mergedEntries = CalorieBurnedDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         let expectedEntries = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
         
@@ -162,29 +194,39 @@ final class CalorieDataManagerFactoryTests: XCTestCase {
     func testMergeCoreDataWithHealthKitDataWhenCoreDataAndHealthKitAreEmpty() {
         let coreDataEntries: [PeriodEntryMO] = []
         let healthKitData: [CaloriesPeriod] = []
+        
         let mergedEntries = CalorieBurnedDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         
         XCTAssertTrue(mergedEntries.isEmpty, "When both CoreData and HealthKit are empty, the result should be an empty array.")
     }
     
     func testMergeCoreDataWithHealthKitDataWhenDatesAreDifferent() {
-        let coreDataEntries: [PeriodEntryMO] = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData([CaloriePeriodTestData.previousDayMorningPeriod], context: context)
-        let healthKitData: [CaloriesPeriod] = [CaloriePeriodTestData.currentDayMorningPeriod]
+        let coreDataEntries: [PeriodEntryMO] = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData([CaloriePeriodTestData.previousDayMerged], context: context)
+        let healthKitData: [CaloriesPeriod] = [CaloriePeriodTestData.currentDayMerged]
         
         let mergedEntries = CalorieBurnedDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
-        let expectedEntries = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData([CaloriePeriodTestData.currentDayMorningPeriod, CaloriePeriodTestData.previousDayMorningPeriod], context: context)
+        let expectedEntries = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData(CaloriePeriodTestData.previousAndCurrentDayMerged, context: context)
         
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
     
     func testMergeCoreDataWithHealthKitDataWhenDatesAreTheSameDay() {
-        let coreDataEntries: [PeriodEntryMO] = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData([CaloriePeriodTestData.previousDayMorningPeriod], context: context)
-        let healthKitData: [CaloriesPeriod] = [CaloriePeriodTestData.previousDayNightPeriod]
+        let coreDataEntries: [PeriodEntryMO] = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData([CaloriePeriodTestData.previousDayMorning], context: context)
+        let healthKitData: [CaloriesPeriod] = [CaloriePeriodTestData.previousDayNight]
         
         let mergedEntries = CalorieBurnedDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
-        let expectedEntries = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData([CaloriePeriodTestData.previousDayMorningAndNightMergedPeriod], context: context)
+        let expectedEntries = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData([CaloriePeriodTestData.previousDayMerged], context: context)
         
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
+    }
+    
+    func testMergeCoreDataWithHealthKitDataWithIdenticalPeriods() {
+        let coreDataEntries = CalorieBurnedDataManagerFactory.mapHealthKitToCoreData([CaloriePeriodTestData.currentDayMerged], context: context)
+        let healthKitData = [CaloriePeriodTestData.currentDayMerged]
+        
+        let mergedEntries = CalorieBurnedDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
+        
+        checkPeriodEntriesEqual(mergedEntries, coreDataEntries)
     }
 }
 

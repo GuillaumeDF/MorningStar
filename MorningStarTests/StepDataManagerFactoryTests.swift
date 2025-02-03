@@ -228,8 +228,6 @@ final class StepDataManagerFactoryTests: XCTestCase {
         
         checkPeriodEntriesEqual(mergedEntries, coreDataEntries)
     }
-    
-
 }
 
 extension StepDataManagerFactoryTests {

@@ -100,51 +100,36 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [PeriodEntryMO], with healthKitData: [SleepPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        guard !healthKitData.isEmpty else {
-            return coreDataEntry
-        }
-        
-        guard !coreDataEntry.isEmpty else {
+        guard  let coreDataMostRecentDay = coreDataEntry.first,
+            let coreDataMostRecentDate = coreDataMostRecentDay.startDate,
+              let coreDataLatestDate = coreDataEntry.last?.endDate else {
             return mapHealthKitToCoreData(healthKitData, context: context)
         }
         
-        var mergedEntries = coreDataEntry
-        guard let lastHealthKitNight = healthKitData.last,
-              let firstCoreDataEntry = mergedEntries.first,
-              let coreDataMostRecentNightEnd = firstCoreDataEntry.endDate,
-              let timeDifference = lastHealthKitNight.startDate?.timeIntervalSince(coreDataMostRecentNightEnd)
-        else {
-            let newEntries = mapHealthKitToCoreData(healthKitData, context: context)
-            mergedEntries.insert(contentsOf: newEntries, at: 0)
-            return mergedEntries
+        guard let healthKitMostRecentDate = healthKitData.first?.startDate,
+              let healthKitLatestDay = healthKitData.last,
+              let healthKitLatestDate = healthKitLatestDay.endDate,
+              coreDataLatestDate <= healthKitMostRecentDate else {
+            return coreDataEntry
         }
         
-        if timeDifference < Constants.isNightSleep * 60 * 60 {
-            firstCoreDataEntry.endDate = lastHealthKitNight.endDate
+        var mergedEntries = coreDataEntry
+        
+        if healthKitMostRecentDate.timeIntervalSince(coreDataLatestDate) <= Constants.isNightSleep * 60 * 60 {
+            coreDataMostRecentDay.endDate = healthKitLatestDate
             
-            let sleepEntries = lastHealthKitNight.entries.map { sleepEntry in
-                let newEntry = SleepEntryMO(context: context)
-                
-                newEntry.id = sleepEntry.id
-                newEntry.startDate = sleepEntry.startDate
-                newEntry.endDate = sleepEntry.endDate
-                newEntry.unit = sleepEntry.unit
-                newEntry.periodEntry = firstCoreDataEntry
-                
-                return newEntry
-            }
+            let newSleepEntries = mapHealthKitToCoreData([healthKitLatestDay], context: context).first?.sleepEntries ?? []
             
-            firstCoreDataEntry.addToSleepEntries(NSOrderedSet(array: sleepEntries))
+            coreDataMostRecentDay.addToSleepEntries(newSleepEntries)
             
             let historicalData = Array(healthKitData.dropLast())
-            
             if !historicalData.isEmpty {
                 let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
                 mergedEntries.insert(contentsOf: historicalEntries, at: 0)
             }
         } else {
-            let newEntries = mapHealthKitToCoreData(healthKitData, context: context)
-            mergedEntries.insert(contentsOf: newEntries, at: 0)
+            let newSleepEntries = mapHealthKitToCoreData(healthKitData, context: context)
+            mergedEntries.insert(contentsOf: newSleepEntries, at: 0)
         }
         
         return mergedEntries

@@ -16,73 +16,91 @@ private enum SleepPeriodTestData {
         return formatter
     }()
     
-    static let previousSleepPeriod = SleepPeriod(
+    static let previousNight = SleepPeriod(
+        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!,
+        entries: [
+            HealthData.SleepEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440002")!,
+                startDate: formatter.date(from: "2024-01-29T21:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-29T21:30:00Z")!,
+                unit: "hr"
+            ),
+            HealthData.SleepEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440003")!,
+                startDate: formatter.date(from: "2024-01-29T22:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-29T22:30:30Z")!,
+                unit: "hr"
+            )
+        ]
+    )
+    
+    static let previousMidnight = SleepPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440004")!,
         entries: [
             HealthData.SleepEntry(
                 id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440005")!,
-                startDate: formatter.date(from: "2024-01-29T19:00:00Z")!,
-                endDate: formatter.date(from: "2024-01-29T20:00:00Z")!,
+                startDate: formatter.date(from: "2024-01-30T00:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T02:00:00Z")!,
+                unit: "hr"
+            ),
+            HealthData.SleepEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440010")!,
+                startDate: formatter.date(from: "2024-01-30T03:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T5:30:00Z")!,
                 unit: "hr"
             )
         ]
     )
     
-    static let currentSleepPeriod = SleepPeriod(
+    static let previousNightMerged = SleepPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!,
-        entries: [
-            HealthData.SleepEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440002")!,
-                startDate: formatter.date(from: "2025-01-28T10:00:00Z")!,
-                endDate: formatter.date(from: "2025-01-28T11:00:00Z")!,
-                unit: "hr"
-            ),
-            HealthData.SleepEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440003")!,
-                startDate: formatter.date(from: "2025-01-29T11:00:00Z")!,
-                endDate: formatter.date(from: "2025-01-29T12:00:00Z")!,
-                unit: "hr"
-            )
-        ]
+        entries: previousNight.entries + previousMidnight.entries
     )
     
-    static let nextSleepPeriod = SleepPeriod(
-            id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440006")!,
-            entries: [
-                HealthData.SleepEntry(
-                    id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440007")!,
-                    startDate: formatter.date(from: "2025-01-29T15:00:00Z")!,
-                    endDate: formatter.date(from: "2025-01-29T19:00:00Z")!,
-                    unit: "hr"
-                )
-            ]
-        )
-    
-    static let currentAndNextSleepMergedPeriod = SleepPeriod(
-        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!,
+    static let currentDayMorning = SleepPeriod(
+        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440006")!,
         entries: [
-            HealthData.SleepEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440002")!,
-                startDate: formatter.date(from: "2025-01-28T10:00:00Z")!,
-                endDate: formatter.date(from: "2025-01-28T11:00:00Z")!,
-                unit: "hr"
-            ),
-            HealthData.SleepEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440003")!,
-                startDate: formatter.date(from: "2025-01-29T11:00:00Z")!,
-                endDate: formatter.date(from: "2025-01-29T12:00:00Z")!,
-                unit: "hr"
-            ),
             HealthData.SleepEntry(
                 id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440007")!,
-                startDate: formatter.date(from: "2025-01-29T15:00:00Z")!,
-                endDate: formatter.date(from: "2025-01-29T19:00:00Z")!,
+                startDate: formatter.date(from: "2024-01-30T10:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T10:30:00Z")!,
+                unit: "hr"
+            ),
+            HealthData.SleepEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440008")!,
+                startDate: formatter.date(from: "2024-01-30T10:30:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T11:00:00Z")!,
                 unit: "hr"
             )
         ]
     )
     
-    static let emptyPeriod = SleepPeriod(
+    static let currentDayNight = SleepPeriod(
+        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440009")!,
+        entries: [
+            HealthData.SleepEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440011")!,
+                startDate: formatter.date(from: "2024-01-30T21:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T22:00:00Z")!,
+                unit: "hr"
+            ),
+            HealthData.SleepEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440012")!,
+                startDate: formatter.date(from: "2024-01-30T22:00:00Z")!,
+                endDate: formatter.date(from: "2024-01-30T23:00:00Z")!,
+                unit: "hr"
+            )
+        ]
+    )
+    
+    static let currentDayMerged = [
+        currentDayNight,
+        currentDayMorning
+    ]
+    
+    static let previousNightAndCurrentDayMerged = currentDayMerged + [previousNightMerged]
+    
+    static let periodWithEmptyEntries = SleepPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655441006")!,
         entries: []
     )
@@ -106,12 +124,21 @@ final class SleepDataManagerFactoryTests: XCTestCase {
         super.tearDown()
     }
     
+    
     func testMapHealthKitToCoreDataWithValidData() {
-        let healthKitData = [SleepPeriodTestData.currentAndNextSleepMergedPeriod]
-        let coreDataEntries = SleepDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
-        let retrievedHealthKitData = SleepDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
+        let inputHealthKitPeriods = SleepPeriodTestData.currentDayMerged
+        let coreDataEntries = SleepDataManagerFactory.mapHealthKitToCoreData(inputHealthKitPeriods, context: context)
+        let outputHealthKitPeriods = SleepDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
         
-        XCTAssertEqual(healthKitData, retrievedHealthKitData)
+        XCTAssertEqual(inputHealthKitPeriods, outputHealthKitPeriods)
+    }
+    
+    func testMapHealthKitToCoreDataWithMultipleEntries() {
+        let inputHealthKitPeriods = SleepPeriodTestData.previousNightAndCurrentDayMerged
+        let coreDataEntries = SleepDataManagerFactory.mapHealthKitToCoreData(inputHealthKitPeriods, context: context)
+        let outputHealthKitPeriods = SleepDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
+        
+        XCTAssertEqual(inputHealthKitPeriods, outputHealthKitPeriods)
     }
     
     func testMapHealthKitToCoreDataWithEmptyData() {
@@ -121,8 +148,8 @@ final class SleepDataManagerFactoryTests: XCTestCase {
         XCTAssertTrue(coreDataEntries.isEmpty, "Mapping an empty HealthKit dataset should return an empty CoreData dataset")
     }
     
-    func testMapHealthKitToCoreDataWithInvalidData() {
-        let healthKitData = [SleepPeriodTestData.emptyPeriod]
+    func testMapHealthKitToCoreDataWithEmptyEntries() {
+        let healthKitData = [SleepPeriodTestData.periodWithEmptyEntries]
         let coreDataEntries = SleepDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
         
         XCTAssertTrue(coreDataEntries.isEmpty, "HealthKit period without entries should not be mapped")
@@ -136,16 +163,17 @@ final class SleepDataManagerFactoryTests: XCTestCase {
     }
     
     func testMergeCoreDataWithHealthKitDataWhenHealthKitIsEmpty() {
-        let coreDataEntries: [PeriodEntryMO] = SleepDataManagerFactory.mapHealthKitToCoreData([SleepPeriodTestData.currentAndNextSleepMergedPeriod], context: context)
+        let coreDataEntries: [PeriodEntryMO] = SleepDataManagerFactory.mapHealthKitToCoreData(SleepPeriodTestData.previousNightAndCurrentDayMerged, context: context)
         let healthKitData: [SleepPeriod] = []
         let mergedEntries = SleepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         
-        XCTAssertEqual(mergedEntries, coreDataEntries, "When HealthKit data is empty, the CoreData entries should remain unchanged.")
+        checkPeriodEntriesEqual(mergedEntries, coreDataEntries)
     }
     
     func testMergeCoreDataWithHealthKitDataWhenCoreDataIsEmpty() {
         let coreDataEntries: [PeriodEntryMO] = []
-        let healthKitData: [SleepPeriod] = [SleepPeriodTestData.previousSleepPeriod]
+        let healthKitData: [SleepPeriod] = SleepPeriodTestData.previousNightAndCurrentDayMerged
+        
         let mergedEntries = SleepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         let expectedEntries = SleepDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
         
@@ -155,30 +183,40 @@ final class SleepDataManagerFactoryTests: XCTestCase {
     func testMergeCoreDataWithHealthKitDataWhenCoreDataAndHealthKitAreEmpty() {
         let coreDataEntries: [PeriodEntryMO] = []
         let healthKitData: [SleepPeriod] = []
+        
         let mergedEntries = SleepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         
         XCTAssertTrue(mergedEntries.isEmpty, "When both CoreData and HealthKit are empty, the result should be an empty array.")
     }
     
-    func testMergeCoreDataWithHealthKitDataWhenWeeksAreDifferent() {
-        let coreDataEntries: [PeriodEntryMO] = SleepDataManagerFactory.mapHealthKitToCoreData([SleepPeriodTestData.previousSleepPeriod], context: context)
-        let healthKitData: [SleepPeriod] = [SleepPeriodTestData.currentSleepPeriod]
+    func testMergeCoreDataWithHealthKitDataWhenDatesAreDifferent() {
+        let coreDataEntries: [PeriodEntryMO] = SleepDataManagerFactory.mapHealthKitToCoreData([SleepPeriodTestData.previousNightMerged], context: context)
+        let healthKitData: [SleepPeriod] = SleepPeriodTestData.currentDayMerged
         
         let mergedEntries = SleepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
-        let expectedEntries = SleepDataManagerFactory.mapHealthKitToCoreData([SleepPeriodTestData.currentSleepPeriod, SleepPeriodTestData.previousSleepPeriod], context: context)
+        let expectedEntries = SleepDataManagerFactory.mapHealthKitToCoreData(SleepPeriodTestData.previousNightAndCurrentDayMerged, context: context)
         
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
     
-    func testMergeCoreDataWithHealthKitDataWhenDatesAreTheSameWeek() {
-        let coreDataEntries: [PeriodEntryMO] = SleepDataManagerFactory.mapHealthKitToCoreData([SleepPeriodTestData.currentSleepPeriod], context: context)
-        let healthKitData: [SleepPeriod] = [SleepPeriodTestData.nextSleepPeriod]
+    func testMergeCoreDataWithHealthKitDataWhenDatesAreTheSameDay() {
+        let coreDataEntries: [PeriodEntryMO] = SleepDataManagerFactory.mapHealthKitToCoreData([SleepPeriodTestData.previousNight], context: context)
+        let healthKitData: [SleepPeriod] = [SleepPeriodTestData.previousMidnight]
         
         let mergedEntries = SleepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
-        let expectedEntries = SleepDataManagerFactory.mapHealthKitToCoreData([SleepPeriodTestData.currentAndNextSleepMergedPeriod], context: context)
+        let expectedEntries = SleepDataManagerFactory.mapHealthKitToCoreData([SleepPeriodTestData.previousNightMerged], context: context)
         
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
+    
+//    func testMergeCoreDataWithHealthKitDataWithIdenticalPeriods() {
+//        let coreDataEntries = SleepDataManagerFactory.mapHealthKitToCoreData(SleepPeriodTestData.currentDayMerged, context: context)
+//        let healthKitData = SleepPeriodTestData.currentDayMerged
+//        
+//        let mergedEntries = SleepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
+//        
+//        checkPeriodEntriesEqual(mergedEntries, coreDataEntries)
+//    }
 }
 
 extension SleepDataManagerFactoryTests {
