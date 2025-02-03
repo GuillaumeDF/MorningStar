@@ -178,7 +178,7 @@ final class StepDataManagerFactoryTests: XCTestCase {
         let healthKitData: [StepPeriod] = []
         let mergedEntries = StepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         
-        XCTAssertEqual(mergedEntries, coreDataEntries, "When HealthKit data is empty, the CoreData entries should remain unchanged.")
+        checkPeriodEntriesEqual(mergedEntries, coreDataEntries)
     }
     
     func testMergeCoreDataWithHealthKitDataWhenCoreDataIsEmpty() {
@@ -194,6 +194,7 @@ final class StepDataManagerFactoryTests: XCTestCase {
     func testMergeCoreDataWithHealthKitDataWhenCoreDataAndHealthKitAreEmpty() {
         let coreDataEntries: [PeriodEntryMO] = []
         let healthKitData: [StepPeriod] = []
+        
         let mergedEntries = StepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         
         XCTAssertTrue(mergedEntries.isEmpty, "When both CoreData and HealthKit are empty, the result should be an empty array.")
@@ -225,7 +226,7 @@ final class StepDataManagerFactoryTests: XCTestCase {
         
         let mergedEntries = StepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         
-        XCTAssertEqual(mergedEntries, coreDataEntries, "Merging identical data should not create duplicates.")
+        checkPeriodEntriesEqual(mergedEntries, coreDataEntries)
     }
     
 
