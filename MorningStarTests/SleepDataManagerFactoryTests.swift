@@ -208,15 +208,6 @@ final class SleepDataManagerFactoryTests: XCTestCase {
         
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
-    
-//    func testMergeCoreDataWithHealthKitDataWithIdenticalPeriods() {
-//        let coreDataEntries = SleepDataManagerFactory.mapHealthKitToCoreData(SleepPeriodTestData.currentDayMerged, context: context)
-//        let healthKitData = SleepPeriodTestData.currentDayMerged
-//        
-//        let mergedEntries = SleepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
-//        
-//        checkPeriodEntriesEqual(mergedEntries, coreDataEntries)
-//    }
 }
 
 extension SleepDataManagerFactoryTests {

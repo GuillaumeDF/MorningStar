@@ -188,110 +188,28 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [WeeklyWorkoutsMO], with healthKitData: [WeeklyWorkouts], in context: NSManagedObjectContext) -> [WeeklyWorkoutsMO] {
-        guard !healthKitData.isEmpty else {
-            return coreDataEntry
-        }
-        
-        guard !coreDataEntry.isEmpty else {
+        guard let coreDataMostRecentWeek = coreDataEntry.first,
+              let coreDataMostRecentDay = coreDataMostRecentWeek.startDate,
+              let coreDataLatestDay = coreDataEntry.last?.endDate else {
             return mapHealthKitToCoreData(healthKitData, context: context)
         }
         
-        var mergedEntries = coreDataEntry
-        let calendar = Calendar.current
-        
-        guard let lastHealthKitWeek = healthKitData.last,
-              let firstCoreDataWeek = mergedEntries.first,
-              let coreDataMostRecentWeekStart = firstCoreDataWeek.startDate,
-              let lastHealthKitWeekStart = lastHealthKitWeek.startDate else {
-            let newEntries = mapHealthKitToCoreData(healthKitData, context: context)
-            mergedEntries.insert(contentsOf: newEntries, at: 0)
-            return mergedEntries
+        guard let healthKitMostRecentDay = healthKitData.first?.startDate,
+              let healthKitLatestWeek = healthKitData.last,
+              let healthKitLatestDay = healthKitLatestWeek.endDate,
+              coreDataLatestDay <= healthKitMostRecentDay else {
+            return coreDataEntry
         }
         
-        if calendar.isDate(coreDataMostRecentWeekStart, equalTo: lastHealthKitWeekStart, toGranularity: .weekOfYear) {
-            for dailyWorkouts in lastHealthKitWeek.dailyWorkouts {
-                guard let dailyWorkoutsStartDate = dailyWorkouts.startDate else { continue }
-                
-                if let firstCoreDataWeekDays = firstCoreDataWeek.dailyWorkouts?.array as? [DailyWorkoutsMO],
-                   let existingDay = firstCoreDataWeekDays.first(where: { existingDay in
-                       if let existingStartDate = existingDay.startDate {
-                           return calendar.isDate(existingStartDate, inSameDayAs: dailyWorkoutsStartDate)
-                       }
-                       return false
-                   }) {
-                    
-                    let newWorkouts = dailyWorkouts.workouts.map { workout in
-                        let workoutMO = WorkoutMO(context: context)
-                        
-                        workoutMO.id = workout.id
-                        workoutMO.startDate = workout.startDate
-                        workoutMO.endDate = workout.endDate
-                        workoutMO.dailyWorkouts = existingDay
-                        
-                        let phaseEntries = workout.phaseEntries.map { phaseEntry in
-                            let newEntry = WorkoutPhaseEntryMO(context: context)
-                            
-                            newEntry.id = phaseEntry.id
-                            newEntry.averageHeartRate = phaseEntry.averageHeartRate
-                            newEntry.caloriesBurned = phaseEntry.caloriesBurned
-                            newEntry.value = Int16(phaseEntry.value.rawValue)
-                            newEntry.startDate = phaseEntry.startDate
-                            newEntry.endDate = phaseEntry.endDate
-                            newEntry.workout = workoutMO
-                            
-                            return newEntry
-                        }
-                        
-                        workoutMO.addToWorkoutPhaseEntries(NSOrderedSet(array: phaseEntries))
-                        return workoutMO
-                    }
-                    
-                    existingDay.addToWorkouts(NSOrderedSet(array: newWorkouts))
-                    
-                    if let latestWorkoutEndDate = newWorkouts.compactMap({ $0.endDate }).max(),
-                       let existingEndDate = existingDay.endDate {
-                        existingDay.endDate = max(existingEndDate, latestWorkoutEndDate)
-                    }
-                    
-                } else {
-                    let newDay = DailyWorkoutsMO(context: context)
-                    newDay.id = dailyWorkouts.id
-                    newDay.startDate = dailyWorkouts.startDate
-                    newDay.endDate = dailyWorkouts.endDate
-                    
-                    let workoutEntities = dailyWorkouts.workouts.map { workout in
-                        let workoutMO = WorkoutMO(context: context)
-                        workoutMO.id = workout.id
-                        workoutMO.startDate = workout.startDate
-                        workoutMO.endDate = workout.endDate
-                        workoutMO.dailyWorkouts = newDay
-                        
-                        let phaseEntries = workout.phaseEntries.map { phaseEntry in
-                            let newEntry = WorkoutPhaseEntryMO(context: context)
-                            
-                            newEntry.id = phaseEntry.id
-                            newEntry.averageHeartRate = phaseEntry.averageHeartRate
-                            newEntry.caloriesBurned = phaseEntry.caloriesBurned
-                            newEntry.value = Int16(phaseEntry.value.rawValue)
-                            newEntry.startDate = phaseEntry.startDate
-                            newEntry.endDate = phaseEntry.endDate
-                            newEntry.workout = workoutMO
-                            
-                            return newEntry
-                        }
-                        
-                        workoutMO.addToWorkoutPhaseEntries(NSOrderedSet(array: phaseEntries))
-                        return workoutMO
-                    }
-                    
-                    newDay.addToWorkouts(NSOrderedSet(array: workoutEntities))
-                    firstCoreDataWeek.addToDailyWorkouts(newDay)
-                }
-            }
+        let calendar = Calendar.current
+        var mergedEntries = coreDataEntry
+        
+        if calendar.isDate(coreDataMostRecentDay, equalTo: healthKitLatestDay, toGranularity: .weekOfYear) {
+            coreDataMostRecentWeek.endDate = healthKitLatestDay
             
-            if let latestDailyEndDate = firstCoreDataWeek.dailyWorkouts?.compactMap({ ($0 as? DailyWorkoutsMO)?.endDate }).max() {
-                firstCoreDataWeek.endDate = max(firstCoreDataWeek.endDate ?? Date.distantPast, latestDailyEndDate)
-            }
+            let newDailyWorkoutsEntries = mapHealthKitToCoreData([healthKitLatestWeek], context: context).first?.dailyWorkouts ?? []
+            
+            coreDataMostRecentWeek.addToDailyWorkouts(newDailyWorkoutsEntries)
             
             let historicalData = Array(healthKitData.dropLast())
             if !historicalData.isEmpty {
@@ -299,8 +217,8 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
                 mergedEntries.insert(contentsOf: historicalEntries, at: 0)
             }
         } else {
-            let newEntries = mapHealthKitToCoreData(healthKitData, context: context)
-            mergedEntries.insert(contentsOf: newEntries, at: 0)
+            let newDailyWorkoutsEntries = mapHealthKitToCoreData(healthKitData, context: context)
+            mergedEntries.insert(contentsOf: newDailyWorkoutsEntries, at: 0)
         }
         
         return mergedEntries

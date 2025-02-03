@@ -100,8 +100,8 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [PeriodEntryMO], with healthKitData: [SleepPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        guard  let coreDataMostRecentDay = coreDataEntry.first,
-            let coreDataMostRecentDate = coreDataMostRecentDay.startDate,
+        guard let coreDataMostRecentDay = coreDataEntry.first,
+              let coreDataMostRecentDate = coreDataMostRecentDay.startDate,
               let coreDataLatestDate = coreDataEntry.last?.endDate else {
             return mapHealthKitToCoreData(healthKitData, context: context)
         }

@@ -16,80 +16,99 @@ private enum WeightPeriodTestData {
         return formatter
     }()
     
-    static let previousWeekPeriod = WeightPeriod(
+    static let previousEarlyWeek = WeightPeriod(
+        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!,
+        entries: [
+            HealthData.WeightEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440002")!,
+                startDate: formatter.date(from: "2025-01-28T21:00:00Z")!,
+                endDate: formatter.date(from: "2025-01-28T21:30:00Z")!,
+                value: 75,
+                unit: "kg"
+            ),
+            HealthData.WeightEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440003")!,
+                startDate: formatter.date(from: "2025-01-29T22:00:00Z")!,
+                endDate: formatter.date(from: "2025-01-29T22:30:30Z")!,
+                value: 80,
+                unit: "kg"
+            )
+        ]
+    )
+    
+    static let previousLateWeek = WeightPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440004")!,
         entries: [
             HealthData.WeightEntry(
                 id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440005")!,
-                startDate: formatter.date(from: "2024-01-29T19:00:00Z")!,
-                endDate: formatter.date(from: "2024-01-29T20:00:00Z")!,
+                startDate: formatter.date(from: "2025-01-31T00:00:00Z")!,
+                endDate: formatter.date(from: "2025-01-31T02:00:00Z")!,
+                value: 85,
+                unit: "kg"
+            ),
+            HealthData.WeightEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440010")!,
+                startDate: formatter.date(from: "2025-02-01T03:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-01T05:30:00Z")!,
+                value: 70,
+                unit: "kg"
+            )
+        ]
+    )
+    
+    static let previousWeekMerged = WeightPeriod(
+        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!,
+        entries: previousEarlyWeek.entries + previousLateWeek.entries
+    )
+    
+    static let currentEarlyWeek = WeightPeriod(
+        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440009")!,
+        entries: [
+            HealthData.WeightEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440011")!,
+                startDate: formatter.date(from: "2025-02-03T03:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-03T05:30:00Z")!,
+                value: 150,
+                unit: "kg"
+            ),
+            HealthData.WeightEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440012")!,
+                startDate: formatter.date(from: "2025-02-04T03:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-04T05:30:00Z")!,
                 value: 150,
                 unit: "kg"
             )
         ]
     )
     
-    static let currentEarlyWeekPeriod = WeightPeriod(
-        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!,
+    static let currentLateWeek = WeightPeriod(
+        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440006")!,
         entries: [
-            HealthData.WeightEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440002")!,
-                startDate: formatter.date(from: "2025-01-28T10:00:00Z")!,
-                endDate: formatter.date(from: "2025-01-28T11:00:00Z")!,
-                value: 100,
-                unit: "kg"
-            ),
-            HealthData.WeightEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440003")!,
-                startDate: formatter.date(from: "2025-01-29T11:00:00Z")!,
-                endDate: formatter.date(from: "2025-01-29T12:00:00Z")!,
-                value: 200,
-                unit: "kg"
-            )
-        ]
-    )
-    
-        static let currentWeekPeriod = WeightPeriod(
-            id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440006")!,
-            entries: [
-                HealthData.WeightEntry(
-                    id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440007")!,
-                    startDate: formatter.date(from: "2025-01-30T11:00:00Z")!,
-                    endDate: formatter.date(from: "2025-01-30T12:00:00Z")!,
-                    value: 120,
-                    unit: "kcal"
-                )
-            ]
-        )
-    
-    static let currentAndEarlyWeekMergedPeriod = WeightPeriod(
-        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440001")!,
-        entries: [
-            HealthData.WeightEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440002")!,
-                startDate: formatter.date(from: "2025-01-28T10:00:00Z")!,
-                endDate: formatter.date(from: "2025-01-28T11:00:00Z")!,
-                value: 100,
-                unit: "kg"
-            ),
-            HealthData.WeightEntry(
-                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440003")!,
-                startDate: formatter.date(from: "2025-01-29T11:00:00Z")!,
-                endDate: formatter.date(from: "2025-01-29T12:00:00Z")!,
-                value: 200,
-                unit: "kg"
-            ),
             HealthData.WeightEntry(
                 id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440007")!,
-                startDate: formatter.date(from: "2025-01-30T11:00:00Z")!,
-                endDate: formatter.date(from: "2025-01-30T12:00:00Z")!,
-                value: 120,
-                unit: "kcal"
+                startDate: formatter.date(from: "2025-02-07T03:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-07T05:30:00Z")!,
+                value: 82,
+                unit: "kg"
+            ),
+            HealthData.WeightEntry(
+                id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440008")!,
+                startDate: formatter.date(from: "2025-02-08T03:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-08T05:30:00Z")!,
+                value: 86,
+                unit: "kg"
             )
         ]
     )
     
-    static let emptyPeriod = WeightPeriod(
+    static let currentWeekMerged = [
+        currentLateWeek,
+        currentEarlyWeek
+    ]
+    
+    static let previousAndCurrentWeek = currentWeekMerged + [previousWeekMerged]
+    
+    static let periodWithEmptyEntries = WeightPeriod(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655441006")!,
         entries: []
     )
@@ -113,12 +132,21 @@ final class WeightDataManagerFactoryTests: XCTestCase {
         super.tearDown()
     }
     
+    
     func testMapHealthKitToCoreDataWithValidData() {
-        let healthKitData = [WeightPeriodTestData.currentAndEarlyWeekMergedPeriod]
-        let coreDataEntries = WeightDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
-        let retrievedHealthKitData = WeightDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
+        let inputHealthKitPeriods = WeightPeriodTestData.currentWeekMerged
+        let coreDataEntries = WeightDataManagerFactory.mapHealthKitToCoreData(inputHealthKitPeriods, context: context)
+        let outputHealthKitPeriods = WeightDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
         
-        XCTAssertEqual(healthKitData, retrievedHealthKitData)
+        XCTAssertEqual(inputHealthKitPeriods, outputHealthKitPeriods)
+    }
+    
+    func testMapHealthKitToCoreDataWithMultipleEntries() {
+        let inputHealthKitPeriods = WeightPeriodTestData.previousAndCurrentWeek
+        let coreDataEntries = WeightDataManagerFactory.mapHealthKitToCoreData(inputHealthKitPeriods, context: context)
+        let outputHealthKitPeriods = WeightDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
+        
+        XCTAssertEqual(inputHealthKitPeriods, outputHealthKitPeriods)
     }
     
     func testMapHealthKitToCoreDataWithEmptyData() {
@@ -128,8 +156,8 @@ final class WeightDataManagerFactoryTests: XCTestCase {
         XCTAssertTrue(coreDataEntries.isEmpty, "Mapping an empty HealthKit dataset should return an empty CoreData dataset")
     }
     
-    func testMapHealthKitToCoreDataWithInvalidData() {
-        let healthKitData = [WeightPeriodTestData.emptyPeriod]
+    func testMapHealthKitToCoreDataWithEmptyEntries() {
+        let healthKitData = [WeightPeriodTestData.periodWithEmptyEntries]
         let coreDataEntries = WeightDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
         
         XCTAssertTrue(coreDataEntries.isEmpty, "HealthKit period without entries should not be mapped")
@@ -143,16 +171,17 @@ final class WeightDataManagerFactoryTests: XCTestCase {
     }
     
     func testMergeCoreDataWithHealthKitDataWhenHealthKitIsEmpty() {
-        let coreDataEntries: [PeriodEntryMO] = WeightDataManagerFactory.mapHealthKitToCoreData([WeightPeriodTestData.currentAndEarlyWeekMergedPeriod], context: context)
+        let coreDataEntries: [PeriodEntryMO] = WeightDataManagerFactory.mapHealthKitToCoreData(WeightPeriodTestData.previousAndCurrentWeek, context: context)
         let healthKitData: [WeightPeriod] = []
         let mergedEntries = WeightDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         
-        XCTAssertEqual(mergedEntries, coreDataEntries, "When HealthKit data is empty, the CoreData entries should remain unchanged.")
+        checkPeriodEntriesEqual(mergedEntries, coreDataEntries)
     }
     
     func testMergeCoreDataWithHealthKitDataWhenCoreDataIsEmpty() {
         let coreDataEntries: [PeriodEntryMO] = []
-        let healthKitData: [WeightPeriod] = [WeightPeriodTestData.previousWeekPeriod]
+        let healthKitData: [WeightPeriod] = WeightPeriodTestData.previousAndCurrentWeek
+        
         let mergedEntries = WeightDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         let expectedEntries = WeightDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
         
@@ -162,27 +191,28 @@ final class WeightDataManagerFactoryTests: XCTestCase {
     func testMergeCoreDataWithHealthKitDataWhenCoreDataAndHealthKitAreEmpty() {
         let coreDataEntries: [PeriodEntryMO] = []
         let healthKitData: [WeightPeriod] = []
+        
         let mergedEntries = WeightDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         
         XCTAssertTrue(mergedEntries.isEmpty, "When both CoreData and HealthKit are empty, the result should be an empty array.")
     }
     
-    func testMergeCoreDataWithHealthKitDataWhenWeeksAreDifferent() {
-        let coreDataEntries: [PeriodEntryMO] = WeightDataManagerFactory.mapHealthKitToCoreData([WeightPeriodTestData.previousWeekPeriod], context: context)
-        let healthKitData: [WeightPeriod] = [WeightPeriodTestData.currentWeekPeriod]
+    func testMergeCoreDataWithHealthKitDataWhenDatesAreDifferent() {
+        let coreDataEntries: [PeriodEntryMO] = WeightDataManagerFactory.mapHealthKitToCoreData([WeightPeriodTestData.previousWeekMerged], context: context)
+        let healthKitData: [WeightPeriod] = WeightPeriodTestData.currentWeekMerged
         
         let mergedEntries = WeightDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
-        let expectedEntries = WeightDataManagerFactory.mapHealthKitToCoreData([WeightPeriodTestData.currentWeekPeriod, WeightPeriodTestData.previousWeekPeriod], context: context)
+        let expectedEntries = WeightDataManagerFactory.mapHealthKitToCoreData(WeightPeriodTestData.previousAndCurrentWeek, context: context)
         
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
     
     func testMergeCoreDataWithHealthKitDataWhenDatesAreTheSameWeek() {
-        let coreDataEntries: [PeriodEntryMO] = WeightDataManagerFactory.mapHealthKitToCoreData([WeightPeriodTestData.currentEarlyWeekPeriod], context: context)
-        let healthKitData: [WeightPeriod] = [WeightPeriodTestData.currentWeekPeriod]
+        let coreDataEntries: [PeriodEntryMO] = WeightDataManagerFactory.mapHealthKitToCoreData([WeightPeriodTestData.previousEarlyWeek], context: context)
+        let healthKitData: [WeightPeriod] = [WeightPeriodTestData.previousLateWeek]
         
         let mergedEntries = WeightDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
-        let expectedEntries = WeightDataManagerFactory.mapHealthKitToCoreData([WeightPeriodTestData.currentAndEarlyWeekMergedPeriod], context: context)
+        let expectedEntries = WeightDataManagerFactory.mapHealthKitToCoreData([WeightPeriodTestData.previousWeekMerged], context: context)
         
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }

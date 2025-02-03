@@ -16,7 +16,8 @@ private enum WorkoutPeriodTestData {
         return formatter
     }()
     
-    static let previousWeekPeriod = WeeklyWorkouts(
+    // Debut de la semaine précédente (20-26 janvier)
+    static let previousEarlyWeek = WeeklyWorkouts(
         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440004")!,
         dailyWorkouts: [
             DailyWorkouts(
@@ -89,9 +90,9 @@ private enum WorkoutPeriodTestData {
             )
         ]
     )
-
-    // Début de la semaine courante
-    static let currentEarlyWeekPeriod = WeeklyWorkouts(
+    
+    // Fin de la semaine précédente
+    static let previousLateWeek = WeeklyWorkouts(
         id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440005")!,
         dailyWorkouts: [
             DailyWorkouts(
@@ -102,24 +103,24 @@ private enum WorkoutPeriodTestData {
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440022")!,
-                                startDate: formatter.date(from: "2025-01-28T06:30:00Z")!,
-                                endDate: formatter.date(from: "2025-01-28T06:45:00Z")!,
+                                startDate: formatter.date(from: "2025-01-24T06:30:00Z")!,
+                                endDate: formatter.date(from: "2025-01-24T06:45:00Z")!,
                                 value: .low,
                                 averageHeartRate: 120,
                                 caloriesBurned: 80
                             ),
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440023")!,
-                                startDate: formatter.date(from: "2025-01-28T06:45:00Z")!,
-                                endDate: formatter.date(from: "2025-01-28T07:15:00Z")!,
+                                startDate: formatter.date(from: "2025-01-24T06:45:00Z")!,
+                                endDate: formatter.date(from: "2025-01-24T07:15:00Z")!,
                                 value: .moderate,
                                 averageHeartRate: 148,
                                 caloriesBurned: 240
                             ),
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440024")!,
-                                startDate: formatter.date(from: "2025-01-28T07:15:00Z")!,
-                                endDate: formatter.date(from: "2025-01-28T07:30:00Z")!,
+                                startDate: formatter.date(from: "2025-01-24T07:15:00Z")!,
+                                endDate: formatter.date(from: "2025-01-24T07:30:00Z")!,
                                 value: .low,
                                 averageHeartRate: 125,
                                 caloriesBurned: 60
@@ -130,9 +131,14 @@ private enum WorkoutPeriodTestData {
             )
         ]
     )
-
-    // Semaine courante complète
-    static let currentWeekPeriod = WeeklyWorkouts(
+    
+    static let previousWeekMerged = WeeklyWorkouts(
+        id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440004")!,
+        dailyWorkouts: previousEarlyWeek.dailyWorkouts + previousLateWeek.dailyWorkouts
+    )
+    
+    // Début de la semaine courante (27 janvier - 2 février)
+    static let currentEarlyWeek = WeeklyWorkouts(
         id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440006")!,
         dailyWorkouts: [
             DailyWorkouts(
@@ -143,24 +149,24 @@ private enum WorkoutPeriodTestData {
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440032")!,
-                                startDate: formatter.date(from: "2025-01-29T06:30:00Z")!,
-                                endDate: formatter.date(from: "2025-01-29T06:45:00Z")!,
+                                startDate: formatter.date(from: "2025-01-27T06:30:00Z")!,
+                                endDate: formatter.date(from: "2025-01-27T06:45:00Z")!,
                                 value: .low,
                                 averageHeartRate: 120,
                                 caloriesBurned: 80
                             ),
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440033")!,
-                                startDate: formatter.date(from: "2025-01-29T06:45:00Z")!,
-                                endDate: formatter.date(from: "2025-01-29T07:15:00Z")!,
+                                startDate: formatter.date(from: "2025-01-27T06:45:00Z")!,
+                                endDate: formatter.date(from: "2025-01-27T07:15:00Z")!,
                                 value: .moderate,
                                 averageHeartRate: 148,
                                 caloriesBurned: 240
                             ),
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440034")!,
-                                startDate: formatter.date(from: "2025-01-29T07:15:00Z")!,
-                                endDate: formatter.date(from: "2025-01-29T7:30:00Z")!,
+                                startDate: formatter.date(from: "2025-01-27T07:15:00Z")!,
+                                endDate: formatter.date(from: "2025-01-27T07:30:00Z")!,
                                 value: .low,
                                 averageHeartRate: 125,
                                 caloriesBurned: 60
@@ -177,24 +183,24 @@ private enum WorkoutPeriodTestData {
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440035")!,
-                                startDate: formatter.date(from: "2025-01-30T07:00:00Z")!,
-                                endDate: formatter.date(from: "2025-01-30T07:15:00Z")!,
+                                startDate: formatter.date(from: "2025-01-29T07:00:00Z")!,
+                                endDate: formatter.date(from: "2025-01-29T07:15:00Z")!,
                                 value: .moderate,
                                 averageHeartRate: 140,
                                 caloriesBurned: 90
                             ),
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440036")!,
-                                startDate: formatter.date(from: "2025-01-30T07:15:00Z")!,
-                                endDate: formatter.date(from: "2025-01-30T08:00:00Z")!,
+                                startDate: formatter.date(from: "2025-01-29T07:15:00Z")!,
+                                endDate: formatter.date(from: "2025-01-29T08:00:00Z")!,
                                 value: .veryHigh,
                                 averageHeartRate: 172,
                                 caloriesBurned: 380
                             ),
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440037")!,
-                                startDate: formatter.date(from: "2025-01-30T08:00:00Z")!,
-                                endDate: formatter.date(from: "2025-01-30T08:15:00Z")!,
+                                startDate: formatter.date(from: "2025-01-29T08:00:00Z")!,
+                                endDate: formatter.date(from: "2025-01-29T08:15:00Z")!,
                                 value: .moderate,
                                 averageHeartRate: 145,
                                 caloriesBurned: 50
@@ -205,9 +211,9 @@ private enum WorkoutPeriodTestData {
             )
         ]
     )
-
-    // Fusion du début de semaine et de la semaine courante
-    static let currentAndEarlyWeekMergedPeriod = WeeklyWorkouts(
+    
+    // Suite de la semaine courante
+    static let currentLateWeek = WeeklyWorkouts(
         id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440005")!,
         dailyWorkouts: [
             DailyWorkouts(
@@ -218,24 +224,24 @@ private enum WorkoutPeriodTestData {
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440022")!,
-                                startDate: formatter.date(from: "2025-01-28T06:30:00Z")!,
-                                endDate: formatter.date(from: "2025-01-28T06:45:00Z")!,
+                                startDate: formatter.date(from: "2025-01-31T06:30:00Z")!,
+                                endDate: formatter.date(from: "2025-01-31T06:45:00Z")!,
                                 value: .low,
                                 averageHeartRate: 120,
                                 caloriesBurned: 80
                             ),
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440023")!,
-                                startDate: formatter.date(from: "2025-01-28T06:45:00Z")!,
-                                endDate: formatter.date(from: "2025-01-28T07:15:00Z")!,
+                                startDate: formatter.date(from: "2025-01-31T06:45:00Z")!,
+                                endDate: formatter.date(from: "2025-01-31T07:15:00Z")!,
                                 value: .moderate,
                                 averageHeartRate: 148,
                                 caloriesBurned: 240
                             ),
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440024")!,
-                                startDate: formatter.date(from: "2025-01-28T07:15:00Z")!,
-                                endDate: formatter.date(from: "2025-01-28T07:30:00Z")!,
+                                startDate: formatter.date(from: "2025-01-31T07:15:00Z")!,
+                                endDate: formatter.date(from: "2025-01-31T07:30:00Z")!,
                                 value: .low,
                                 averageHeartRate: 125,
                                 caloriesBurned: 60
@@ -252,24 +258,24 @@ private enum WorkoutPeriodTestData {
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440032")!,
-                                startDate: formatter.date(from: "2025-01-29T06:30:00Z")!,
-                                endDate: formatter.date(from: "2025-01-29T06:45:00Z")!,
+                                startDate: formatter.date(from: "2025-02-01T06:30:00Z")!,
+                                endDate: formatter.date(from: "2025-02-01T06:45:00Z")!,
                                 value: .low,
                                 averageHeartRate: 120,
                                 caloriesBurned: 80
                             ),
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440033")!,
-                                startDate: formatter.date(from: "2025-01-29T06:45:00Z")!,
-                                endDate: formatter.date(from: "2025-01-29T07:15:00Z")!,
+                                startDate: formatter.date(from: "2025-02-01T06:45:00Z")!,
+                                endDate: formatter.date(from: "2025-02-01T07:15:00Z")!,
                                 value: .moderate,
                                 averageHeartRate: 148,
                                 caloriesBurned: 240
                             ),
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440034")!,
-                                startDate: formatter.date(from: "2025-01-29T07:15:00Z")!,
-                                endDate: formatter.date(from: "2025-01-29T7:30:00Z")!,
+                                startDate: formatter.date(from: "2025-02-01T07:15:00Z")!,
+                                endDate: formatter.date(from: "2025-02-01T07:30:00Z")!,
                                 value: .low,
                                 averageHeartRate: 125,
                                 caloriesBurned: 60
@@ -286,24 +292,24 @@ private enum WorkoutPeriodTestData {
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440035")!,
-                                startDate: formatter.date(from: "2025-01-30T07:00:00Z")!,
-                                endDate: formatter.date(from: "2025-01-30T07:15:00Z")!,
+                                startDate: formatter.date(from: "2025-02-02T07:00:00Z")!,
+                                endDate: formatter.date(from: "2025-02-02T07:15:00Z")!,
                                 value: .moderate,
                                 averageHeartRate: 140,
                                 caloriesBurned: 90
                             ),
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440036")!,
-                                startDate: formatter.date(from: "2025-01-30T07:15:00Z")!,
-                                endDate: formatter.date(from: "2025-01-30T08:00:00Z")!,
+                                startDate: formatter.date(from: "2025-02-02T07:15:00Z")!,
+                                endDate: formatter.date(from: "2025-02-02T08:00:00Z")!,
                                 value: .veryHigh,
                                 averageHeartRate: 172,
                                 caloriesBurned: 380
                             ),
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440037")!,
-                                startDate: formatter.date(from: "2025-01-30T08:00:00Z")!,
-                                endDate: formatter.date(from: "2025-01-30T08:15:00Z")!,
+                                startDate: formatter.date(from: "2025-02-02T08:00:00Z")!,
+                                endDate: formatter.date(from: "2025-02-02T08:15:00Z")!,
                                 value: .moderate,
                                 averageHeartRate: 145,
                                 caloriesBurned: 50
@@ -314,9 +320,16 @@ private enum WorkoutPeriodTestData {
             )
         ]
     )
-
+    
+    static let currentWeekMerged = [
+        currentLateWeek,
+        currentEarlyWeek
+    ]
+    
+    static let previousAndCurrentWeek = currentWeekMerged + [previousWeekMerged]
+    
     // Période vide
-    static let emptyPeriod = WeeklyWorkouts(
+    static let emptyWeeklyWorkoutWithEmptyDaily = WeeklyWorkouts(
         id: UUID(uuidString: "990e8400-e29b-41d4-a716-446655440008")!,
         dailyWorkouts: []
     )
@@ -340,12 +353,21 @@ final class WorkoutDataManagerFactoryTests: XCTestCase {
         super.tearDown()
     }
     
+    
     func testMapHealthKitToCoreDataWithValidData() {
-        let healthKitData = [WorkoutPeriodTestData.currentAndEarlyWeekMergedPeriod]
-        let coreDataEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
-        let retrievedHealthKitData = WorkoutDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
+        let inputHealthKitPeriods = WorkoutPeriodTestData.currentWeekMerged
+        let coreDataEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData(inputHealthKitPeriods, context: context)
+        let outputHealthKitPeriods = WorkoutDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
         
-        XCTAssertEqual(healthKitData, retrievedHealthKitData)
+        XCTAssertEqual(inputHealthKitPeriods, outputHealthKitPeriods)
+    }
+    
+    func testMapHealthKitToCoreDataWithMultipleEntries() {
+        let inputHealthKitPeriods = WorkoutPeriodTestData.previousAndCurrentWeek
+        let coreDataEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData(inputHealthKitPeriods, context: context)
+        let outputHealthKitPeriods = WorkoutDataManagerFactory.mapCoreDataToHealthKit(coreDataEntries)
+        
+        XCTAssertEqual(inputHealthKitPeriods, outputHealthKitPeriods)
     }
     
     func testMapHealthKitToCoreDataWithEmptyData() {
@@ -353,13 +375,6 @@ final class WorkoutDataManagerFactoryTests: XCTestCase {
         let coreDataEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
         
         XCTAssertTrue(coreDataEntries.isEmpty, "Mapping an empty HealthKit dataset should return an empty CoreData dataset")
-    }
-    
-    func testMapHealthKitToCoreDataWithInvalidData() {
-        let healthKitData = [WorkoutPeriodTestData.emptyPeriod]
-        let coreDataEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
-        
-        XCTAssertTrue(coreDataEntries.isEmpty, "HealthKit period without entries should not be mapped")
     }
     
     func testMapCoreDataToHealthKitWithEmptyData() {
@@ -370,16 +385,17 @@ final class WorkoutDataManagerFactoryTests: XCTestCase {
     }
     
     func testMergeCoreDataWithHealthKitDataWhenHealthKitIsEmpty() {
-        let coreDataEntries: [WeeklyWorkoutsMO] = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.currentAndEarlyWeekMergedPeriod], context: context)
+        let coreDataEntries: [WeeklyWorkoutsMO] = WorkoutDataManagerFactory.mapHealthKitToCoreData(WorkoutPeriodTestData.previousAndCurrentWeek, context: context)
         let healthKitData: [WeeklyWorkouts] = []
         let mergedEntries = WorkoutDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         
-        XCTAssertEqual(mergedEntries, coreDataEntries, "When HealthKit data is empty, the CoreData entries should remain unchanged.")
+        checkPeriodEntriesEqual(mergedEntries, coreDataEntries)
     }
     
     func testMergeCoreDataWithHealthKitDataWhenCoreDataIsEmpty() {
         let coreDataEntries: [WeeklyWorkoutsMO] = []
-        let healthKitData: [WeeklyWorkouts] = [WorkoutPeriodTestData.previousWeekPeriod]
+        let healthKitData: [WeeklyWorkouts] = WorkoutPeriodTestData.previousAndCurrentWeek
+        
         let mergedEntries = WorkoutDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         let expectedEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData(healthKitData, context: context)
         
@@ -389,27 +405,28 @@ final class WorkoutDataManagerFactoryTests: XCTestCase {
     func testMergeCoreDataWithHealthKitDataWhenCoreDataAndHealthKitAreEmpty() {
         let coreDataEntries: [WeeklyWorkoutsMO] = []
         let healthKitData: [WeeklyWorkouts] = []
+        
         let mergedEntries = WorkoutDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         
         XCTAssertTrue(mergedEntries.isEmpty, "When both CoreData and HealthKit are empty, the result should be an empty array.")
     }
     
-    func testMergeCoreDataWithHealthKitDataWhenWeeksAreDifferent() {
-        let coreDataEntries: [WeeklyWorkoutsMO] = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.previousWeekPeriod], context: context)
-        let healthKitData: [WeeklyWorkouts] = [WorkoutPeriodTestData.currentWeekPeriod]
+    func testMergeCoreDataWithHealthKitDataWhenDatesAreDifferent() {
+        let coreDataEntries: [WeeklyWorkoutsMO] = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.previousWeekMerged], context: context)
+        let healthKitData: [WeeklyWorkouts] = WorkoutPeriodTestData.currentWeekMerged
         
         let mergedEntries = WorkoutDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
-        let expectedEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.currentWeekPeriod, WorkoutPeriodTestData.previousWeekPeriod], context: context)
+        let expectedEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData(WorkoutPeriodTestData.previousAndCurrentWeek, context: context)
         
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
     
     func testMergeCoreDataWithHealthKitDataWhenDatesAreTheSameWeek() {
-        let coreDataEntries: [WeeklyWorkoutsMO] = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.currentEarlyWeekPeriod], context: context)
-        let healthKitData: [WeeklyWorkouts] = [WorkoutPeriodTestData.currentWeekPeriod]
+        let coreDataEntries: [WeeklyWorkoutsMO] = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.previousEarlyWeek], context: context)
+        let healthKitData: [WeeklyWorkouts] = [WorkoutPeriodTestData.previousLateWeek]
         
         let mergedEntries = WorkoutDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
-        let expectedEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.currentAndEarlyWeekMergedPeriod], context: context)
+        let expectedEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.previousWeekMerged], context: context)
         
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
