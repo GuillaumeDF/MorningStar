@@ -48,17 +48,21 @@ struct MSStackedChart: View {
             
             TabView(selection: $viewModel.index) {
                 ForEach(Array(viewModel.periods.enumerated()), id: \.offset) { index, weeklyWorkout in
-                    HStack(spacing: Constants.Spacing.horizontalStack) {
-                        ForEach(weeklyWorkout.dailyWorkouts, id: \.self) { dailyWorkout in
-                            ForEach(dailyWorkout.workouts, id: \.self) { workout in
-                                IntensityStack(
-                                    workout: workout,
-                                    maxTime: viewModel.maxTime
-                                )
-                                .frame(width: stackWidth)
+                    // Nouvelle vue intermédiaire pour isoler le layout direction
+                    ZStack {
+                        HStack(spacing: Constants.Spacing.horizontalStack) {
+                            ForEach(weeklyWorkout.dailyWorkouts, id: \.self) { dailyWorkout in
+                                ForEach(dailyWorkout.workouts, id: \.self) { workout in
+                                    IntensityStack(
+                                        workout: workout,
+                                        maxTime: viewModel.maxTime
+                                    )
+                                    .frame(width: stackWidth)
+                                }
                             }
                         }
                     }
+                    .environment(\.layoutDirection, .leftToRight)
                     .frame(maxWidth: .infinity, alignment: .trailing)
                     .padding(.trailing, Constants.Spacing.horizontalStack + Constants.Spacing.trailingPadding)
                     .padding(.bottom, Constants.Size.xAxisLabelHeight)

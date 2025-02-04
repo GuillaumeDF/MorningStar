@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-// Verifier les optionelles
+// TODO: Verifier les optionelles
 
 struct DashboardView: View {
     @Binding var healthMetrics: HealthMetrics
@@ -49,7 +49,9 @@ struct DashboardView: View {
                         arrowDirection: .up
                     )
                     .frame(width: (geometry.size.width - 100) / 3)
-                    MSStackedChartCardView(workoutHistory: healthMetrics.workoutHistory)
+                    MSStackedChartCardView(
+                        workoutHistory: healthMetrics.workoutHistory
+                    )
                 }
             }
             
