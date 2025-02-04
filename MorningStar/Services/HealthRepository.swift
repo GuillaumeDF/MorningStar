@@ -8,8 +8,8 @@
 import Foundation
 
 protocol HealthRepositoryProtocol {
-    func fetchCoreData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthKitDataType]
-    func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async -> Result<[T.HealthKitDataType], Error>
+    func fetchCoreData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType]
+    func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async -> Result<[T.HealthDataType], Error>
 }
 
 class HealthRepository: HealthRepositoryProtocol {
@@ -31,26 +31,26 @@ class HealthRepository: HealthRepositoryProtocol {
         self.syncStorage = syncStorage
     }
     
-    func fetchCoreData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthKitDataType] {
+    func fetchCoreData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType] {
         let localData = try await coreDataSource.fetch(factory, options: .dateDescending)
         let healthData = factory.mapCoreDataToHealthKit(localData)
         
         return healthData
     }
     
-    func fetchHealthKit<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date) async throws -> [T.HealthKitDataType] {
+    func fetchHealthKit<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date) async throws -> [T.HealthDataType] {
         print("Une nouvelle tentative de synchronisation vient d'être initiée au \(startDate)")
         return try await healthKitSource.fetch(factory, from: startDate)
     }
     
-    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthKitDataType]) async throws -> [T.HealthKitDataType] {
+    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) async throws -> [T.HealthDataType] {
         let newEntries = coreDataSource.mergeCoreDataWithHealthKitData(factory, localData: localData, with: healthKitData)
         try await coreDataSource.save()
         
         return factory.mapCoreDataToHealthKit(newEntries)
     }
 
-    func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async -> Result<[T.HealthKitDataType], Error> {
+    func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async -> Result<[T.HealthDataType], Error> {
         let lastSync = await syncStorage.getLastSync(for: factory.id)
         print("Le last sync pour \(factory.id.description) est le \(lastSync ?? Date.distantPast)")
 

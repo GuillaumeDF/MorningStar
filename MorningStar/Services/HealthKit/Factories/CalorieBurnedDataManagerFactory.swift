@@ -10,14 +10,14 @@ import HealthKit
 import CoreData
 
 struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
-    typealias HealthKitDataType = CaloriesPeriod
+    typealias HealthDataType = CaloriesPeriod
     typealias CoreDataType = PeriodEntryMO
     
     static var healthKitSampleType: HKSampleType? {
         HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)
     }
     
-    static var id: HealthDataType {
+    static var id: HealthMetricType {
         .calories
     }
     

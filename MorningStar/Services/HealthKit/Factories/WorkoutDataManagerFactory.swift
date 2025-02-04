@@ -10,14 +10,14 @@ import HealthKit
 import CoreData
 
 struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
-    typealias HealthKitDataType = WeeklyWorkouts
+    typealias HealthDataType = WeeklyWorkouts
     typealias CoreDataType = WeeklyWorkoutsMO
     
     static var healthKitSampleType: HKSampleType? {
         HKObjectType.workoutType()
     }
     
-    static var id: HealthDataType {
+    static var id: HealthMetricType {
         .workouts
     }
     

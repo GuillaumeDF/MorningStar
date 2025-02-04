@@ -10,14 +10,14 @@ import HealthKit
 import CoreData
 
 struct HeartRateDataManagerFactory: HealthDataFactoryProtocol {
-    typealias HealthKitDataType = HeartRatePeriod
+    typealias HealthDataType = HeartRatePeriod
     typealias CoreDataType = PeriodEntryMO
     
     static var healthKitSampleType: HKSampleType? {
         HKQuantityType.quantityType(forIdentifier: .heartRate)
     }
     
-    static var id: HealthDataType {
+    static var id: HealthMetricType {
         .calories // TODO: Trouver une solution pour retirer
     }
     

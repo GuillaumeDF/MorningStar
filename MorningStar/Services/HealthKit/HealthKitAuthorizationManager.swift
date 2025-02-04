@@ -15,7 +15,7 @@ class HealthKitAuthorizationManager {
     }
     
     func requestAuthorization() async throws {
-        let typesToRead: Set<HKSampleType> = Set(HealthDataType.allCases.compactMap { $0.healthKitFactory.healthKitSampleType })
+        let typesToRead: Set<HKSampleType> = Set(HealthMetricType.allCases.compactMap { $0.healthKitFactory.healthKitSampleType })
             .union([HKQuantityType.quantityType(forIdentifier: .heartRate)!]) // TODO: Temporaire autorisation pour HR
         
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in

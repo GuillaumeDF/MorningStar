@@ -19,8 +19,6 @@ enum HealthError: Error {
 
 @MainActor
 class HealthDashboardViewModel: ObservableObject {
-    // MARK: - Types
-    
     enum State {
         case initial
         case loading
@@ -58,7 +56,7 @@ class HealthDashboardViewModel: ObservableObject {
     
     private func loadAllLocalData() async {
         await withTaskGroup(of: Void.self) { group in
-            for type in HealthDataType.allCases {
+            for type in HealthMetricType.allCases {
                 group.addTask {
                     await self.loadLocalData(type.healthKitFactory)
                 }
@@ -88,7 +86,7 @@ class HealthDashboardViewModel: ObservableObject {
             
             while true {
                 await withTaskGroup(of: Void.self) { group in
-                    for type in HealthDataType.allCases {
+                    for type in HealthMetricType.allCases {
                         group.addTask {
                             await self.syncHealthData(type.healthKitFactory)
                         }

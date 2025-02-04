@@ -15,14 +15,14 @@ private enum Constants {
 }
 
 struct SleepDataManagerFactory: HealthDataFactoryProtocol {
-    typealias HealthKitDataType = SleepPeriod
+    typealias HealthDataType = SleepPeriod
     typealias CoreDataType = PeriodEntryMO
     
     static var healthKitSampleType: HKSampleType? {
         HKQuantityType.categoryType(forIdentifier: .sleepAnalysis)
     }
     
-    static var id: HealthDataType {
+    static var id: HealthMetricType {
         .sleep
     }
     

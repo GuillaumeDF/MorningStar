@@ -72,9 +72,9 @@
 		F0C7CE3A2D5248F7002F0CC6 /* HealthMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C7CE392D5248F4002F0CC6 /* HealthMetrics.swift */; };
 		F0C7CE3D2D524A30002F0CC6 /* SyncStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C7CE3C2D524A2F002F0CC6 /* SyncStrategy.swift */; };
 		F0C7CE3F2D524A4C002F0CC6 /* SyncStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C7CE3E2D524A4B002F0CC6 /* SyncStorage.swift */; };
-		F0C7CE412D524A85002F0CC6 /* HealthDataType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C7CE402D524A84002F0CC6 /* HealthDataType.swift */; };
 		F0C7CE432D524AA7002F0CC6 /* HealthKitAuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C7CE422D524AA6002F0CC6 /* HealthKitAuthorizationManager.swift */; };
 		F0C7CE452D524AE0002F0CC6 /* HealthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C7CE442D524ADF002F0CC6 /* HealthRepository.swift */; };
+		F0C7CE472D526108002F0CC6 /* HealthDataFactoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C7CE462D526107002F0CC6 /* HealthDataFactoryProtocol.swift */; };
 		F0CFA07D2C76368300B7FD7D /* MSUpDownArrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */; };
 		F0CFA07F2C765A5800B7FD7D /* MSChartCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CFA07E2C765A5800B7FD7D /* MSChartCardView.swift */; };
 		F0D5E0142C6E66EA00EE647B /* MSStackedChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D5E0132C6E66EA00EE647B /* MSStackedChart.swift */; };
@@ -173,9 +173,9 @@
 		F0C7CE392D5248F4002F0CC6 /* HealthMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthMetrics.swift; sourceTree = "<group>"; };
 		F0C7CE3C2D524A2F002F0CC6 /* SyncStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStrategy.swift; sourceTree = "<group>"; };
 		F0C7CE3E2D524A4B002F0CC6 /* SyncStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStorage.swift; sourceTree = "<group>"; };
-		F0C7CE402D524A84002F0CC6 /* HealthDataType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataType.swift; sourceTree = "<group>"; };
 		F0C7CE422D524AA6002F0CC6 /* HealthKitAuthorizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitAuthorizationManager.swift; sourceTree = "<group>"; };
 		F0C7CE442D524ADF002F0CC6 /* HealthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthRepository.swift; sourceTree = "<group>"; };
+		F0C7CE462D526107002F0CC6 /* HealthDataFactoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataFactoryProtocol.swift; sourceTree = "<group>"; };
 		F0CFA07C2C76368300B7FD7D /* MSUpDownArrow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSUpDownArrow.swift; sourceTree = "<group>"; };
 		F0CFA07E2C765A5800B7FD7D /* MSChartCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSChartCardView.swift; sourceTree = "<group>"; };
 		F0D5E0132C6E66EA00EE647B /* MSStackedChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSStackedChart.swift; sourceTree = "<group>"; };
@@ -298,7 +298,7 @@
 		F03AA6D52C6425FF003C1BB3 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				F0C7CE402D524A84002F0CC6 /* HealthDataType.swift */,
+				F0C7CE462D526107002F0CC6 /* HealthDataFactoryProtocol.swift */,
 				F0C7CE392D5248F4002F0CC6 /* HealthMetrics.swift */,
 				F0512F042C85107900FA033F /* HealthData.swift */,
 			);
@@ -745,6 +745,7 @@
 				F03599892C7FD2E4008715FF /* LegendView.swift in Sources */,
 				F0C7CE362D5246B8002F0CC6 /* CoreDataSource.swift in Sources */,
 				F083A0172CBD40960085C1D0 /* WorkoutIntensityAnalyzer.swift in Sources */,
+				F0C7CE472D526108002F0CC6 /* HealthDataFactoryProtocol.swift in Sources */,
 				F083A0272CBDD3720085C1D0 /* SleepDataManagerFactory.swift in Sources */,
 				F083A0212CBDD2CD0085C1D0 /* HeartRateDataManagerFactory.swift in Sources */,
 				F0512F102C8513D100FA033F /* LineChart.swift in Sources */,
@@ -765,7 +766,6 @@
 				F083A02F2CBDD4190085C1D0 /* HealthKitError.swift in Sources */,
 				F077C4102CC824CB00A88556 /* WeightLineChartViewModel.swift in Sources */,
 				F0C7CE3F2D524A4C002F0CC6 /* SyncStorage.swift in Sources */,
-				F0C7CE412D524A85002F0CC6 /* HealthDataType.swift in Sources */,
 				F083A0192CBD40D50085C1D0 /* HealthDataProcessor.swift in Sources */,
 				F0C7CE3D2D524A30002F0CC6 /* SyncStrategy.swift in Sources */,
 				F077C40C2CC8246600A88556 /* PeriodSelectable.swift in Sources */,

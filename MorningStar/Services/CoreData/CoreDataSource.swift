@@ -11,7 +11,7 @@ import CoreData
 protocol CoreDataSourceProtocol {
     func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, options: CoreDataSource.SortOrder) async throws -> [T.CoreDataType]
     func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) -> [T.CoreDataType]
-    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthKitDataType]) -> [T.CoreDataType]
+    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) -> [T.CoreDataType]
     func save() async throws
 }
 
@@ -23,7 +23,7 @@ class CoreDataSource: CoreDataSourceProtocol {
     
     static let shared = CoreDataSource()
     private(set) var persistentContainer: NSPersistentContainer
-    private(set) var fetchHistory: [HealthDataType: [NSManagedObject]] = [:]
+    private(set) var fetchHistory: [HealthMetricType: [NSManagedObject]] = [:]
 
     private init() {
         persistentContainer = NSPersistentContainer(name: "HealthDataModel")
@@ -42,7 +42,7 @@ class CoreDataSource: CoreDataSourceProtocol {
         fetchHistory[factory.id] as? [T.CoreDataType] ?? []
     }
     
-    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthKitDataType]) -> [T.CoreDataType] {
+    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) -> [T.CoreDataType] {
         context.performAndWait {
            return factory.mergeCoreDataWithHealthKitData(localData, with: healthKitData, in: context)
         }

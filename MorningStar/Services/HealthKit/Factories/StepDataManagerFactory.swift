@@ -10,14 +10,14 @@ import HealthKit
 import CoreData
 
 struct StepDataManagerFactory: HealthDataFactoryProtocol {
-    typealias HealthKitDataType = StepPeriod
+    typealias HealthDataType = StepPeriod
     typealias CoreDataType = PeriodEntryMO
     
     static var healthKitSampleType: HKSampleType? {
         HKQuantityType.quantityType(forIdentifier: .stepCount)
     }
     
-    static var id: HealthDataType {
+    static var id: HealthMetricType {
         .steps
     }
     
@@ -43,7 +43,7 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
     }
     
-    static func mapHealthKitToCoreData(_ healthKitData: [HealthKitDataType], context: NSManagedObjectContext) -> [CoreDataType] {
+    static func mapHealthKitToCoreData(_ healthKitData: [HealthDataType], context: NSManagedObjectContext) -> [CoreDataType] {
         var periodEntries: [PeriodEntryMO] = []
         
         healthKitData.forEach { stepPeriod in

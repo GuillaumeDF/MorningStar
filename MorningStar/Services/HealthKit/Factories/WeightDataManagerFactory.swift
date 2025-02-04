@@ -10,14 +10,14 @@ import HealthKit
 import CoreData
 
 struct WeightDataManagerFactory: HealthDataFactoryProtocol {
-    typealias HealthKitDataType =  WeightPeriod
+    typealias HealthDataType =  WeightPeriod
     typealias CoreDataType = PeriodEntryMO
     
     static var healthKitSampleType: HKSampleType? {
         HKQuantityType.quantityType(forIdentifier: .bodyMass)
     }
     
-    static var id: HealthDataType {
+    static var id: HealthMetricType {
         .weight
     }
     
