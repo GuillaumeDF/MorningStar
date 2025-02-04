@@ -8,6 +8,8 @@
 import HealthKit
 import CoreData
 
+// TODO: Ajouter de la verbose
+
 enum HealthError: Error {
     case syncFailed
     case fetchFailed
@@ -27,7 +29,6 @@ class HealthDashboardViewModel: ObservableObject {
     }
     
     @Published var healthMetrics = HealthMetrics()
-    /*@Published*/ private(set) var state: State = .initial // TODO: Refaire le state
     
     private let repository: HealthRepositoryProtocol
     private let authorizationManager: HealthKitAuthorizationManager
@@ -44,7 +45,7 @@ class HealthDashboardViewModel: ObservableObject {
                 try await self.authorizationManager.requestAuthorization()
                 await self.loadAndSyncData()
             } catch {
-                self.state = .error(error)
+                print("Error initializing health: \(error.localizedDescription)")
             }
         }
     }
@@ -76,7 +77,6 @@ class HealthDashboardViewModel: ObservableObject {
             
         } catch {
             print("Failed to load data for \(factory.id.description): \(error)")
-            await MainActor.run { state = .error(error) }
         }
     }
     
@@ -92,7 +92,7 @@ class HealthDashboardViewModel: ObservableObject {
                         }
                     }
                 }
-                try? await Task.sleep(nanoseconds: AppConstants.TimeDelay.rateLimitSleep * 1_000_000_000)
+                try? await Task.sleep(nanoseconds: AppConstants.Duration.rateLimitSleep * 1_000_000_000)
             }
         }
     }
@@ -110,9 +110,6 @@ class HealthDashboardViewModel: ObservableObject {
             
         case .failure(let error):
             print("Sync failed for \(factory.id.description): \(error)")
-            await MainActor.run {
-                self.state = .error(error)
-            }
         }
     }
 }
@@ -121,7 +118,7 @@ enum HealthDashboardFactory {
     @MainActor static func makeViewModel() -> HealthDashboardViewModel {
         let coreDataSource = CoreDataSource.shared
         let healthKitSource = HealthKitSource()
-        let syncStrategy = TimeBasedSyncStrategy(minimumInterval: AppConstants.TimeDelay.syncRetryDelay)
+        let syncStrategy = TimeBasedSyncStrategy(minimumInterval: AppConstants.Duration.syncRetryDelay)
         let lastSyncStorage = LastSyncStorage()
         
         let repository = HealthRepository(

@@ -9,10 +9,10 @@ import CoreData
 import HealthKit
 
 protocol HealthDataFactoryProtocol {
-    associatedtype HealthDataType // TODO: Rename
+    associatedtype HealthDataType
     associatedtype CoreDataType: NSManagedObject
     
-    static var healthKitSampleType: HKSampleType? { get }
+    static var requiredHealthKitAuthorizationType: [HKSampleType?] { get }
     static var id: HealthMetricType { get }
     static var predicateCoreData: NSPredicate? { get }
     

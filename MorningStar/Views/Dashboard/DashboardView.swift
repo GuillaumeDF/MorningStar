@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// Verifier les optionelles
+
 struct DashboardView: View {
     @Binding var healthMetrics: HealthMetrics
     
@@ -23,20 +25,18 @@ struct DashboardView: View {
                         .foregroundStyle(Color.secondaryTextColor)
                 }
                 Spacer()
-                // TODO: Reimplenter Total workout this week
-//                MSDashboardHeaderMetricView(
-//                    title: "Total workout this week",
-//                    value: healthData.totalWorkoutHoursThisWeek.minutes == 0 ?
-//                    "\(healthData.totalWorkoutHoursThisWeek.hours) hr" : 
-//                        "\(healthData.totalWorkoutHoursThisWeek.hours) hr \(healthData.totalWorkoutHoursThisWeek.minutes)"
-//                )
+                // TODO: Reimplenter Total workout this week en heure
+                MSDashboardHeaderMetricView(
+                    title: "Total workout this week",
+                    value: healthMetrics.totalWorkoutHoursThisWeek
+                )
                 MSVerticalSeparator()
                     .frame(height: 50)
                 // TODO: Reimplenter Total step this week
-//                MSDashboardHeaderMetricView(
-//                    title: "Total step this week",
-//                    value: "\(healthData.totalStepThisWeek)"
-//                )
+                MSDashboardHeaderMetricView(
+                    title: "Total step this week",
+                    value: "\(healthMetrics.totalStepThisWeek)"
+                )
             }
             
             GeometryReader { geometry in

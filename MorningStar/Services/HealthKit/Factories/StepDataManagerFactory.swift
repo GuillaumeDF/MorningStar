@@ -13,8 +13,10 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
     typealias HealthDataType = StepPeriod
     typealias CoreDataType = PeriodEntryMO
     
-    static var healthKitSampleType: HKSampleType? {
-        HKQuantityType.quantityType(forIdentifier: .stepCount)
+    static var requiredHealthKitAuthorizationType: [HKSampleType?] {
+        [
+            HKQuantityType.quantityType(forIdentifier: .stepCount)
+        ]
     }
     
     static var id: HealthMetricType {

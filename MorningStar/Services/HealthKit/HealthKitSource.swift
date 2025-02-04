@@ -42,9 +42,6 @@ class HealthKitSource: HealthKitSourceProtocol {
            }
                
            return try await manager.fetchData()
-           
-//       case .heartRate: // TODO: A verifier
-//           return []
        }
     }
 }

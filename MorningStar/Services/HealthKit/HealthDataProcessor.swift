@@ -8,10 +8,6 @@
 import Foundation
 import HealthKit
 
-private enum Constants {
-    static let isNightSleep: TimeInterval = 4
-}
-
 struct HealthDataProcessor {
     static func groupActivitiesByDay(for statsCollection: HKStatisticsCollection, from startDate: Date, to endDate: Date, unit: HKUnit) -> [PeriodEntry<HealthData.ActivityEntry>] {
         var dailyActivities: [PeriodEntry<HealthData.ActivityEntry>] = []
@@ -55,7 +51,7 @@ struct HealthDataProcessor {
         for sample in samples {
             guard let categorySample = sample as? HKCategorySample else { continue }
             
-            if let lastEnd = lastSampleEndDate, categorySample.startDate.timeIntervalSince(lastEnd) > Constants.isNightSleep * 60 * 60 {
+            if let lastEnd = lastSampleEndDate, categorySample.startDate.timeIntervalSince(lastEnd) > AppConstants.Duration.isNightSleep * 60 * 60 {
                 if !currentNightActivities.isEmpty {
                     nightlyActivities.insert(PeriodEntry(entries: currentNightActivities), at: 0)
                     currentNightActivities = []

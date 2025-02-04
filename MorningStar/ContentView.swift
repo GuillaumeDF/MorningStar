@@ -17,24 +17,17 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            // TODO: Refaire le status d'authorization
-//            if viewModel.authorizationStatus == .authorized {
-            if true {
-                Color.backgroundColor.edgesIgnoringSafeArea(.all)
-                GeometryReader { geometry in
-                    VStack {
-                        HeaderView()
-                            .frame(height: geometry.size.height * Constants.headerHeight)
-                        
-                        DashboardView(healthMetrics: $viewModel.healthMetrics)
-                            .frame(height: geometry.size.height * Constants.dashboardHeight)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .padding(AppConstants.Padding.extraLarge)
+            Color.backgroundColor.edgesIgnoringSafeArea(.all)
+            GeometryReader { geometry in
+                VStack {
+                    HeaderView()
+                        .frame(height: geometry.size.height * Constants.headerHeight)
+                    
+                    DashboardView(healthMetrics: $viewModel.healthMetrics)
+                        .frame(height: geometry.size.height * Constants.dashboardHeight)
                 }
-            } else {
-                Text("Autorisation HealthKit refusée ou non accordée")
-                    .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .padding(AppConstants.Padding.extraLarge)
             }
         }
         .onAppear {

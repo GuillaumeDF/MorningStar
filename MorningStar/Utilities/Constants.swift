@@ -1,5 +1,5 @@
 //
-//  UIConstants.swift
+//  Constants.swift
 //  MorningStar
 //
 //  Created by Guillaume Djaider Fornari on 09/08/2024.
@@ -31,9 +31,12 @@ enum AppConstants {
         static let extraLarge: CGFloat = 24
     }
     
-    // Time is measured in seconds
-    enum TimeDelay {
+    enum Duration {
+        // Time is measured in seconds
         static let rateLimitSleep: UInt64 = 60
         static let syncRetryDelay: Double = 300
+        
+        // Time is measured in hours
+        static let isNightSleep: TimeInterval = 4
     }
 }

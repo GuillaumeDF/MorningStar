@@ -9,21 +9,9 @@ import Foundation
 import HealthKit
 import CoreData
 
-struct HeartRateDataManagerFactory: HealthDataFactoryProtocol {
+struct HeartRateDataManagerFactory {
     typealias HealthDataType = HeartRatePeriod
     typealias CoreDataType = PeriodEntryMO
-    
-    static var healthKitSampleType: HKSampleType? {
-        HKQuantityType.quantityType(forIdentifier: .heartRate)
-    }
-    
-    static var id: HealthMetricType {
-        .calories // TODO: Trouver une solution pour retirer
-    }
-    
-    static var predicateCoreData: NSPredicate? {
-        nil
-    }
     
     static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<SampleQueryDescriptor<[HeartRatePeriod]>>? {
            let queryDescriptor = SampleQueryDescriptor<[HeartRatePeriod]>(
@@ -52,11 +40,6 @@ struct HeartRateDataManagerFactory: HealthDataFactoryProtocol {
    
            return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
        }
-    
-    static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[HeartRatePeriod]>>? {
-        nil
-    }
-    
     
     static func mapHealthKitToCoreData(_ healthKitData: [HeartRatePeriod], context: NSManagedObjectContext) -> [PeriodEntryMO] {
         var periodEntries: [PeriodEntryMO] = []
@@ -111,8 +94,4 @@ struct HeartRateDataManagerFactory: HealthDataFactoryProtocol {
              return PeriodEntry(entries: heartRateEntries)
          }
      }
-    
-    static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [PeriodEntryMO], with healthKitData: [HeartRatePeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        []
-    }
 }

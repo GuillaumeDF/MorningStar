@@ -11,7 +11,6 @@ enum HealthMetricType: CaseIterable, CustomStringConvertible {
     case weight
     case sleep
     case workouts
-    //case heartRate
     
     var description: String {
         switch self {
@@ -20,7 +19,6 @@ enum HealthMetricType: CaseIterable, CustomStringConvertible {
         case .weight: return "weight"
         case .sleep: return "sleep"
         case .workouts: return "workouts"
-            //case .heartRate: return "heartRate"
         }
     }
     
@@ -31,7 +29,6 @@ enum HealthMetricType: CaseIterable, CustomStringConvertible {
         case .weight: return WeightDataManagerFactory.self
         case .sleep: return SleepDataManagerFactory.self
         case .workouts: return WorkoutDataManagerFactory.self
-            //case .heartRate: return HeartRateDataManagerFactory.self // TODO: A vérifier
         }
     }
 }
@@ -42,6 +39,24 @@ struct HealthMetrics {
     var weightHistory: [WeightPeriod] = []
     var sleepHistory: [SleepPeriod] = []
     var workoutHistory: [WeeklyWorkouts] = []
+    
+    // TODO: A revoir la logique ne devrait pas se trouver ici
+    var totalWorkoutHoursThisWeek: String {
+        let totalSeconds = workoutHistory.first?.dailyWorkouts.reduce(into: 0) { result, dailyWorkout in
+            dailyWorkout.workouts.forEach { workout in
+                workout.phaseEntries.forEach { phase in
+                    result += phase.duration
+                }
+            }
+        } ?? 0
+        
+        let hours = Int(totalSeconds) / 3600
+        let minutes = (Int(totalSeconds) % 3600) / 60
+        
+        return "\(hours)h \(minutes)m"
+    }
+    
+    var totalStepThisWeek: Int = 0
     
     mutating func set<T>(_ type: HealthMetricType, items: [T]) {
         switch type {

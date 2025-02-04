@@ -22,7 +22,7 @@
 		F03599872C7FD1B3008715FF /* MSImageWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03599862C7FD1B3008715FF /* MSImageWithTitle.swift */; };
 		F03599892C7FD2E4008715FF /* LegendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03599882C7FD2E4008715FF /* LegendView.swift */; };
 		F03AA6E12C6426F2003C1BB3 /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03AA6E02C6426F2003C1BB3 /* Color+Theme.swift */; };
-		F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B72C6647C100E8FB1C /* UIConstants.swift */; };
+		F04A78B82C6647C100E8FB1C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B72C6647C100E8FB1C /* Constants.swift */; };
 		F04A78BA2C664A3000E8FB1C /* MSLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B92C664A3000E8FB1C /* MSLogo.swift */; };
 		F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */; };
 		F0512F052C85107900FA033F /* HealthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F042C85107900FA033F /* HealthData.swift */; };
@@ -122,7 +122,7 @@
 		F03599862C7FD1B3008715FF /* MSImageWithTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSImageWithTitle.swift; sourceTree = "<group>"; };
 		F03599882C7FD2E4008715FF /* LegendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegendView.swift; sourceTree = "<group>"; };
 		F03AA6E02C6426F2003C1BB3 /* Color+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
-		F04A78B72C6647C100E8FB1C /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
+		F04A78B72C6647C100E8FB1C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F04A78B92C664A3000E8FB1C /* MSLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLogo.swift; sourceTree = "<group>"; };
 		F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSTodayDateTitle.swift; sourceTree = "<group>"; };
 		F0512F042C85107900FA033F /* HealthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthData.swift; sourceTree = "<group>"; };
@@ -348,7 +348,7 @@
 			isa = PBXGroup;
 			children = (
 				F03AA6DD2C64268F003C1BB3 /* Extensions */,
-				F04A78B72C6647C100E8FB1C /* UIConstants.swift */,
+				F04A78B72C6647C100E8FB1C /* Constants.swift */,
 				F077C4192CC9684B00A88556 /* WorkoutMockData.swift */,
 			);
 			path = Utilities;
@@ -770,7 +770,7 @@
 				F0C7CE3D2D524A30002F0CC6 /* SyncStrategy.swift in Sources */,
 				F077C40C2CC8246600A88556 /* PeriodSelectable.swift in Sources */,
 				F0FF79D32C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift in Sources */,
-				F04A78B82C6647C100E8FB1C /* UIConstants.swift in Sources */,
+				F04A78B82C6647C100E8FB1C /* Constants.swift in Sources */,
 				F0512F072C85109A00FA033F /* HealthViewModel.swift in Sources */,
 				F053CF6D2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift in Sources */,
 				F076E4312C7E386C0080BA83 /* ColorSheme+Theme.swift in Sources */,

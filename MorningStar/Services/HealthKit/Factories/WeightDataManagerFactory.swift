@@ -13,8 +13,10 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
     typealias HealthDataType =  WeightPeriod
     typealias CoreDataType = PeriodEntryMO
     
-    static var healthKitSampleType: HKSampleType? {
-        HKQuantityType.quantityType(forIdentifier: .bodyMass)
+    static var requiredHealthKitAuthorizationType: [HKSampleType?] {
+        [
+            HKQuantityType.quantityType(forIdentifier: .bodyMass)
+        ]
     }
     
     static var id: HealthMetricType {

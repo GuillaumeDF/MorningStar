@@ -13,8 +13,12 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
     typealias HealthDataType = WeeklyWorkouts
     typealias CoreDataType = WeeklyWorkoutsMO
     
-    static var healthKitSampleType: HKSampleType? {
-        HKObjectType.workoutType()
+    static var requiredHealthKitAuthorizationType: [HKSampleType?] {
+        [
+            HKObjectType.workoutType(),
+            HKQuantityType.quantityType(forIdentifier: .heartRate),
+            HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)
+        ]
     }
     
     static var id: HealthMetricType {

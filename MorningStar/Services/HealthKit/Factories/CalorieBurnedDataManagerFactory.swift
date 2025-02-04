@@ -13,8 +13,10 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
     typealias HealthDataType = CaloriesPeriod
     typealias CoreDataType = PeriodEntryMO
     
-    static var healthKitSampleType: HKSampleType? {
-        HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)
+    static var requiredHealthKitAuthorizationType: [HKSampleType?] {
+        [
+            HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)
+        ]
     }
     
     static var id: HealthMetricType {

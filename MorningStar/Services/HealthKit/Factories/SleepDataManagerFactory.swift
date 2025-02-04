@@ -9,17 +9,14 @@ import Foundation
 import HealthKit
 import CoreData
 
-// TODO: Public Constants ?
-private enum Constants {
-    static let isNightSleep: TimeInterval = 4
-}
-
 struct SleepDataManagerFactory: HealthDataFactoryProtocol {
     typealias HealthDataType = SleepPeriod
     typealias CoreDataType = PeriodEntryMO
     
-    static var healthKitSampleType: HKSampleType? {
-        HKQuantityType.categoryType(forIdentifier: .sleepAnalysis)
+    static var requiredHealthKitAuthorizationType: [HKSampleType?] {
+        [
+            HKQuantityType.categoryType(forIdentifier: .sleepAnalysis)
+        ]
     }
     
     static var id: HealthMetricType {
@@ -115,7 +112,7 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
         
         var mergedEntries = coreDataEntry
         
-        if healthKitMostRecentDate.timeIntervalSince(coreDataLatestDate) <= Constants.isNightSleep * 60 * 60 {
+        if healthKitMostRecentDate.timeIntervalSince(coreDataLatestDate) <= AppConstants.Duration.isNightSleep * 60 * 60 {
             coreDataMostRecentDay.endDate = healthKitLatestDate
             
             let newSleepEntries = mapHealthKitToCoreData([healthKitLatestDay], context: context).first?.sleepEntries ?? []
