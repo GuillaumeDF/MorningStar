@@ -19,8 +19,8 @@ protocol HealthDataFactoryProtocol {
     static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<SampleQueryDescriptor<[HealthDataType]>>?
     static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[HealthDataType]>>?
     
-    static func mapHealthKitToCoreData(_ healthKitData: [HealthDataType], context: NSManagedObjectContext) -> [CoreDataType]
-    static func mapCoreDataToHealthKit(_ coreDataEntry: [CoreDataType]) -> [HealthDataType] // TODO: Rename 
+    static func mapHealthKitToCoreData(_ healthData: [HealthDataType], context: NSManagedObjectContext) -> [CoreDataType]
+    static func mapCoreDataToHealthKit(_ coreDataEntries: [CoreDataType]) -> [HealthDataType]
     
-    static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [CoreDataType], with healthKitData: [HealthDataType], in context: NSManagedObjectContext) -> [CoreDataType]
+    static func mergeCoreDataWithHealthKitData(_ coreDataEntries: [CoreDataType], with healthData: [HealthDataType], in context: NSManagedObjectContext) -> [CoreDataType]
 }

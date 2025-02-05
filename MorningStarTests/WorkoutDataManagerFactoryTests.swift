@@ -411,13 +411,14 @@ final class WorkoutDataManagerFactoryTests: XCTestCase {
         XCTAssertTrue(mergedEntries.isEmpty, "When both CoreData and HealthKit are empty, the result should be an empty array.")
     }
     
-    func testMergeCoreDataWithHealthKitDataWhenDatesAreDifferent() {
+    func testMergeCoreDataWithHealthKitDataWhenWeeksAreDifferent() {
         let coreDataEntries: [WeeklyWorkoutsMO] = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.previousWeekMerged], context: context)
         let healthKitData: [WeeklyWorkouts] = WorkoutPeriodTestData.currentWeekMerged
         
         let mergedEntries = WorkoutDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         let expectedEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData(WorkoutPeriodTestData.previousAndCurrentWeek, context: context)
         
+        XCTAssertEqual(WorkoutPeriodTestData.previousAndCurrentWeek, WorkoutDataManagerFactory.mapCoreDataToHealthKit(mergedEntries))
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
     
@@ -428,6 +429,7 @@ final class WorkoutDataManagerFactoryTests: XCTestCase {
         let mergedEntries = WorkoutDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
         let expectedEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.previousWeekMerged], context: context)
         
+        XCTAssertEqual([WorkoutPeriodTestData.previousWeekMerged], WorkoutDataManagerFactory.mapCoreDataToHealthKit(mergedEntries))
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
 }

@@ -44,10 +44,10 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
         nil
     }
     
-    static func mapHealthKitToCoreData(_ healthKitData: [WeightPeriod], context: NSManagedObjectContext) -> [PeriodEntryMO] {
+    static func mapHealthKitToCoreData(_ healthData: [WeightPeriod], context: NSManagedObjectContext) -> [PeriodEntryMO] {
         var periodEntries: [PeriodEntryMO] = []
         
-        healthKitData.forEach { weightPeriod in
+        healthData.forEach { weightPeriod in
             guard let startDate = weightPeriod.entries.first?.startDate,
                   let endDate = weightPeriod.entries.last?.endDate else {
                 return
@@ -78,8 +78,8 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
         return periodEntries
     }
     
-    static func mapCoreDataToHealthKit(_ coreDataEntry: [PeriodEntryMO]) -> [WeightPeriod] {
-        return coreDataEntry.map { periodEntity in
+    static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [WeightPeriod] {
+        return coreDataEntries.map { periodEntity in
             let weightEntries: [HealthData.WeightEntry] = (periodEntity.weightEntries)?.compactMap { entry in
                 guard let weightEntity = entry as? WeightEntryMO else {
                     return nil
@@ -98,37 +98,37 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
         }
     }
     
-    static func mergeCoreDataWithHealthKitData(_ coreDataEntry: [PeriodEntryMO], with healthKitData: [WeightPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        guard let coreDataMostRecentWeek = coreDataEntry.first,
+    static func mergeCoreDataWithHealthKitData(_ coreDataEntries: [PeriodEntryMO], with healthData: [WeightPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
+        guard let coreDataMostRecentWeek = coreDataEntries.first,
               let coreDataMostRecentDay = coreDataMostRecentWeek.startDate,
-              let coreDataLatestDay = coreDataEntry.last?.endDate else {
-            return mapHealthKitToCoreData(healthKitData, context: context)
+              let coreDataLatestDay = coreDataEntries.last?.endDate else {
+            return mapHealthKitToCoreData(healthData, context: context)
         }
         
-        guard let healthKitMostRecentDay = healthKitData.first?.startDate,
-              let healthKitLatestWeek = healthKitData.last,
-              let healthKitLatestDay = healthKitLatestWeek.endDate,
-              coreDataLatestDay <= healthKitMostRecentDay else {
-            return coreDataEntry
+        guard let healthDataMostRecentDay = healthData.first?.startDate,
+              let healthDataLatestWeek = healthData.last,
+              let healthDataLatestDay = healthDataLatestWeek.endDate,
+              coreDataLatestDay <= healthDataMostRecentDay else {
+            return coreDataEntries
         }
         
         let calendar = Calendar.current
-        var mergedEntries = coreDataEntry
+        var mergedEntries = coreDataEntries
         
-        if calendar.isDate(coreDataMostRecentDay, equalTo: healthKitLatestDay, toGranularity: .weekOfYear) {
-            coreDataMostRecentWeek.endDate = healthKitLatestDay
+        if calendar.isDate(coreDataMostRecentDay, equalTo: healthDataLatestDay, toGranularity: .weekOfYear) {
+            coreDataMostRecentWeek.endDate = healthDataLatestDay
             
-            let newWeightEntries = mapHealthKitToCoreData([healthKitLatestWeek], context: context).first?.weightEntries ?? []
+            let newWeightEntries = mapHealthKitToCoreData([healthDataLatestWeek], context: context).first?.weightEntries ?? []
             
             coreDataMostRecentWeek.addToWeightEntries(newWeightEntries)
             
-            let historicalData = Array(healthKitData.dropLast())
+            let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {
                 let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
                 mergedEntries.insert(contentsOf: historicalEntries, at: 0)
             }
         } else {
-            let newWeightEntries = mapHealthKitToCoreData(healthKitData, context: context)
+            let newWeightEntries = mapHealthKitToCoreData(healthData, context: context)
             mergedEntries.insert(contentsOf: newWeightEntries, at: 0)
         }
         

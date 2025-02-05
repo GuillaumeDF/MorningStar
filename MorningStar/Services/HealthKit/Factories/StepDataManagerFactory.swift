@@ -45,10 +45,10 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
     }
     
-    static func mapHealthKitToCoreData(_ healthKitData: [HealthDataType], context: NSManagedObjectContext) -> [CoreDataType] {
+    static func mapHealthKitToCoreData(_ healthData: [HealthDataType], context: NSManagedObjectContext) -> [CoreDataType] {
         var periodEntries: [PeriodEntryMO] = []
         
-        healthKitData.forEach { stepPeriod in
+        healthData.forEach { stepPeriod in
             guard let startDate = stepPeriod.entries.first?.startDate,
                   let endDate = stepPeriod.entries.last?.endDate else {
                 print("Can't get start or end date from StepPeriod")
@@ -80,8 +80,8 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         return periodEntries
     }
     
-    static func mapCoreDataToHealthKit(_ coreDataEntry: [PeriodEntryMO]) -> [StepPeriod] {
-        return coreDataEntry.map { periodEntity in
+    static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [StepPeriod] {
+        return coreDataEntries.map { periodEntity in
             let stepEntries: [HealthData.ActivityEntry] = (periodEntity.stepEntries)?.compactMap { entry in
                 guard let stepEntity = entry as? StepEntryMO else {
                     return nil
@@ -100,48 +100,36 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         }
     }
     
-    static func mergeCoreDataWithHealthKitData(
-        _ coreDataEntry: [PeriodEntryMO],
-        with healthKitData: [StepPeriod],
-        in context: NSManagedObjectContext
-    ) -> [PeriodEntryMO] {
-        // Si pas de données Core Data, on convertit simplement les données HealthKit
-        guard  let coreDataMostRecentDay = coreDataEntry.first,
+    static func mergeCoreDataWithHealthKitData(_ coreDataEntries: [PeriodEntryMO], with healthData: [StepPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
+        guard  let coreDataMostRecentDay = coreDataEntries.first,
             let coreDataMostRecentDate = coreDataMostRecentDay.startDate,
-              let coreDataLatestDate = coreDataEntry.last?.endDate else {
-            return mapHealthKitToCoreData(healthKitData, context: context)
+              let coreDataLatestDate = coreDataEntries.last?.endDate else {
+            return mapHealthKitToCoreData(healthData, context: context)
         }
         
-        // Vérification des données HealthKit et de leur chronologie
-        guard let healthKitMostRecentDate = healthKitData.first?.startDate,
-              let healthKitLatestDay = healthKitData.last,
-              let healthKitLatestDate = healthKitLatestDay.endDate,
-              coreDataLatestDate <= healthKitMostRecentDate else {
-            return coreDataEntry
+        guard let healthDataMostRecentDate = healthData.first?.startDate,
+              let healthDataLatestDay = healthData.last,
+              let healthDataLatestDate = healthDataLatestDay.endDate,
+              coreDataLatestDate <= healthDataMostRecentDate else {
+            return coreDataEntries
         }
         
-        var mergedEntries = coreDataEntry
+        var mergedEntries = coreDataEntries
         
-        // Si les données concernent le même jour
-        if coreDataMostRecentDate.isSameDay(as: healthKitLatestDate) {
-            // Mise à jour de la date de fin
-            coreDataMostRecentDay.endDate = healthKitLatestDate
+        if coreDataMostRecentDate.isSameDay(as: healthDataLatestDate) {
+            coreDataMostRecentDay.endDate = healthDataLatestDate
             
-            // Création des nouvelles entrées de pas
-            let newStepEntries = mapHealthKitToCoreData([healthKitLatestDay], context: context).first?.stepEntries ?? []
+            let newStepEntries = mapHealthKitToCoreData([healthDataLatestDay], context: context).first?.stepEntries ?? []
             
-            // Ajout des nouvelles entrées
             coreDataMostRecentDay.addToStepEntries(newStepEntries)
             
-            // Traitement des données historiques si présentes
-            let historicalData = Array(healthKitData.dropLast())
+            let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {
                 let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
                 mergedEntries.insert(contentsOf: historicalEntries, at: 0)
             }
         } else {
-            // Si les jours sont différents, on ajoute simplement les nouvelles données
-            let newStepEntries = mapHealthKitToCoreData(healthKitData, context: context)
+            let newStepEntries = mapHealthKitToCoreData(healthData, context: context)
             mergedEntries.insert(contentsOf: newStepEntries, at: 0)
         }
         

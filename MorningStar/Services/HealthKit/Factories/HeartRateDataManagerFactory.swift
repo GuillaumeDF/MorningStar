@@ -41,10 +41,10 @@ struct HeartRateDataManagerFactory {
            return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
        }
     
-    static func mapHealthKitToCoreData(_ healthKitData: [HeartRatePeriod], context: NSManagedObjectContext) -> [PeriodEntryMO] {
+    static func mapHealthKitToCoreData(_ healthData: [HeartRatePeriod], context: NSManagedObjectContext) -> [PeriodEntryMO] {
         var periodEntries: [PeriodEntryMO] = []
         
-        healthKitData.forEach { heartRatePeriod in
+        healthData.forEach { heartRatePeriod in
             guard let startDate = heartRatePeriod.entries.first?.startDate,
                   let endDate = heartRatePeriod.entries.last?.endDate else {
                 return
@@ -76,8 +76,8 @@ struct HeartRateDataManagerFactory {
         return periodEntries
     }
     
-     static func mapCoreDataToHealthKit(_ coreDataEntry: [PeriodEntryMO]) -> [HeartRatePeriod] {
-         return coreDataEntry.map { periodEntity in
+     static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [HeartRatePeriod] {
+         return coreDataEntries.map { periodEntity in
              let heartRateEntries: [HealthData.HeartRateEntry] = (periodEntity.heartRateEntries)?.compactMap { entry in
                  guard let heartRateEntity = entry as? HeartRateEntryMO else {
                      return nil

@@ -48,7 +48,6 @@ struct MSStackedChart: View {
             
             TabView(selection: $viewModel.index) {
                 ForEach(Array(viewModel.periods.enumerated()), id: \.offset) { index, weeklyWorkout in
-                    // Nouvelle vue intermédiaire pour isoler le layout direction
                     ZStack {
                         HStack(spacing: Constants.Spacing.horizontalStack) {
                             ForEach(weeklyWorkout.dailyWorkouts, id: \.self) { dailyWorkout in
