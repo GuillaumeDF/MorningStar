@@ -80,14 +80,16 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
     static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [SleepPeriod] {
         return coreDataEntries.map { periodEntity in
             let sleepEntries: [HealthData.SleepEntry] = (periodEntity.sleepEntries)?.compactMap { entry in
-                guard let sleepEntity = entry as? SleepEntryMO else {
+                guard let sleepEntity = entry as? SleepEntryMO,
+                      let startDate = sleepEntity.startDate,
+                      let endDate = sleepEntity.endDate else {
                     return nil
                 }
                 
                 return HealthData.SleepEntry(
                     id: sleepEntity.id ?? UUID(),
-                    startDate: sleepEntity.startDate ?? Date(),
-                    endDate: sleepEntity.endDate ?? Date(),
+                    startDate: startDate,
+                    endDate: endDate,
                     unit: sleepEntity.unit ?? ""
                 )
             } ?? []
@@ -115,7 +117,9 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
         if healthDataMostRecentDate.timeIntervalSince(coreDataLatestDate) <= AppConstants.Duration.isNightSleep * 60 * 60 {
             coreDataMostRecentDay.endDate = healthDataLatestDate
             
-            let newSleepEntries = mapHealthKitToCoreData([healthDataLatestDay], context: context).first?.sleepEntries ?? []
+            guard let newSleepEntries = mapHealthKitToCoreData([healthDataLatestDay], context: context).first?.sleepEntries else {
+                return coreDataEntries
+            }
             
             coreDataMostRecentDay.addToSleepEntries(newSleepEntries)
             

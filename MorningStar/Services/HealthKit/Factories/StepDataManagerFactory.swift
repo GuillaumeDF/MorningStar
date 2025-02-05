@@ -83,14 +83,16 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
     static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [StepPeriod] {
         return coreDataEntries.map { periodEntity in
             let stepEntries: [HealthData.ActivityEntry] = (periodEntity.stepEntries)?.compactMap { entry in
-                guard let stepEntity = entry as? StepEntryMO else {
+                guard let stepEntity = entry as? StepEntryMO,
+                      let startDate = stepEntity.startDate,
+                      let endDate = stepEntity.endDate else {
                     return nil
                 }
                 
                 return HealthData.ActivityEntry(
                     id: stepEntity.id ?? UUID(),
-                    startDate: stepEntity.startDate ?? Date(),
-                    endDate: stepEntity.endDate ?? Date(),
+                    startDate: startDate,
+                    endDate: endDate,
                     value: stepEntity.value,
                     unit: stepEntity.unit ?? ""
                 )
@@ -102,8 +104,8 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
     
     static func mergeCoreDataWithHealthKitData(_ coreDataEntries: [PeriodEntryMO], with healthData: [StepPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
         guard  let coreDataMostRecentDay = coreDataEntries.first,
-            let coreDataMostRecentDate = coreDataMostRecentDay.startDate,
-              let coreDataLatestDate = coreDataEntries.last?.endDate else {
+               let coreDataMostRecentDate = coreDataMostRecentDay.startDate,
+               let coreDataLatestDate = coreDataEntries.last?.endDate else {
             return mapHealthKitToCoreData(healthData, context: context)
         }
         
@@ -119,7 +121,9 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         if coreDataMostRecentDate.isSameDay(as: healthDataLatestDate) {
             coreDataMostRecentDay.endDate = healthDataLatestDate
             
-            let newStepEntries = mapHealthKitToCoreData([healthDataLatestDay], context: context).first?.stepEntries ?? []
+            guard let newStepEntries = mapHealthKitToCoreData([healthDataLatestDay], context: context).first?.stepEntries else {
+                return coreDataEntries
+            }
             
             coreDataMostRecentDay.addToStepEntries(newStepEntries)
             

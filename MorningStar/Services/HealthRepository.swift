@@ -55,8 +55,8 @@ class HealthRepository: HealthRepositoryProtocol {
     }
 
     func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async -> Result<[T.HealthDataType], Error> {
-        let lastSync = await syncStorage.getLastSync(for: factory.id)
-        print("Le last sync pour \(factory.id.description) est le \(lastSync ?? Date.distantPast)")
+        let lastSync = await syncStorage.getLastSync(for: factory.id) ?? Date.distantPast
+        print("Le last sync pour \(factory.id.description) est le \(lastSync)")
 
         guard syncStrategy.shouldSync(lastSync: lastSync) else {
             print("Pas de synchronisation nécessaire")
@@ -64,7 +64,7 @@ class HealthRepository: HealthRepositoryProtocol {
         }
 
         do {
-            let newItemsHealhKit = try await fetchHealthKit(factory, from: lastSync ?? .distantPast)
+            let newItemsHealhKit = try await fetchHealthKit(factory, from: lastSync)
             guard !newItemsHealhKit.isEmpty else {
                 print("Aucun nouvel élément récupéré depuis HealthKit pour \(factory.id)")
                 return .success([])

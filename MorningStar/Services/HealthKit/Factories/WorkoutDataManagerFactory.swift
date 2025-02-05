@@ -167,14 +167,16 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
                     }
                     
                     let phaseEntries: [HealthData.WorkoutPhaseEntry] = (workoutEntity.workoutPhaseEntries)?.compactMap { phaseEntry in
-                        guard let phaseEntity = phaseEntry as? WorkoutPhaseEntryMO else {
+                        guard let phaseEntity = phaseEntry as? WorkoutPhaseEntryMO,
+                              let startDate = phaseEntity.startDate,
+                              let endDate = phaseEntity.endDate else {
                             return nil
                         }
                         
                         return HealthData.WorkoutPhaseEntry(
                             id: phaseEntity.id ?? UUID(),
-                            startDate: phaseEntity.startDate ?? Date(),
-                            endDate: phaseEntity.endDate ?? Date(),
+                            startDate: startDate,
+                            endDate: endDate,
                             value: IntensityLevel(rawValue: Int(phaseEntity.value)) ?? .undetermined,
                             averageHeartRate: phaseEntity.averageHeartRate,
                             caloriesBurned: phaseEntity.caloriesBurned
@@ -211,7 +213,9 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
         if calendar.isDate(coreDataMostRecentDay, equalTo: healthDataLatestDay, toGranularity: .weekOfYear) {
             coreDataMostRecentWeek.endDate = healthDataLatestDay
             
-            let newDailyWorkoutsEntries = mapHealthKitToCoreData([healthDataLatestWeek], context: context).first?.dailyWorkouts ?? []
+            guard let newDailyWorkoutsEntries = mapHealthKitToCoreData([healthDataLatestWeek], context: context).first?.dailyWorkouts else {
+                return coreDataEntries
+            }
             
             coreDataMostRecentWeek.addToDailyWorkouts(newDailyWorkoutsEntries)
             

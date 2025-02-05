@@ -288,13 +288,6 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		F03AA6D42C6425F3003C1BB3 /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Entities;
-			sourceTree = "<group>";
-		};
 		F03AA6D52C6425FF003C1BB3 /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -406,7 +399,6 @@
 		F052A1502CCBE73F00101521 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				F03AA6D42C6425F3003C1BB3 /* Entities */,
 				F052A1512CCBE77F00101521 /* HealthDataModel.xcdatamodeld */,
 			);
 			path = CoreData;

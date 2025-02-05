@@ -81,14 +81,16 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
     static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [WeightPeriod] {
         return coreDataEntries.map { periodEntity in
             let weightEntries: [HealthData.WeightEntry] = (periodEntity.weightEntries)?.compactMap { entry in
-                guard let weightEntity = entry as? WeightEntryMO else {
+                guard let weightEntity = entry as? WeightEntryMO,
+                      let startDate = weightEntity.startDate,
+                      let endDate = weightEntity.endDate else {
                     return nil
                 }
                 
                 return HealthData.WeightEntry(
                     id: weightEntity.id ?? UUID(),
-                    startDate: weightEntity.startDate ?? Date(),
-                    endDate: weightEntity.endDate ?? Date(),
+                    startDate: startDate,
+                    endDate: endDate,
                     value: weightEntity.value,
                     unit: weightEntity.unit ?? ""
                 )
@@ -118,7 +120,9 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
         if calendar.isDate(coreDataMostRecentDay, equalTo: healthDataLatestDay, toGranularity: .weekOfYear) {
             coreDataMostRecentWeek.endDate = healthDataLatestDay
             
-            let newWeightEntries = mapHealthKitToCoreData([healthDataLatestWeek], context: context).first?.weightEntries ?? []
+            guard let newWeightEntries = mapHealthKitToCoreData([healthDataLatestWeek], context: context).first?.weightEntries else {
+                return coreDataEntries
+            }
             
             coreDataMostRecentWeek.addToWeightEntries(newWeightEntries)
             

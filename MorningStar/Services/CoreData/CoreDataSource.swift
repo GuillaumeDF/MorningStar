@@ -39,7 +39,7 @@ class CoreDataSource: CoreDataSourceProtocol {
     }
     
     func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) -> [T.CoreDataType] {
-        fetchHistory[factory.id] as? [T.CoreDataType] ?? []
+        fetchHistory[factory.id] as? [T.CoreDataType] ?? [] // TODO: Ajouter un throw
     }
     
     func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) -> [T.CoreDataType] {

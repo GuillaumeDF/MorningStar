@@ -79,17 +79,19 @@ struct HeartRateDataManagerFactory {
      static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [HeartRatePeriod] {
          return coreDataEntries.map { periodEntity in
              let heartRateEntries: [HealthData.HeartRateEntry] = (periodEntity.heartRateEntries)?.compactMap { entry in
-                 guard let heartRateEntity = entry as? HeartRateEntryMO else {
+                 guard let heartRateEntity = entry as? HeartRateEntryMO,
+                       let startDate = heartRateEntity.startDate,
+                       let endDate = heartRateEntity.endDate else {
                      return nil
                  }
                  
                  return HealthData.HeartRateEntry(
                      id: heartRateEntity.id ?? UUID(),
-                     startDate: heartRateEntity.startDate ?? Date(),
-                     endDate: heartRateEntity.endDate ?? Date(),
+                     startDate: startDate,
+                     endDate: endDate,
                      value: heartRateEntity.value
                  )
-             } ?? []
+             } ?? [] // TODO: Verifier le retour des mapCoreDataToHealthKit
              
              return PeriodEntry(entries: heartRateEntries)
          }

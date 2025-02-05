@@ -103,14 +103,16 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
     static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [CaloriesPeriod] {
         return coreDataEntries.map { periodEntity in
             let calorieEntries: [HealthData.ActivityEntry] = (periodEntity.calorieEntries)?.compactMap { entry in
-                guard let calorieEntity = entry as? CalorieEntryMO else {
+                guard let calorieEntity = entry as? CalorieEntryMO,
+                      let startDate = calorieEntity.startDate,
+                      let endDate = calorieEntity.endDate else {
                     return nil
                 }
                 
                 return HealthData.ActivityEntry(
                     id: calorieEntity.id ?? UUID(),
-                    startDate: calorieEntity.startDate ?? Date(),
-                    endDate: calorieEntity.endDate ?? Date(),
+                    startDate: startDate,
+                    endDate: endDate,
                     value: calorieEntity.value,
                     unit: calorieEntity.unit ?? ""
                 )
@@ -139,7 +141,9 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
         if coreDataMostRecentDate.isSameDay(as: healthDataLatestDate) {
             coreDataMostRecentDay.endDate = healthDataLatestDate
 
-            let newCalorieEntries = mapHealthKitToCoreData([healthDataLatestDay], context: context).first?.calorieEntries ?? []
+            guard let newCalorieEntries = mapHealthKitToCoreData([healthDataLatestDay], context: context).first?.calorieEntries else {
+                return coreDataEntries
+            }
             
             coreDataMostRecentDay.addToCalorieEntries(newCalorieEntries)
             

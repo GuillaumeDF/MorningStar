@@ -161,6 +161,7 @@ extension HealthData {
             dailyWorkouts.last?.endDate
         }
         
+        // TODO: mettre id optionelle
         init(id: UUID = UUID(), dailyWorkouts: [DailyWorkouts]) {
             self.id = id
             self.dailyWorkouts = dailyWorkouts
