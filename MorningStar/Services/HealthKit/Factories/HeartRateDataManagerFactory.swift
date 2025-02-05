@@ -86,12 +86,12 @@ struct HeartRateDataManagerFactory {
                  }
                  
                  return HealthData.HeartRateEntry(
-                     id: heartRateEntity.id ?? UUID(),
+                     id: heartRateEntity.id,
                      startDate: startDate,
                      endDate: endDate,
                      value: heartRateEntity.value
                  )
-             } ?? [] // TODO: Verifier le retour des mapCoreDataToHealthKit
+             } ?? []
              
              return PeriodEntry(entries: heartRateEntries)
          }

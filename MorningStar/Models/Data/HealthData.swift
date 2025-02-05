@@ -58,8 +58,8 @@ struct PeriodEntry<T: HealthEntry>: Identifiable, Equatable {
         entries.last?.endDate
     }
     
-    init(id: UUID = UUID(), entries: [T]) {
-        self.id = id
+    init(id: UUID? = nil, entries: [T]) {
+        self.id = id ?? UUID()
         self.entries = entries
     }
 }
@@ -76,8 +76,8 @@ extension HealthData {
         let value: T
         let unit: String
         
-        init(id: UUID = UUID(), startDate: Date, endDate: Date, value: T, unit: String) {
-            self.id = id
+        init(id: UUID? = nil, startDate: Date, endDate: Date, value: T, unit: String) {
+            self.id = id ?? UUID()
             self.startDate = startDate
             self.endDate = endDate
             self.value = value
@@ -96,8 +96,8 @@ extension HealthData {
         let value: T
         let unit: String
 
-        init(id: UUID = UUID(), startDate: Date, endDate: Date, value: T, unit: String) {
-            self.id = id
+        init(id: UUID? = nil, startDate: Date, endDate: Date, value: T, unit: String) {
+            self.id = id ?? UUID()
             self.startDate = startDate
             self.endDate = endDate
             self.value = value
@@ -119,8 +119,8 @@ extension HealthData {
             return endDate.timeIntervalSince(startDate)
         }
         
-        init(id: UUID = UUID(), startDate: Date, endDate: Date, unit: String = "") {
-            self.id = id
+        init(id: UUID? = nil, startDate: Date, endDate: Date, unit: String = "") {
+            self.id = id ?? UUID()
             self.startDate = startDate
             self.endDate = endDate
             self.unit = unit
@@ -138,8 +138,8 @@ extension HealthData {
         let value: T
         let unit: String
         
-        init(id: UUID = UUID(), startDate: Date, endDate: Date, value: T, unit: String = "") {
-            self.id = id
+        init(id: UUID? = nil, startDate: Date, endDate: Date, value: T, unit: String = "") {
+            self.id = id ?? UUID()
             self.startDate = startDate
             self.endDate = endDate
             self.value = value
@@ -161,9 +161,8 @@ extension HealthData {
             dailyWorkouts.last?.endDate
         }
         
-        // TODO: mettre id optionelle
-        init(id: UUID = UUID(), dailyWorkouts: [DailyWorkouts]) {
-            self.id = id
+        init(id: UUID? = nil, dailyWorkouts: [DailyWorkouts]) {
+            self.id = id ?? UUID()
             self.dailyWorkouts = dailyWorkouts
         }
     }
@@ -180,8 +179,8 @@ extension HealthData {
             workouts.last?.endDate
         }
         
-        init(id: UUID = UUID(), workouts: [Workout]) {
-            self.id = id
+        init(id: UUID? = nil, workouts: [Workout]) {
+            self.id = id ?? UUID()
             self.workouts = workouts
         }
     }
@@ -198,8 +197,8 @@ extension HealthData {
             phaseEntries.last?.endDate
         }
         
-        init(id: UUID = UUID(), phaseEntries: [WorkoutPhaseEntry]) {
-            self.id = id
+        init(id: UUID? = nil, phaseEntries: [WorkoutPhaseEntry]) {
+            self.id = id ?? UUID()
             self.phaseEntries = phaseEntries
         }
     }
@@ -219,14 +218,14 @@ extension HealthData {
             return endDate.timeIntervalSince(startDate)
         }
         
-        init(id: UUID = UUID(),
+        init(id: UUID? = nil,
              startDate: Date,
              endDate: Date,
              value: T,
              unit: String = "",
              averageHeartRate: Double,
              caloriesBurned: Double) {
-            self.id = id
+            self.id = id ?? UUID()
             self.startDate = startDate
             self.endDate = endDate
             self.value = value

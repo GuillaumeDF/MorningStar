@@ -110,7 +110,7 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
                 }
                 
                 return HealthData.ActivityEntry(
-                    id: calorieEntity.id ?? UUID(),
+                    id: calorieEntity.id,
                     startDate: startDate,
                     endDate: endDate,
                     value: calorieEntity.value,
@@ -118,7 +118,7 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
                 )
             } ?? []
             
-            return PeriodEntry(id: periodEntity.id ?? UUID(), entries: calorieEntries)
+            return PeriodEntry(id: periodEntity.id, entries: calorieEntries)
         }
     }
     

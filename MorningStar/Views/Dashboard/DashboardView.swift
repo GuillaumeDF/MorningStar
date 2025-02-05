@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-// TODO: Verifier les optionelles
-
 struct DashboardView: View {
     @Binding var healthMetrics: HealthMetrics
     

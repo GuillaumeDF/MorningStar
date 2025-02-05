@@ -90,7 +90,7 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
                 }
                 
                 return HealthData.ActivityEntry(
-                    id: stepEntity.id ?? UUID(),
+                    id: stepEntity.id,
                     startDate: startDate,
                     endDate: endDate,
                     value: stepEntity.value,
@@ -98,7 +98,7 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
                 )
             } ?? []
             
-            return PeriodEntry(id: periodEntity.id ?? UUID(), entries: stepEntries)
+            return PeriodEntry(id: periodEntity.id, entries: stepEntries)
         }
     }
     

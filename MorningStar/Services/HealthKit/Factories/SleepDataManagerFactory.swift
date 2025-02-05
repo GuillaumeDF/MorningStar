@@ -87,20 +87,19 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
                 }
                 
                 return HealthData.SleepEntry(
-                    id: sleepEntity.id ?? UUID(),
+                    id: sleepEntity.id,
                     startDate: startDate,
                     endDate: endDate,
                     unit: sleepEntity.unit ?? ""
                 )
             } ?? []
             
-            return PeriodEntry(id: periodEntity.id ?? UUID(), entries: sleepEntries)
+            return PeriodEntry(id: periodEntity.id, entries: sleepEntries)
         }
     }
     
     static func mergeCoreDataWithHealthKitData(_ coreDataEntries: [PeriodEntryMO], with healthData: [SleepPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
         guard let coreDataMostRecentDay = coreDataEntries.first,
-              let coreDataMostRecentDate = coreDataMostRecentDay.startDate,
               let coreDataLatestDate = coreDataEntries.last?.endDate else {
             return mapHealthKitToCoreData(healthData, context: context)
         }

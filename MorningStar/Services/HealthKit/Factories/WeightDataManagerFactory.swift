@@ -88,7 +88,7 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
                 }
                 
                 return HealthData.WeightEntry(
-                    id: weightEntity.id ?? UUID(),
+                    id: weightEntity.id,
                     startDate: startDate,
                     endDate: endDate,
                     value: weightEntity.value,
@@ -96,7 +96,7 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
                 )
             } ?? []
             
-            return PeriodEntry(id: periodEntity.id ?? UUID(), entries: weightEntries)
+            return PeriodEntry(id: periodEntity.id, entries: weightEntries)
         }
     }
     

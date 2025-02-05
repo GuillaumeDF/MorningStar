@@ -321,6 +321,55 @@ private enum WorkoutPeriodTestData {
         ]
     )
     
+    static let currentLateWeek2 = WeeklyWorkouts(
+        id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440005")!,
+        dailyWorkouts: [
+            DailyWorkouts(
+                id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440033")!,
+                workouts: [
+                    HealthData.Workout(
+                        id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440034")!,
+                        phaseEntries: [
+                            HealthData.WorkoutPhaseEntry(
+                                id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440035")!,
+                                startDate: formatter.date(from: "2025-02-02T15:00:00Z")!,
+                                endDate: formatter.date(from: "2025-02-02T15:15:00Z")!,
+                                value: .moderate,
+                                averageHeartRate: 140,
+                                caloriesBurned: 90
+                            ),
+                            HealthData.WorkoutPhaseEntry(
+                                id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440036")!,
+                                startDate: formatter.date(from: "2025-02-02T15:15:00Z")!,
+                                endDate: formatter.date(from: "2025-02-02T16:00:00Z")!,
+                                value: .veryHigh,
+                                averageHeartRate: 172,
+                                caloriesBurned: 380
+                            ),
+                            HealthData.WorkoutPhaseEntry(
+                                id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440037")!,
+                                startDate: formatter.date(from: "2025-02-02T16:00:00Z")!,
+                                endDate: formatter.date(from: "2025-02-02T16:15:00Z")!,
+                                value: .moderate,
+                                averageHeartRate: 145,
+                                caloriesBurned: 50
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    
+    static var currentLateWeekMerged: WeeklyWorkouts {
+        var currentLateWeekMerged = currentLateWeek
+        if let lastIndex = currentLateWeekMerged.dailyWorkouts.indices.last,
+           let firstWorkout = currentLateWeek2.dailyWorkouts.first?.workouts.first {
+            currentLateWeekMerged.dailyWorkouts[lastIndex].workouts.append(firstWorkout)
+        }
+        return currentLateWeekMerged
+    }
+    
     static let currentWeekMerged = [
         currentLateWeek,
         currentEarlyWeek
@@ -328,7 +377,6 @@ private enum WorkoutPeriodTestData {
     
     static let previousAndCurrentWeek = currentWeekMerged + [previousWeekMerged]
     
-    // Période vide
     static let emptyWeeklyWorkoutWithEmptyDaily = WeeklyWorkouts(
         id: UUID(uuidString: "990e8400-e29b-41d4-a716-446655440008")!,
         dailyWorkouts: []
@@ -430,6 +478,17 @@ final class WorkoutDataManagerFactoryTests: XCTestCase {
         let expectedEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.previousWeekMerged], context: context)
         
         XCTAssertEqual([WorkoutPeriodTestData.previousWeekMerged], WorkoutDataManagerFactory.mapCoreDataToHealthKit(mergedEntries))
+        checkPeriodEntriesEqual(mergedEntries, expectedEntries)
+    }
+    
+    func testMergeCoreDataWithHealthKitDataWhenDatesAreTheSameDay() {
+        let coreDataEntries: [WeeklyWorkoutsMO] = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.currentLateWeek], context: context)
+        let healthKitData: [WeeklyWorkouts] = [WorkoutPeriodTestData.currentLateWeek2]
+        
+        let mergedEntries = WorkoutDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
+        let expectedEntries = WorkoutDataManagerFactory.mapHealthKitToCoreData([WorkoutPeriodTestData.currentLateWeekMerged], context: context)
+        
+        XCTAssertEqual([WorkoutPeriodTestData.currentLateWeekMerged], WorkoutDataManagerFactory.mapCoreDataToHealthKit(mergedEntries))
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
 }

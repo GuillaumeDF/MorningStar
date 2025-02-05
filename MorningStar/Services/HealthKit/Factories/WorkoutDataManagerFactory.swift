@@ -174,7 +174,7 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
                         }
                         
                         return HealthData.WorkoutPhaseEntry(
-                            id: phaseEntity.id ?? UUID(),
+                            id: phaseEntity.id,
                             startDate: startDate,
                             endDate: endDate,
                             value: IntensityLevel(rawValue: Int(phaseEntity.value)) ?? .undetermined,
@@ -183,13 +183,13 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
                         )
                     } ?? []
                     
-                    return Workout(id: workoutEntity.id ?? UUID(), phaseEntries: phaseEntries)
+                    return Workout(id: workoutEntity.id, phaseEntries: phaseEntries)
                 } ?? []
                 
-                return DailyWorkouts(id: dailyWorkoutEntity.id ?? UUID(), workouts: workoutEntries)
+                return DailyWorkouts(id: dailyWorkoutEntity.id, workouts: workoutEntries)
             } ?? []
             
-            return WeeklyWorkouts(id: weeklyWorkoutEntity.id ?? UUID(), dailyWorkouts: dailyWorkoutEntries)
+            return WeeklyWorkouts(id: weeklyWorkoutEntity.id, dailyWorkouts: dailyWorkoutEntries)
         }
     }
     
@@ -217,7 +217,15 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
                 return coreDataEntries
             }
             
-            coreDataMostRecentWeek.addToDailyWorkouts(newDailyWorkoutsEntries)
+            if calendar.isDate(coreDataLatestDay, equalTo: healthDataMostRecentDay, toGranularity: .day),
+               let coreDataMostRecentDaily = coreDataMostRecentWeek.dailyWorkouts?.lastObject as? DailyWorkoutsMO,
+               let newDaily = newDailyWorkoutsEntries.firstObject as? DailyWorkoutsMO,
+               let newWorkouts = newDaily.workouts {
+                coreDataMostRecentDaily.endDate = newDaily.endDate
+                coreDataMostRecentDaily.addToWorkouts(newWorkouts)
+            } else {
+                coreDataMostRecentWeek.addToDailyWorkouts(newDailyWorkoutsEntries)
+            }
             
             let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {

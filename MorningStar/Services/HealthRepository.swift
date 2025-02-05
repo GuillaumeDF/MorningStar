@@ -35,10 +35,6 @@ class HealthRepository: HealthRepositoryProtocol {
         let localData = try await coreDataSource.fetch(factory, options: .dateDescending)
         let healthData = factory.mapCoreDataToHealthKit(localData)
         
-        if (factory.id == .workouts) {
-            print("ok")
-        }
-        
         return healthData
     }
     
