@@ -41,7 +41,12 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
             await withTaskGroup(of: Workout?.self) { group in
                 for sample in samples {
                     group.addTask {
-                        return await fetchDataForWorkout(healthStore: healthStore, sample: sample)
+                        do {
+                            return try await fetchDataForWorkout(healthStore: healthStore, sample: sample)
+                        } catch {
+                            Logger.logError(id, error: error)
+                            return nil
+                        }
                     }
                 }
                 
@@ -58,40 +63,33 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
         return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
     }
     
-    static func fetchDataForWorkout(healthStore: HKHealthStore, sample: HKSample) async -> Workout? {
-        do {
-            guard let heartRateEntries = try await HeartRateDataManagerFactory.createSampleQueryManager(
-                for: healthStore,
-                from: sample.startDate,
-                to: sample.endDate
-            )?.fetchData() else {
-                print("Failed to fetch heart rate data")
-                return nil
-            }
-            
-            guard let calorieEntries = try await CalorieBurnedDataManagerFactory.createSampleQueryManager(
-                for: healthStore,
-                from: sample.startDate,
-                to: sample.endDate
-            )?.fetchData() else {
-                print("Failed to fetch calorie burned data")
-                return nil
-            }
-            
-            let heartRates = heartRateEntries.first?.entries ?? []
-            let caloriesBurned = calorieEntries.first?.entries ?? []
-            
-            let workoutsWithIntensity = WorkoutIntensityAnalyzer().generateIntensityPhases(
-                sample: sample,
-                heartRates: heartRates,
-                caloriesBurned: caloriesBurned
-            )
-            
-            return workoutsWithIntensity
-        } catch {
-            print("Error during workout data fetching: \(error.localizedDescription)")
-            return nil
+    static func fetchDataForWorkout(healthStore: HKHealthStore, sample: HKSample) async throws -> Workout? {
+        guard let heartRateEntries = try await HeartRateDataManagerFactory.createSampleQueryManager(
+            for: healthStore,
+            from: sample.startDate,
+            to: sample.endDate
+        )?.fetchData() else {
+            throw(HealthKitError.healthKitManagerInitializationFailure)
         }
+        
+        guard let calorieEntries = try await CalorieBurnedDataManagerFactory.createSampleQueryManager(
+            for: healthStore,
+            from: sample.startDate,
+            to: sample.endDate
+        )?.fetchData() else {
+            throw(HealthKitError.healthKitManagerInitializationFailure)
+        }
+        
+        let heartRates = heartRateEntries.first?.entries ?? []
+        let caloriesBurned = calorieEntries.first?.entries ?? []
+        
+        let workoutsWithIntensity = WorkoutIntensityAnalyzer().generateIntensityPhases(
+            sample: sample,
+            heartRates: heartRates,
+            caloriesBurned: caloriesBurned
+        )
+        
+        return workoutsWithIntensity
     }
     
     static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[WeeklyWorkouts]>>? {

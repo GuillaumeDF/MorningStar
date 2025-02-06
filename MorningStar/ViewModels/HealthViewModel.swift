@@ -8,8 +8,6 @@
 import HealthKit
 import CoreData
 
-// TODO: Ajouter de la verbose
-
 enum HealthError: Error {
     case syncFailed
     case fetchFailed
@@ -45,7 +43,7 @@ class HealthDashboardViewModel: ObservableObject {
                 try await self.authorizationManager.requestAuthorization()
                 await self.loadAndSyncData()
             } catch {
-                print("Error initializing health: \(error.localizedDescription)")
+                Logger.logError(error: error)
             }
         }
     }
@@ -68,15 +66,15 @@ class HealthDashboardViewModel: ObservableObject {
     private func loadLocalData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async {
         do {
             let localData = try await repository.fetchCoreData(factory)
-            print("Data loaded \(factory.id.description)")
+            Logger.logInfo(factory.id, message: "Successfully loaded local data from the repository.")
             
             await MainActor.run {
                 healthMetrics.set(factory.id, items: localData)
-                print("Data displayed \(factory.id.description)")
+                Logger.logInfo(factory.id, message: "Local data has been successfully displayed.")
             }
             
         } catch {
-            print("Failed to load data for \(factory.id.description): \(error)")
+            Logger.logError(factory.id, error: error)
         }
     }
     
@@ -98,18 +96,16 @@ class HealthDashboardViewModel: ObservableObject {
     }
     
     private func syncHealthData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async {
-        let result = await repository.syncData(factory)
-        
-        switch result {
-        case .success(let updatedData):
+        do {
+            let updatedData = try await repository.syncData(factory)
+            
             if (!updatedData.isEmpty) {
                 await MainActor.run {
                     healthMetrics.set(factory.id, items: updatedData)
                 }
             }
-            
-        case .failure(let error):
-            print("Sync failed for \(factory.id.description): \(error)")
+        } catch {
+            Logger.logError(factory.id, error: error)
         }
     }
 }

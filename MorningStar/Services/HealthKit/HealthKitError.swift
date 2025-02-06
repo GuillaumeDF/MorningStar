@@ -8,21 +8,21 @@
 import Foundation
 
 enum HealthKitError: Error {
-    case dataProcessingFailed
+    case dataProcessingFailure
     case unsupportedDataType
-    case queryFailed(Error)
-    case managerCreationFailed
+    case queryExecutionFailure(Error)
+    case healthKitManagerInitializationFailure
     
     var localizedDescription: String {
         switch self {
-        case .dataProcessingFailed:
-            return "Failed to process the HealthKit data."
+        case .dataProcessingFailure:
+            return "Unable to process HealthKit data."
         case .unsupportedDataType:
-            return "dataProcessingFailed"
-        case .queryFailed(let error):
-            return error.localizedDescription
-        case .managerCreationFailed:
-            return "managerCreationFailed"
+            return "The provided data type is not supported by HealthKit."
+        case .queryExecutionFailure(let error):
+            return "HealthKit query failed: \(error.localizedDescription)"
+        case .healthKitManagerInitializationFailure:
+            return "Failed to initialize the HealthKit manager."
         }
     }
 }

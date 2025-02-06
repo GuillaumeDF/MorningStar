@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F0205FC32D55037600910753 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0205FC22D55037400910753 /* Logger.swift */; };
+		F0205FC92D55149800910753 /* CoreDataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0205FC82D55149100910753 /* CoreDataError.swift */; };
 		F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581812C62C292006CB2E6 /* MorningStarApp.swift */; };
 		F02581882C62C293006CB2E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F02581872C62C293006CB2E6 /* Assets.xcassets */; };
 		F025818C2C62C293006CB2E6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F025818B2C62C293006CB2E6 /* Preview Assets.xcassets */; };
@@ -103,6 +105,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F0205FC22D55037400910753 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		F0205FC82D55149100910753 /* CoreDataError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataError.swift; sourceTree = "<group>"; };
 		F025817E2C62C292006CB2E6 /* MorningStar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorningStar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F02581812C62C292006CB2E6 /* MorningStarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningStarApp.swift; sourceTree = "<group>"; };
 		F02581872C62C293006CB2E6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -342,6 +346,7 @@
 			children = (
 				F03AA6DD2C64268F003C1BB3 /* Extensions */,
 				F04A78B72C6647C100E8FB1C /* Constants.swift */,
+				F0205FC22D55037400910753 /* Logger.swift */,
 				F077C4192CC9684B00A88556 /* WorkoutMockData.swift */,
 			);
 			path = Utilities;
@@ -546,6 +551,7 @@
 		F0D8FB942CCEE7A200E5C1F0 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				F0205FC82D55149100910753 /* CoreDataError.swift */,
 				F0C7CE352D5246B8002F0CC6 /* CoreDataSource.swift */,
 			);
 			path = CoreData;
@@ -787,9 +793,11 @@
 				F077C4142CC824F600A88556 /* SleepLineChartViewModel.swift in Sources */,
 				F083A0252CBDD3500085C1D0 /* WorkoutDataManagerFactory.swift in Sources */,
 				F076E42F2C7E37F30080BA83 /* MSThemeToggleButton.swift in Sources */,
+				F0205FC92D55149800910753 /* CoreDataError.swift in Sources */,
 				F0C7CE432D524AA7002F0CC6 /* HealthKitAuthorizationManager.swift in Sources */,
 				F0C7CE3A2D5248F7002F0CC6 /* HealthMetrics.swift in Sources */,
 				F077C4162CC82C5800A88556 /* WorkoutStackedChartViewModel.swift in Sources */,
+				F0205FC32D55037600910753 /* Logger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

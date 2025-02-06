@@ -27,7 +27,7 @@ class HealthKitSource: HealthKitSourceProtocol {
                from: startDate,
                to: Date()
            ) else {
-               throw HealthKitError.managerCreationFailed
+               throw HealthKitError.healthKitManagerInitializationFailure
            }
                
            return try await manager.fetchData()
@@ -38,7 +38,7 @@ class HealthKitSource: HealthKitSourceProtocol {
                from: startDate,
                to: Date()
            ) else {
-               throw HealthKitError.managerCreationFailed
+               throw HealthKitError.healthKitManagerInitializationFailure
            }
                
            return try await manager.fetchData()

@@ -30,18 +30,18 @@ struct SampleQueryDescriptor<T>: QueryDescriptor {
             sortDescriptors: sortDescriptors
         ) { _, samples, error in
             if let error = error {
-                completion(.failure(HealthKitError.queryFailed(error)))
+                completion(.failure(HealthKitError.queryExecutionFailure(error)))
             } else if let samples = samples {
                 Task {
                     let processedResults = await self.resultsHandler(samples)
                     if let processedResults = processedResults {
                         completion(.success(processedResults))
                     } else {
-                        completion(.failure(HealthKitError.dataProcessingFailed))
+                        completion(.failure(HealthKitError.dataProcessingFailure))
                     }
                 }
             } else {
-                completion(.failure(HealthKitError.dataProcessingFailed))
+                completion(.failure(HealthKitError.dataProcessingFailure))
             }
         }
     }
@@ -68,18 +68,18 @@ struct StatisticsCollectionQueryDescriptor<T>: QueryDescriptor {
         
         query.initialResultsHandler = { _, results, error in
             if let error = error {
-                completion(.failure(HealthKitError.queryFailed(error)))
+                completion(.failure(HealthKitError.queryExecutionFailure(error)))
             } else if let statisticsCollection = results {
                 Task {
                     let processedResults = await self.resultsHandler(statisticsCollection)
                     if let processedResults = processedResults {
                         completion(.success(processedResults))
                     } else {
-                        completion(.failure(HealthKitError.dataProcessingFailed))
+                        completion(.failure(HealthKitError.dataProcessingFailure))
                     }
                 }
             } else {
-                completion(.failure(HealthKitError.dataProcessingFailed))
+                completion(.failure(HealthKitError.dataProcessingFailure))
             }
         }
         

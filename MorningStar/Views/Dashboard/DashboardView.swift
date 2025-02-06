@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// TODO: Verifier performance Calendar
+
 struct DashboardView: View {
     @Binding var healthMetrics: HealthMetrics
     
@@ -43,7 +45,7 @@ struct DashboardView: View {
                         imageName: "weightIcon",
                         title: "Weight",
                         viewModel: WeightLineChartViewModel(activityPeriods: healthMetrics.weightHistory),
-                        backgroundColor: Color.weightColor,
+                        backgroundColor: HealthMetricType.weight.color,
                         arrowDirection: .up
                     )
                     .frame(width: (geometry.size.width - 100) / 3)
@@ -58,21 +60,21 @@ struct DashboardView: View {
                     imageName: "caloriesIcon",
                     title: "Calorie burned",
                     viewModel: ActivityLineChartViewModel(activityPeriods: healthMetrics.calorieBurnedHistory),
-                    backgroundColor: Color.calorieColor,
+                    backgroundColor: HealthMetricType.calories.color,
                     arrowDirection: .up
                 )
                 MSLineChartCardView(
                     imageName: "stepIcon",
                     title: "Step",
                     viewModel: ActivityLineChartViewModel(activityPeriods: healthMetrics.stepCountHistory),
-                    backgroundColor: Color.stepColor,
+                    backgroundColor: HealthMetricType.steps.color,
                     arrowDirection: .up
                 )
                 MSLineChartCardView(
                     imageName: "sleepIcon",
                     title: "Sleep",
                     viewModel: SleepLineChartViewModel(activityPeriods: healthMetrics.sleepHistory),
-                    backgroundColor: Color.blue,
+                    backgroundColor: HealthMetricType.sleep.color,
                     arrowDirection: .down
                 )
             }

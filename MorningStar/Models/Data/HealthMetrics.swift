@@ -5,6 +5,8 @@
 //  Created by Guillaume Djaider Fornari on 04/02/2025.
 //
 
+import SwiftUICore
+
 enum HealthMetricType: CaseIterable, CustomStringConvertible {
     case steps
     case calories
@@ -19,6 +21,26 @@ enum HealthMetricType: CaseIterable, CustomStringConvertible {
         case .weight: return "weight"
         case .sleep: return "sleep"
         case .workouts: return "workouts"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .steps: return Color.stepColor
+        case .calories: return Color.calorieColor
+        case .weight: return Color.weightColor
+        case .sleep: return Color.blue
+        case .workouts: return Color.trainingColor
+        }
+    }
+    
+    var debugSymbol: String {
+        switch self {
+        case .steps: return "👣"
+        case .calories: return "🔥"
+        case .weight: return "⚖️"
+        case .sleep: return "💤"
+        case .workouts: return "🏋️"
         }
     }
     

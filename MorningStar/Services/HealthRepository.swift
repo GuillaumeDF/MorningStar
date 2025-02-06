@@ -9,7 +9,7 @@ import Foundation
 
 protocol HealthRepositoryProtocol {
     func fetchCoreData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType]
-    func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async -> Result<[T.HealthDataType], Error>
+    func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType]
 }
 
 class HealthRepository: HealthRepositoryProtocol {
@@ -39,43 +39,38 @@ class HealthRepository: HealthRepositoryProtocol {
     }
     
     func fetchHealthKit<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date) async throws -> [T.HealthDataType] {
-        print("Une nouvelle tentative de synchronisation vient d'être initiée au \(startDate)")
         return try await healthKitSource.fetch(factory, from: startDate)
     }
     
     func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) async throws -> [T.HealthDataType] {
         let newEntries = coreDataSource.mergeCoreDataWithHealthKitData(factory, localData: localData, with: healthKitData)
-        try await coreDataSource.save()
+        try coreDataSource.save()
         
         return factory.mapCoreDataToHealthKit(newEntries)
     }
 
-    func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async -> Result<[T.HealthDataType], Error> {
+    func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType] {
         let lastSync = await syncStorage.getLastSync(for: factory.id) ?? Date.distantPast
-        print("Le last sync pour \(factory.id.description) est le \(lastSync)")
-
+        Logger.logInfo(factory.id, message: "The last synchronization time retrieved is \(lastSync)")
+        
         guard syncStrategy.shouldSync(lastSync: lastSync) else {
-            print("Pas de synchronisation nécessaire")
-            return .success([])
+            Logger.logInfo(factory.id, message: "No synchronization is required at this time.")
+            return []
         }
-
-        do {
-            let newItemsHealhKit = try await fetchHealthKit(factory, from: lastSync)
-            guard !newItemsHealhKit.isEmpty else {
-                print("Aucun nouvel élément récupéré depuis HealthKit pour \(factory.id)")
-                return .success([])
-            }
-            
-            let dataFetched = coreDataSource.getDataFetched(factory)
-            let newItemsMerged = try await mergeCoreDataWithHealthKitData(factory, localData: dataFetched, with: newItemsHealhKit)
-            
-             await syncStorage.updateLastSync(for: factory.id)
-             print("Le last sync pour \(factory.id.description) vient d'être saved")
-            
-            return .success(newItemsMerged)
-        } catch {
-            print("Erreur lors de la synchronisation : \(error)")
-            return .failure(error)
+        
+        let newItemsHealthKit = try await fetchHealthKit(factory, from: lastSync)
+        Logger.logInfo(factory.id, message: "A new synchronization attempt has been initiated at \(lastSync).")
+        guard !newItemsHealthKit.isEmpty else {
+            Logger.logInfo(factory.id, message: "No new items were retrieved from HealthKit.")
+            return []
         }
+        
+        let dataFetched = try coreDataSource.getDataFetched(factory)
+        let newItemsMerged = try await mergeCoreDataWithHealthKitData(factory, localData: dataFetched, with: newItemsHealthKit)
+        
+        await syncStorage.updateLastSync(for: factory.id)
+        Logger.logInfo(factory.id, message: "The last synchronization time has been updated to \(Date())")
+        
+        return newItemsMerged
     }
 }

@@ -19,15 +19,6 @@ typealias WeeklyWorkouts = HealthData.WeeklyWorkouts
 typealias DailyWorkouts = HealthData.DailyWorkouts
 typealias Workout = HealthData.Workout
 
-protocol HealthEntry: Identifiable, Hashable {
-    associatedtype T
-    
-    var startDate: Date { get }
-    var endDate: Date { get }
-    var value: T { get }
-    var unit: String { get }
-}
-
 enum IntensityLevel: Int, Hashable {
     case undetermined = 0
     case low = 1
@@ -44,6 +35,15 @@ enum IntensityLevel: Int, Hashable {
         case .veryHigh: return Color.veryHighIntensityColor
         }
     }
+}
+
+protocol HealthEntry: Identifiable, Hashable {
+    associatedtype T
+    
+    var startDate: Date { get }
+    var endDate: Date { get }
+    var value: T { get }
+    var unit: String { get }
 }
 
 struct PeriodEntry<T: HealthEntry>: Identifiable, Equatable {

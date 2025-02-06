@@ -10,9 +10,9 @@ import CoreData
 
 protocol CoreDataSourceProtocol {
     func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, options: CoreDataSource.SortOrder) async throws -> [T.CoreDataType]
-    func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) -> [T.CoreDataType]
+    func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> [T.CoreDataType]
     func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) -> [T.CoreDataType]
-    func save() async throws
+    func save() throws
 }
 
 class CoreDataSource: CoreDataSourceProtocol {
@@ -38,8 +38,12 @@ class CoreDataSource: CoreDataSourceProtocol {
         persistentContainer.viewContext
     }
     
-    func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) -> [T.CoreDataType] {
-        fetchHistory[factory.id] as? [T.CoreDataType] ?? [] // TODO: Ajouter un throw
+    func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> [T.CoreDataType] {
+        guard let dataFetched = fetchHistory[factory.id] as? [T.CoreDataType] else {
+            throw CoreDataError.unsupportedDataType
+        }
+        
+        return dataFetched
     }
     
     func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) -> [T.CoreDataType] {
@@ -80,16 +84,21 @@ class CoreDataSource: CoreDataSourceProtocol {
         return results
     }
     
-    func save() {
+    func save() throws {
+        var saveError: Error?
+        
         context.performAndWait {
             if context.hasChanges {
                 do {
                     try context.save()
                 } catch {
-                    let nserror = error as NSError
-                    fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                    saveError = error
                 }
             }
+        }
+        
+        if let error = saveError {
+            throw error
         }
     }
     
