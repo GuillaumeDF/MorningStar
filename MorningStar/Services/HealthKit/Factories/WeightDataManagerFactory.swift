@@ -45,12 +45,11 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mapHealthKitToCoreData(_ healthData: [WeightPeriod], context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        var periodEntries: [PeriodEntryMO] = []
-        
-        healthData.forEach { weightPeriod in
+        healthData.compactMap { weightPeriod in
             guard let startDate = weightPeriod.entries.first?.startDate,
                   let endDate = weightPeriod.entries.last?.endDate else {
-                return
+                Logger.logWarning(id, message: "Can't retry startDate or endDate WeightPeriod \(weightPeriod.id)")
+                return nil
             }
             
             let periodEntity = PeriodEntryMO(context: context)
@@ -59,23 +58,28 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
             periodEntity.startDate = startDate
             periodEntity.endDate = endDate
             
-            let weightEntries: [WeightEntryMO] = weightPeriod.entries.map { weightEntry in
-                let newEntry = WeightEntryMO(context: context)
-                
-                newEntry.id = weightEntry.id
-                newEntry.startDate = weightEntry.startDate
-                newEntry.endDate = weightEntry.endDate
-                newEntry.value = weightEntry.value
-                newEntry.unit = weightEntry.unit
-                newEntry.periodEntry = periodEntity
-                
-                return newEntry
-            }
+            let weightEntries = mapWeightEntriesToCoreData(weightPeriod.entries, parent: periodEntity, context: context)
             periodEntity.addToWeightEntries(NSOrderedSet(array: weightEntries))
-            periodEntries.append(periodEntity)
+            
+            return periodEntity
         }
-        
-        return periodEntries
+    }
+    
+    private static func mapWeightEntriesToCoreData(_ weightEntries: [HealthData.WeightEntry],
+                                                   parent: PeriodEntryMO,
+                                                   context: NSManagedObjectContext) -> [WeightEntryMO] {
+        weightEntries.map { weightEntry in
+            let newWeightEntity = WeightEntryMO(context: context)
+            
+            newWeightEntity.id = weightEntry.id
+            newWeightEntity.startDate = weightEntry.startDate
+            newWeightEntity.endDate = weightEntry.endDate
+            newWeightEntity.value = weightEntry.value
+            newWeightEntity.unit = weightEntry.unit
+            newWeightEntity.periodEntry = parent
+            
+            return newWeightEntity
+        }
     }
     
     static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [WeightPeriod] {
@@ -120,11 +124,8 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
         if calendar.isDate(coreDataMostRecentDay, equalTo: healthDataLatestDay, toGranularity: .weekOfYear) {
             coreDataMostRecentWeek.endDate = healthDataLatestDay
             
-            guard let newWeightEntries = mapHealthKitToCoreData([healthDataLatestWeek], context: context).first?.weightEntries else {
-                return coreDataEntries
-            }
-            
-            coreDataMostRecentWeek.addToWeightEntries(newWeightEntries)
+            let newWeightEntries = mapWeightEntriesToCoreData(healthDataLatestWeek.entries, parent: coreDataMostRecentWeek, context: context)
+            coreDataMostRecentWeek.addToWeightEntries(NSOrderedSet(array: newWeightEntries))
             
             let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {

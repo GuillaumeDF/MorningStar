@@ -46,13 +46,11 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mapHealthKitToCoreData(_ healthData: [HealthDataType], context: NSManagedObjectContext) -> [CoreDataType] {
-        var periodEntries: [PeriodEntryMO] = []
-        
-        healthData.forEach { stepPeriod in
+        healthData.compactMap { stepPeriod in
             guard let startDate = stepPeriod.entries.first?.startDate,
                   let endDate = stepPeriod.entries.last?.endDate else {
-                print("Can't get start or end date from StepPeriod")
-                return
+                Logger.logWarning(id, message: "Can't retry startDate or endDate StepPeriod \(stepPeriod.id)")
+                return nil
             }
             
             let periodEntity = PeriodEntryMO(context: context)
@@ -61,23 +59,28 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
             periodEntity.startDate = startDate
             periodEntity.endDate = endDate
             
-            let stepEntries: [StepEntryMO] = stepPeriod.entries.map { stepEntry in
-                let newEntry = StepEntryMO(context: context)
-                
-                newEntry.id = stepEntry.id
-                newEntry.startDate = stepEntry.startDate
-                newEntry.endDate = stepEntry.endDate
-                newEntry.value = stepEntry.value
-                newEntry.unit = stepEntry.unit
-                newEntry.periodEntry = periodEntity
-                
-                return newEntry
-            }
-            periodEntity.addToStepEntries(NSOrderedSet(array: stepEntries))
-            periodEntries.append(periodEntity)
+            let stepEntities = mapStepEntriesToCoreData(stepPeriod.entries, parent: periodEntity, context: context)
+            periodEntity.addToStepEntries(NSOrderedSet(array: stepEntities))
+            
+            return periodEntity
         }
-        
-        return periodEntries
+    }
+    
+    private static func mapStepEntriesToCoreData(_ stepEntries: [HealthData.ActivityEntry],
+                                                 parent: PeriodEntryMO,
+                                                 context: NSManagedObjectContext) -> [StepEntryMO] {
+        stepEntries.map { stepEntry in
+            let newStepEntity = StepEntryMO(context: context)
+            
+            newStepEntity.id = stepEntry.id
+            newStepEntity.startDate = stepEntry.startDate
+            newStepEntity.endDate = stepEntry.endDate
+            newStepEntity.value = stepEntry.value
+            newStepEntity.unit = stepEntry.unit
+            newStepEntity.periodEntry = parent
+            
+            return newStepEntity
+        }
     }
     
     static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [StepPeriod] {
@@ -121,11 +124,8 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         if coreDataMostRecentDate.isSameDay(as: healthDataLatestDate) {
             coreDataMostRecentDay.endDate = healthDataLatestDate
             
-            guard let newStepEntries = mapHealthKitToCoreData([healthDataLatestDay], context: context).first?.stepEntries else {
-                return coreDataEntries
-            }
-            
-            coreDataMostRecentDay.addToStepEntries(newStepEntries)
+            let newStepEntries = mapStepEntriesToCoreData(healthDataLatestDay.entries, parent: coreDataMostRecentDay, context: context)
+            coreDataMostRecentDay.addToStepEntries(NSOrderedSet(array: newStepEntries))
             
             let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {

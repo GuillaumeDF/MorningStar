@@ -97,9 +97,7 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mapHealthKitToCoreData(_ healthData: [WeeklyWorkouts], context: NSManagedObjectContext) -> [WeeklyWorkoutsMO] {
-        var weeklyWorkoutEntities: [WeeklyWorkoutsMO] = []
-        
-        healthData.forEach { weeklyWorkout in
+        healthData.map { weeklyWorkout in
             let newWeeklyWorkoutEntity = WeeklyWorkoutsMO(context: context)
             
             newWeeklyWorkoutEntity.id = weeklyWorkout.id
@@ -109,16 +107,14 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
             let dailyWorkoutEntities = mapDailyWorkoutsToCoreData(weeklyWorkout.dailyWorkouts, parent: newWeeklyWorkoutEntity, context: context)
             
             newWeeklyWorkoutEntity.addToDailyWorkouts(NSOrderedSet(array: dailyWorkoutEntities))
-            weeklyWorkoutEntities.append(newWeeklyWorkoutEntity)
+            return newWeeklyWorkoutEntity
         }
-        
-        return weeklyWorkoutEntities
     }
     
-    static func mapDailyWorkoutsToCoreData(_ dailyWorkouts: [DailyWorkouts],
+    private static func mapDailyWorkoutsToCoreData(_ dailyWorkouts: [DailyWorkouts],
                                            parent: WeeklyWorkoutsMO,
                                            context: NSManagedObjectContext) -> [DailyWorkoutsMO] {
-        return dailyWorkouts.map { dailyWorkout in
+        dailyWorkouts.map { dailyWorkout in
             let newDailyWorkoutEntity = DailyWorkoutsMO(context: context)
             
             newDailyWorkoutEntity.id = dailyWorkout.id
@@ -133,10 +129,10 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
         }
     }
     
-    static func mapWorkoutsToCoreData(_ workouts: [Workout],
+    private static func mapWorkoutsToCoreData(_ workouts: [Workout],
                                       parent: DailyWorkoutsMO,
                                       context: NSManagedObjectContext) -> [WorkoutMO] {
-        return workouts.map { workout in
+        workouts.map { workout in
             let newWorkoutEntity = WorkoutMO(context: context)
             
             newWorkoutEntity.id = workout.id
@@ -164,7 +160,7 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mapCoreDataToHealthKit(_ coreDataEntries: [WeeklyWorkoutsMO]) -> [WeeklyWorkouts] {
-        return coreDataEntries.map { weeklyWorkoutEntity in
+        coreDataEntries.map { weeklyWorkoutEntity in
             let dailyWorkoutEntries: [DailyWorkouts] = (weeklyWorkoutEntity.dailyWorkouts)?.compactMap { dailyWorkoutEntry in
                 guard let dailyWorkoutEntity = dailyWorkoutEntry as? DailyWorkoutsMO else {
                     Logger.logWarning(id, message: "Can't cast dailyWorkoutEntry to DailyWorkoutsMO")

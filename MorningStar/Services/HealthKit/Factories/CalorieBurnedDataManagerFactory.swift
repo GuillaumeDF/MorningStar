@@ -67,12 +67,11 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mapHealthKitToCoreData(_ healthData: [CaloriesPeriod], context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        var periodEntries: [PeriodEntryMO] = []
-        
-        healthData.forEach { caloriePeriod in
+        healthData.compactMap { caloriePeriod in
             guard let startDate = caloriePeriod.entries.first?.startDate,
                   let endDate = caloriePeriod.entries.last?.endDate else {
-                return
+                Logger.logWarning(id, message: "Can't retry startDate or endDate CaloriePeriod \(caloriePeriod.id)")
+                return nil
             }
             
             let periodEntity = PeriodEntryMO(context: context)
@@ -81,23 +80,28 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
             periodEntity.startDate = startDate
             periodEntity.endDate = endDate
             
-            let calorieEntries: [CalorieEntryMO] = caloriePeriod.entries.map { calorieEntry in
-                let newEntry = CalorieEntryMO(context: context)
-                
-                newEntry.id = calorieEntry.id
-                newEntry.startDate = calorieEntry.startDate
-                newEntry.endDate = calorieEntry.endDate
-                newEntry.value = calorieEntry.value
-                newEntry.unit = calorieEntry.unit
-                newEntry.periodEntry = periodEntity
-                
-                return newEntry
-            }
-            periodEntity.addToCalorieEntries(NSOrderedSet(array: calorieEntries))
-            periodEntries.append(periodEntity)
+            let calorieEntities = mapCalorieEntriesToCoreData(caloriePeriod.entries, parent: periodEntity, context: context)
+            periodEntity.addToCalorieEntries(NSOrderedSet(array: calorieEntities))
+            
+            return periodEntity
         }
-        
-        return periodEntries
+    }
+    
+    private static func mapCalorieEntriesToCoreData(_ calorieEntries: [HealthData.ActivityEntry],
+                                                 parent: PeriodEntryMO,
+                                                 context: NSManagedObjectContext) -> [CalorieEntryMO] {
+        calorieEntries.map { calorieEntry in
+            let newCalorieEntity = CalorieEntryMO(context: context)
+            
+            newCalorieEntity.id = calorieEntry.id
+            newCalorieEntity.startDate = calorieEntry.startDate
+            newCalorieEntity.endDate = calorieEntry.endDate
+            newCalorieEntity.value = calorieEntry.value
+            newCalorieEntity.unit = calorieEntry.unit
+            newCalorieEntity.periodEntry = parent
+            
+            return newCalorieEntity
+        }
     }
     
     static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [CaloriesPeriod] {
@@ -141,14 +145,10 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
         if coreDataMostRecentDate.isSameDay(as: healthDataLatestDate) {
             coreDataMostRecentDay.endDate = healthDataLatestDate
 
-            guard let newCalorieEntries = mapHealthKitToCoreData([healthDataLatestDay], context: context).first?.calorieEntries else {
-                return coreDataEntries
-            }
-            
-            coreDataMostRecentDay.addToCalorieEntries(newCalorieEntries)
+            let newCaloriesEntries = mapCalorieEntriesToCoreData(healthDataLatestDay.entries, parent: coreDataMostRecentDay, context: context)
+            coreDataMostRecentDay.addToCalorieEntries(NSOrderedSet(array: newCaloriesEntries))
             
             let historicalData = Array(healthData.dropLast())
-            
             if !historicalData.isEmpty {
                 let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
                 mergedEntries.insert(contentsOf: historicalEntries, at: 0)

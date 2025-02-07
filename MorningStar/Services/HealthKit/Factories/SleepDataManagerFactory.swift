@@ -45,12 +45,11 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mapHealthKitToCoreData(_ healthData: [SleepPeriod], context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        var periodEntries: [PeriodEntryMO] = []
-        
-        healthData.forEach { sleepPeriod in
+        healthData.compactMap { sleepPeriod in
             guard let startDate = sleepPeriod.entries.first?.startDate,
                   let endDate = sleepPeriod.entries.last?.endDate else {
-                return
+                Logger.logWarning(id, message: "Can't retry startDate or endDate in SleepPeriod \(sleepPeriod.id)")
+                return nil
             }
             
             let periodEntity = PeriodEntryMO(context: context)
@@ -59,26 +58,31 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
             periodEntity.startDate = startDate
             periodEntity.endDate = endDate
             
-            let sleepEntities: [SleepEntryMO] = sleepPeriod.entries.map { sleepEntry in
-                let newEntry = SleepEntryMO(context: context)
-                
-                newEntry.id = sleepEntry.id
-                newEntry.startDate = sleepEntry.startDate
-                newEntry.endDate = sleepEntry.endDate
-                newEntry.unit = sleepEntry.unit
-                newEntry.periodEntry = periodEntity
-                
-                return newEntry
-            }
+            let sleepEntities = mapSleepEntriesToCoreData(sleepPeriod.entries, parent: periodEntity, context: context)
             periodEntity.addToSleepEntries(NSOrderedSet(array: sleepEntities))
-            periodEntries.append(periodEntity)
+            
+            return periodEntity
         }
-        
-        return periodEntries
+    }
+    
+    private static func mapSleepEntriesToCoreData(_ sleepEntries: [HealthData.SleepEntry],
+                                          parent: PeriodEntryMO,
+                                          context: NSManagedObjectContext) -> [SleepEntryMO] {
+        sleepEntries.map { sleepEntry in
+            let newSleepEntity = SleepEntryMO(context: context)
+            
+            newSleepEntity.id = sleepEntry.id
+            newSleepEntity.startDate = sleepEntry.startDate
+            newSleepEntity.endDate = sleepEntry.endDate
+            newSleepEntity.unit = sleepEntry.unit
+            newSleepEntity.periodEntry = parent
+
+            return newSleepEntity
+        }
     }
     
     static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [SleepPeriod] {
-        return coreDataEntries.map { periodEntity in
+        coreDataEntries.map { periodEntity in
             let sleepEntries: [HealthData.SleepEntry] = (periodEntity.sleepEntries)?.compactMap { entry in
                 guard let sleepEntity = entry as? SleepEntryMO,
                       let startDate = sleepEntity.startDate,
@@ -115,12 +119,9 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
         
         if healthDataMostRecentDate.timeIntervalSince(coreDataLatestDate) <= AppConstants.Duration.isNightSleep * 60 * 60 {
             coreDataMostRecentDay.endDate = healthDataLatestDate
-            
-            guard let newSleepEntries = mapHealthKitToCoreData([healthDataLatestDay], context: context).first?.sleepEntries else {
-                return coreDataEntries
-            }
-            
-            coreDataMostRecentDay.addToSleepEntries(newSleepEntries)
+
+            let newSleepEntries = mapSleepEntriesToCoreData(healthDataLatestDay.entries, parent: coreDataMostRecentDay, context: context)
+            coreDataMostRecentDay.addToSleepEntries(NSOrderedSet(array: newSleepEntries))
             
             let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {
