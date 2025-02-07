@@ -12,6 +12,7 @@ enum HealthKitError: Error {
     case unsupportedDataType
     case queryExecutionFailure(Error)
     case healthKitManagerInitializationFailure
+    case authorizationDenied
     
     var localizedDescription: String {
         switch self {
@@ -23,6 +24,8 @@ enum HealthKitError: Error {
             return "HealthKit query failed: \(error.localizedDescription)"
         case .healthKitManagerInitializationFailure:
             return "Failed to initialize the HealthKit manager."
+        case .authorizationDenied:
+            return "HealthKit authorization was denied."
         }
     }
 }

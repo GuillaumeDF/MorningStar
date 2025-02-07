@@ -25,7 +25,7 @@ class HealthKitAuthorizationManager {
                 if success {
                     continuation.resume()
                 } else {
-                    continuation.resume(throwing: error ?? HealthError.authorizationDenied)
+                    continuation.resume(throwing: error ?? HealthKitError.authorizationDenied)
                 }
             }
         }

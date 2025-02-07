@@ -8,15 +8,6 @@
 import HealthKit
 import CoreData
 
-enum HealthError: Error {
-    case syncFailed
-    case fetchFailed
-    case saveFailed
-    case authorizationDenied
-    case unsupportedDataType
-    case invalidData
-}
-
 @MainActor
 class HealthDashboardViewModel: ObservableObject {
     enum State {

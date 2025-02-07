@@ -32,7 +32,7 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
     static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<SampleQueryDescriptor<[WeeklyWorkouts]>>? {
         let queryDescriptor = SampleQueryDescriptor<[WeeklyWorkouts]>(
             sampleType: HKObjectType.workoutType(),
-            predicate: HKQuery.predicateForSamples(withStart: startDate, end: Date(), options: [.strictStartDate, .strictEndDate]),
+            predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
             limit: HKObjectQueryNoLimit,
             sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
         ) { samples async in
@@ -100,32 +100,49 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
         var weeklyWorkoutEntities: [WeeklyWorkoutsMO] = []
         
         healthData.forEach { weeklyWorkout in
-            let weeklyWorkoutEntity = WeeklyWorkoutsMO(context: context)
-            weeklyWorkoutEntity.id = weeklyWorkout.id
-            weeklyWorkoutEntity.startDate = weeklyWorkout.startDate
-            weeklyWorkoutEntity.endDate = weeklyWorkout.endDate
+            let newWeeklyWorkoutEntity = WeeklyWorkoutsMO(context: context)
             
-            let dailyWorkoutEntities = mapHealthKitToCoreData(weeklyWorkout, in: context)
-            dailyWorkoutEntities.forEach { dailyWorkoutEntity in
-                if let newDailyWorkoutEntity = dailyWorkoutEntity as? DailyWorkoutsMO {
-                    newDailyWorkoutEntity.weeklyWorkout = weeklyWorkoutEntity
-                }
-            }
+            newWeeklyWorkoutEntity.id = weeklyWorkout.id
+            newWeeklyWorkoutEntity.startDate = weeklyWorkout.startDate
+            newWeeklyWorkoutEntity.endDate = weeklyWorkout.endDate
             
-            weeklyWorkoutEntity.addToDailyWorkouts(dailyWorkoutEntities)
-            weeklyWorkoutEntities.append(weeklyWorkoutEntity)
+            let dailyWorkoutEntities = mapDailyWorkoutsToCoreData(weeklyWorkout.dailyWorkouts, parent: newWeeklyWorkoutEntity, context: context)
+            
+            newWeeklyWorkoutEntity.addToDailyWorkouts(NSOrderedSet(array: dailyWorkoutEntities))
+            weeklyWorkoutEntities.append(newWeeklyWorkoutEntity)
         }
         
         return weeklyWorkoutEntities
     }
     
-    static func mapHealthKitToCoreData(_ dailyWorkouts: DailyWorkouts, in context: NSManagedObjectContext) -> NSOrderedSet {
-        let workoutEntities = dailyWorkouts.workouts.map { workout in
-            let workoutEntity = WorkoutMO(context: context)
+    static func mapDailyWorkoutsToCoreData(_ dailyWorkouts: [DailyWorkouts],
+                                           parent: WeeklyWorkoutsMO,
+                                           context: NSManagedObjectContext) -> [DailyWorkoutsMO] {
+        return dailyWorkouts.map { dailyWorkout in
+            let newDailyWorkoutEntity = DailyWorkoutsMO(context: context)
             
-            workoutEntity.id = workout.id
-            workoutEntity.startDate = workout.startDate
-            workoutEntity.endDate = workout.endDate
+            newDailyWorkoutEntity.id = dailyWorkout.id
+            newDailyWorkoutEntity.startDate = dailyWorkout.startDate
+            newDailyWorkoutEntity.endDate = dailyWorkout.endDate
+            newDailyWorkoutEntity.weeklyWorkout = parent
+            
+            let workoutEntities = mapWorkoutsToCoreData(dailyWorkout.workouts, parent: newDailyWorkoutEntity, context: context)
+            newDailyWorkoutEntity.addToWorkouts(NSOrderedSet(array: workoutEntities))
+            
+            return newDailyWorkoutEntity
+        }
+    }
+    
+    static func mapWorkoutsToCoreData(_ workouts: [Workout],
+                                      parent: DailyWorkoutsMO,
+                                      context: NSManagedObjectContext) -> [WorkoutMO] {
+        return workouts.map { workout in
+            let newWorkoutEntity = WorkoutMO(context: context)
+            
+            newWorkoutEntity.id = workout.id
+            newWorkoutEntity.startDate = workout.startDate
+            newWorkoutEntity.endDate = workout.endDate
+            newWorkoutEntity.dailyWorkouts = parent
             
             let phaseEntries = workout.phaseEntries.map { phaseEntry in
                 let newPhaseEntry = WorkoutPhaseEntryMO(context: context)
@@ -136,38 +153,14 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
                 newPhaseEntry.value = Int16(phaseEntry.value.rawValue)
                 newPhaseEntry.startDate = phaseEntry.startDate
                 newPhaseEntry.endDate = phaseEntry.endDate
-                newPhaseEntry.workout = workoutEntity
+                newPhaseEntry.workout = newWorkoutEntity
                 
                 return newPhaseEntry
             }
             
-            workoutEntity.addToWorkoutPhaseEntries(NSOrderedSet(array: phaseEntries))
-            return workoutEntity
+            newWorkoutEntity.addToWorkoutPhaseEntries(NSOrderedSet(array: phaseEntries))
+            return newWorkoutEntity
         }
-        
-        return NSOrderedSet(array: workoutEntities)
-    }
-
-    static func mapHealthKitToCoreData(_ weeklyWorkout: WeeklyWorkouts, in context: NSManagedObjectContext) -> NSOrderedSet {
-        let dailyWorkoutEntities = weeklyWorkout.dailyWorkouts.map { dailyWorkouts in
-            let dailyWorkoutEntity = DailyWorkoutsMO(context: context)
-            
-            dailyWorkoutEntity.id = dailyWorkouts.id
-            dailyWorkoutEntity.startDate = dailyWorkouts.startDate
-            dailyWorkoutEntity.endDate = dailyWorkouts.endDate
-            
-            let workoutEntities = mapHealthKitToCoreData(dailyWorkouts, in: context)
-            workoutEntities.forEach { workoutEntry in
-                if let newWorkoutEntry = workoutEntry as? WorkoutMO {
-                    newWorkoutEntry.dailyWorkouts = dailyWorkoutEntity
-                }
-            }
-            
-            dailyWorkoutEntity.addToWorkouts(workoutEntities)
-            return dailyWorkoutEntity
-        }
-        
-        return NSOrderedSet(array: dailyWorkoutEntities)
     }
     
     static func mapCoreDataToHealthKit(_ coreDataEntries: [WeeklyWorkoutsMO]) -> [WeeklyWorkouts] {
@@ -236,25 +229,13 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
                let latestHealthKitDaily = healthDataLatestWeek.dailyWorkouts.last {
                 coreDataMostRecentDaily.endDate = latestHealthKitDaily.endDate
                
-                let newWorkoutEntities = mapHealthKitToCoreData(latestHealthKitDaily, in: context)
+                let newWorkoutEntities = mapWorkoutsToCoreData(latestHealthKitDaily.workouts, parent: coreDataMostRecentDaily, context: context)
                 
-                newWorkoutEntities.forEach { workoutEntry in
-                    if let newWorkoutEntry = workoutEntry as? WorkoutMO {
-                        newWorkoutEntry.dailyWorkouts = coreDataMostRecentDaily
-                    }
-                }
-                
-                coreDataMostRecentDaily.addToWorkouts(newWorkoutEntities)
+                coreDataMostRecentDaily.addToWorkouts(NSOrderedSet(array: newWorkoutEntities))
             } else {
-                let newDailyWorkoutsEntries = mapHealthKitToCoreData(healthDataLatestWeek, in: context)
-                
-                newDailyWorkoutsEntries.forEach { dailyWorkoutEntity in
-                    if let newDailyWorkoutEntity = dailyWorkoutEntity as? DailyWorkoutsMO {
-                        newDailyWorkoutEntity.weeklyWorkout = coreDataMostRecentWeek
-                    }
-                }
-                
-                coreDataMostRecentWeek.addToDailyWorkouts(newDailyWorkoutsEntries)
+                let newDailyWorkoutsEntries = mapDailyWorkoutsToCoreData(healthDataLatestWeek.dailyWorkouts, parent: coreDataMostRecentWeek, context: context)
+
+                coreDataMostRecentWeek.addToDailyWorkouts(NSOrderedSet(array: newDailyWorkoutsEntries))
             }
             
             let historicalData = Array(healthData.dropLast())
