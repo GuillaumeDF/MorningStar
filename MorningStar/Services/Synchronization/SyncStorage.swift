@@ -26,6 +26,16 @@ class LastSyncStorage: SyncStorage {
     }
     
     func updateLastSync(for type: HealthMetricType) async {
+        let calendar = Calendar.current
+        let now = Date()
+
+        // Récupérer les composants de la date d'hier
+        var components = calendar.dateComponents([.year, .month, .day], from: calendar.date(byAdding: .day, value: -1, to: now)!)
+
+        // Définir l'heure à 15h
+        components.hour = 15
+        components.minute = 0
+        components.second = 0
         userDefaults.set(Date(), forKey: makeKey(for: type))
     }
     

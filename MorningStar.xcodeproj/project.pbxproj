@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F0205FC32D55037600910753 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0205FC22D55037400910753 /* Logger.swift */; };
 		F0205FC92D55149800910753 /* CoreDataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0205FC82D55149100910753 /* CoreDataError.swift */; };
+		F0205FCB2D55228700910753 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0205FCA2D55228300910753 /* Date.swift */; };
 		F02581822C62C292006CB2E6 /* MorningStarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02581812C62C292006CB2E6 /* MorningStarApp.swift */; };
 		F02581882C62C293006CB2E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F02581872C62C293006CB2E6 /* Assets.xcassets */; };
 		F025818C2C62C293006CB2E6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F025818B2C62C293006CB2E6 /* Preview Assets.xcassets */; };
@@ -107,6 +108,7 @@
 /* Begin PBXFileReference section */
 		F0205FC22D55037400910753 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		F0205FC82D55149100910753 /* CoreDataError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataError.swift; sourceTree = "<group>"; };
+		F0205FCA2D55228300910753 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		F025817E2C62C292006CB2E6 /* MorningStar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorningStar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F02581812C62C292006CB2E6 /* MorningStarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningStarApp.swift; sourceTree = "<group>"; };
 		F02581872C62C293006CB2E6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -355,6 +357,7 @@
 		F03AA6DD2C64268F003C1BB3 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				F0205FCA2D55228300910753 /* Date.swift */,
 				F03AA6E02C6426F2003C1BB3 /* Color+Theme.swift */,
 				F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */,
 				F08576512CA4180C003B2252 /* HealthData+Generator.swift */,
@@ -776,6 +779,7 @@
 				F083A02B2CBDD3B30085C1D0 /* StepDataManagerFactory.swift in Sources */,
 				F0D69FD32CA4ACB5005F329C /* MSDateNavigationView.swift in Sources */,
 				F0C7CE452D524AE0002F0CC6 /* HealthRepository.swift in Sources */,
+				F0205FCB2D55228700910753 /* Date.swift in Sources */,
 				F077C41A2CC9684B00A88556 /* WorkoutMockData.swift in Sources */,
 				F052A1532CCBE77F00101521 /* HealthDataModel.xcdatamodeld in Sources */,
 				F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */,

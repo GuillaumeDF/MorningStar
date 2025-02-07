@@ -30,9 +30,20 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<SampleQueryDescriptor<[WeeklyWorkouts]>>? {
+        let calendar = Calendar.current
+        let now = Date()
+
+        // Récupérer les composants de la date d'hier
+        var components = calendar.dateComponents([.year, .month, .day], from: calendar.date(byAdding: .day, value: -1, to: now)!)
+
+        // Définir l'heure à 15h
+        components.hour = 15
+        components.minute = 0
+        components.second = 0
+        
         let queryDescriptor = SampleQueryDescriptor<[WeeklyWorkouts]>(
             sampleType: HKObjectType.workoutType(),
-            predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
+            predicate: HKQuery.predicateForSamples(withStart: startDate, end: Date(), options: [.strictStartDate, .strictEndDate]),
             limit: HKObjectQueryNoLimit,
             sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
         ) { samples async in
@@ -97,65 +108,84 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mapHealthKitToCoreData(_ healthData: [WeeklyWorkouts], context: NSManagedObjectContext) -> [WeeklyWorkoutsMO] {
-        var weeklyWorkoutEntries: [WeeklyWorkoutsMO] = []
+        var weeklyWorkoutEntities: [WeeklyWorkoutsMO] = []
         
         healthData.forEach { weeklyWorkout in
             let weeklyWorkoutEntity = WeeklyWorkoutsMO(context: context)
-            
             weeklyWorkoutEntity.id = weeklyWorkout.id
             weeklyWorkoutEntity.startDate = weeklyWorkout.startDate
             weeklyWorkoutEntity.endDate = weeklyWorkout.endDate
             
-            let dailyWorkoutEntities = weeklyWorkout.dailyWorkouts.map { dailyWorkouts in
-                let dailyWorkoutEntity = DailyWorkoutsMO(context: context)
-                
-                dailyWorkoutEntity.id = dailyWorkouts.id
-                dailyWorkoutEntity.startDate = dailyWorkouts.startDate
-                dailyWorkoutEntity.endDate = dailyWorkouts.endDate
-                
-                let workoutEntities = dailyWorkouts.workouts.map { workout in
-                    let workoutEntity = WorkoutMO(context: context)
-                    
-                    workoutEntity.id = workout.id
-                    workoutEntity.startDate = workout.startDate
-                    workoutEntity.endDate = workout.endDate
-                    
-                    let phaseEntries = workout.phaseEntries.map { phaseEntry in
-                        let newEntry = WorkoutPhaseEntryMO(context: context)
-                        
-                        newEntry.id = phaseEntry.id
-                        newEntry.averageHeartRate = phaseEntry.averageHeartRate
-                        newEntry.caloriesBurned = phaseEntry.caloriesBurned
-                        newEntry.value = Int16(phaseEntry.value.rawValue)
-                        newEntry.startDate = phaseEntry.startDate
-                        newEntry.endDate = phaseEntry.endDate
-                        newEntry.workout = workoutEntity
-                        
-                        return newEntry
-                    }
-                    
-                    workoutEntity.addToWorkoutPhaseEntries(NSOrderedSet(array: phaseEntries))
-                    workoutEntity.dailyWorkouts = dailyWorkoutEntity
-                    
-                    return workoutEntity
+            let dailyWorkoutEntities = mapHealthKitToCoreData(weeklyWorkout, in: context)
+            dailyWorkoutEntities.forEach { dailyWorkoutEntity in
+                if let newDailyWorkoutEntity = dailyWorkoutEntity as? DailyWorkoutsMO {
+                    newDailyWorkoutEntity.weeklyWorkout = weeklyWorkoutEntity
                 }
-                
-                dailyWorkoutEntity.addToWorkouts(NSOrderedSet(array: workoutEntities))
-                dailyWorkoutEntity.weeklyWorkout = weeklyWorkoutEntity
-                
-                return dailyWorkoutEntity
             }
-            weeklyWorkoutEntity.addToDailyWorkouts(NSOrderedSet(array: dailyWorkoutEntities))
-            weeklyWorkoutEntries.append(weeklyWorkoutEntity)
+            
+            weeklyWorkoutEntity.addToDailyWorkouts(dailyWorkoutEntities)
+            weeklyWorkoutEntities.append(weeklyWorkoutEntity)
         }
         
-        return weeklyWorkoutEntries
+        return weeklyWorkoutEntities
+    }
+    
+    static func mapHealthKitToCoreData(_ dailyWorkouts: DailyWorkouts, in context: NSManagedObjectContext) -> NSOrderedSet {
+        let workoutEntities = dailyWorkouts.workouts.map { workout in
+            let workoutEntity = WorkoutMO(context: context)
+            
+            workoutEntity.id = workout.id
+            workoutEntity.startDate = workout.startDate
+            workoutEntity.endDate = workout.endDate
+            
+            let phaseEntries = workout.phaseEntries.map { phaseEntry in
+                let newPhaseEntry = WorkoutPhaseEntryMO(context: context)
+                
+                newPhaseEntry.id = phaseEntry.id
+                newPhaseEntry.averageHeartRate = phaseEntry.averageHeartRate
+                newPhaseEntry.caloriesBurned = phaseEntry.caloriesBurned
+                newPhaseEntry.value = Int16(phaseEntry.value.rawValue)
+                newPhaseEntry.startDate = phaseEntry.startDate
+                newPhaseEntry.endDate = phaseEntry.endDate
+                newPhaseEntry.workout = workoutEntity
+                
+                return newPhaseEntry
+            }
+            
+            workoutEntity.addToWorkoutPhaseEntries(NSOrderedSet(array: phaseEntries))
+            return workoutEntity
+        }
+        
+        return NSOrderedSet(array: workoutEntities)
+    }
+
+    static func mapHealthKitToCoreData(_ weeklyWorkout: WeeklyWorkouts, in context: NSManagedObjectContext) -> NSOrderedSet {
+        let dailyWorkoutEntities = weeklyWorkout.dailyWorkouts.map { dailyWorkouts in
+            let dailyWorkoutEntity = DailyWorkoutsMO(context: context)
+            
+            dailyWorkoutEntity.id = dailyWorkouts.id
+            dailyWorkoutEntity.startDate = dailyWorkouts.startDate
+            dailyWorkoutEntity.endDate = dailyWorkouts.endDate
+            
+            let workoutEntities = mapHealthKitToCoreData(dailyWorkouts, in: context)
+            workoutEntities.forEach { workoutEntry in
+                if let newWorkoutEntry = workoutEntry as? WorkoutMO {
+                    newWorkoutEntry.dailyWorkouts = dailyWorkoutEntity
+                }
+            }
+            
+            dailyWorkoutEntity.addToWorkouts(workoutEntities)
+            return dailyWorkoutEntity
+        }
+        
+        return NSOrderedSet(array: dailyWorkoutEntities)
     }
     
     static func mapCoreDataToHealthKit(_ coreDataEntries: [WeeklyWorkoutsMO]) -> [WeeklyWorkouts] {
         return coreDataEntries.map { weeklyWorkoutEntity in
             let dailyWorkoutEntries: [DailyWorkouts] = (weeklyWorkoutEntity.dailyWorkouts)?.compactMap { dailyWorkoutEntry in
                 guard let dailyWorkoutEntity = dailyWorkoutEntry as? DailyWorkoutsMO else {
+                    Logger.logWarning(id, message: "Can't cast dailyWorkoutEntry to DailyWorkoutsMO")
                     return nil
                 }
                 
@@ -168,6 +198,7 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
                         guard let phaseEntity = phaseEntry as? WorkoutPhaseEntryMO,
                               let startDate = phaseEntity.startDate,
                               let endDate = phaseEntity.endDate else {
+                            Logger.logWarning(id, message: "Can't cast phaseEntry to WorkoutPhaseEntryMO or startDate/endDate is nil")
                             return nil
                         }
                         
@@ -211,17 +242,29 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
         if calendar.isDate(coreDataMostRecentDay, equalTo: healthDataLatestDay, toGranularity: .weekOfYear) {
             coreDataMostRecentWeek.endDate = healthDataLatestDay
             
-            guard let newDailyWorkoutsEntries = mapHealthKitToCoreData([healthDataLatestWeek], context: context).first?.dailyWorkouts else {
-                return coreDataEntries
-            }
-            
-            if calendar.isDate(coreDataLatestDay, equalTo: healthDataMostRecentDay, toGranularity: .day),
+            if coreDataLatestDay.isSameDay(as: healthDataMostRecentDay),
                let coreDataMostRecentDaily = coreDataMostRecentWeek.dailyWorkouts?.lastObject as? DailyWorkoutsMO,
-               let newDaily = newDailyWorkoutsEntries.firstObject as? DailyWorkoutsMO,
-               let newWorkouts = newDaily.workouts {
-                coreDataMostRecentDaily.endDate = newDaily.endDate
-                coreDataMostRecentDaily.addToWorkouts(newWorkouts)
+               let latestHealthKitDaily = healthDataLatestWeek.dailyWorkouts.last {
+                coreDataMostRecentDaily.endDate = latestHealthKitDaily.endDate
+               
+                let newWorkoutEntities = mapHealthKitToCoreData(latestHealthKitDaily, in: context)
+                
+                newWorkoutEntities.forEach { workoutEntry in
+                    if let newWorkoutEntry = workoutEntry as? WorkoutMO {
+                        newWorkoutEntry.dailyWorkouts = coreDataMostRecentDaily
+                    }
+                }
+                
+                coreDataMostRecentDaily.addToWorkouts(newWorkoutEntities)
             } else {
+                let newDailyWorkoutsEntries = mapHealthKitToCoreData(healthDataLatestWeek, in: context)
+                
+                newDailyWorkoutsEntries.forEach { dailyWorkoutEntity in
+                    if let newDailyWorkoutEntity = dailyWorkoutEntity as? DailyWorkoutsMO {
+                        newDailyWorkoutEntity.weeklyWorkout = coreDataMostRecentWeek
+                    }
+                }
+                
                 coreDataMostRecentWeek.addToDailyWorkouts(newDailyWorkoutsEntries)
             }
             
