@@ -30,17 +30,6 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<SampleQueryDescriptor<[WeeklyWorkouts]>>? {
-        let calendar = Calendar.current
-        let now = Date()
-
-        // Récupérer les composants de la date d'hier
-        var components = calendar.dateComponents([.year, .month, .day], from: calendar.date(byAdding: .day, value: -1, to: now)!)
-
-        // Définir l'heure à 15h
-        components.hour = 15
-        components.minute = 0
-        components.second = 0
-        
         let queryDescriptor = SampleQueryDescriptor<[WeeklyWorkouts]>(
             sampleType: HKObjectType.workoutType(),
             predicate: HKQuery.predicateForSamples(withStart: startDate, end: Date(), options: [.strictStartDate, .strictEndDate]),
