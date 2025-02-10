@@ -51,20 +51,22 @@ class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, I
     }
     
     var maxTime: CGFloat {
-        return (
-            periods[index]
-                .dailyWorkouts
-                .map { workoutPhases in
-                    workoutPhases.workouts.reduce(0) { total, phase in
-                        if let startDate = phase.startDate, let endDate = phase.endDate {
-                            total + endDate.timeIntervalSince(startDate)
-                        } else {
-                            total + 0
+        return ceil(
+            (
+                periods[index]
+                    .dailyWorkouts
+                    .map { dailyWorkout in
+                        dailyWorkout.workouts.reduce(0) { total, workout in
+                            if let startDate = workout.startDate, let endDate = workout.endDate {
+                                total + endDate.timeIntervalSince(startDate)
+                            } else {
+                                total + 0
+                            }
                         }
                     }
-                }
-                .max() ?? 0
-        ) / 60
+                    .max() ?? 0
+            ) / 60 / 10
+        ) * 10
     }
     
     var allValues: [Double] { [] }

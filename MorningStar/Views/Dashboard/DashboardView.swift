@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-// TODO: Verifier performance Calendar
-
 struct DashboardView: View {
     @Binding var healthMetrics: HealthMetrics
     
