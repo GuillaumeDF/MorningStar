@@ -16,4 +16,6 @@ protocol ActivityDisplayable {
     var currentDateLabel: DateRepresentation { get }
     var currentValueLabel: String { get }
     var unitLabel: String { get }
+    
+    func valueGraphFormatter(_ value: Double, at date: Date) -> String
 }

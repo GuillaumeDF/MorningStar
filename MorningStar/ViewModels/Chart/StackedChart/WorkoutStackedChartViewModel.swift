@@ -69,9 +69,13 @@ class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, I
         ) * 10
     }
     
-    var allValues: [Double] { [] }
+    var data: ChartData { ChartData.empty }
     
     var currentValueLabel: String { "" }
     
     var unitLabel: String { "" }
+    
+    func valueGraphFormatter(_ value: Double, at date: Date) -> String {
+        ""
+    }
 }

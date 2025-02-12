@@ -7,6 +7,14 @@
 
 import Foundation
 
+struct ChartData {
+    let values: [Double]
+    let startDate: Date
+    let endDate: Date
+
+    static let empty = ChartData(values: [], startDate: Date(), endDate: Date())
+}
+
 class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplayable, PeriodSelectable  {
     typealias EntryType = PeriodEntry<T>
     
@@ -41,19 +49,29 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
     var currentValueLabel: String { "" }
     
     var unitLabel: String {
-        periods[index].entries.first?.unit ?? "none"
+        periods[index].entries.first?.unit ?? "?"
     }
     
-    var allValues: [Double] {
-        periods[index].entries.map {
-            if let doubleValue = $0.value as? Double {
-                return doubleValue
-            } else if let timeIntervalValue = $0.value as? TimeInterval {
-                return Double(timeIntervalValue)
-            } else {
-                return 0
-            }
+    var data: ChartData {
+        guard let startDate = currentPeriod.startDate,
+                let endDate = currentPeriod.endDate else {
+            Logger.logError(message: "Could not extract startDate or endDate from currentPeriod")
+            return ChartData.empty
         }
+        
+        return ChartData(
+            values: periods[index].entries.map {
+                if let doubleValue = $0.value as? Double {
+                    return doubleValue
+                } else if let timeIntervalValue = $0.value as? TimeInterval {
+                    return Double(timeIntervalValue)
+                } else {
+                    return 0
+                }
+            },
+            startDate: startDate,
+            endDate: endDate
+        )
     }
     
     func selectPreviousPeriod() {
@@ -91,8 +109,10 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
             }
         }
         
-        let totalCurrentEntries = allValues.reduce(0, +)
+        let totalCurrentEntries = data.values.reduce(0, +)
         
         return totalPreviousEntries > totalCurrentEntries ? .down : .up
     }
+    
+    func valueGraphFormatter(_ value: Double, at date: Date) -> String { "" }
 }

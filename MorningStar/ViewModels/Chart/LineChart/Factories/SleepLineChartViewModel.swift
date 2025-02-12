@@ -9,6 +9,8 @@ import Foundation
 
 class SleepLineChartViewModel: LineChartViewModel<HealthData.SleepEntry> {
     override var currentDateLabel: DateRepresentation {
+        dateFormatter.dateFormat = "d MMM yyyy"
+        
         if let startDate = periods[index].entries.first?.startDate {
             return .single("\(dateFormatter.string(from: startDate))")
         } else {
@@ -29,4 +31,11 @@ class SleepLineChartViewModel: LineChartViewModel<HealthData.SleepEntry> {
     }
     
     override var unitLabel: String { "" }
+    
+    override func valueGraphFormatter(_ value: Double, at date: Date) -> String {
+        dateFormatter.dateFormat = "HH:mm"
+        let dateString = dateFormatter.string(from: date)
+        
+        return "\(dateString): \(String(format: "%.0f", (value / 60).rounded())) min"
+    }
 }

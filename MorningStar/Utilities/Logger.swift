@@ -29,4 +29,9 @@ struct Logger {
         let formattedMessage = "❌  \(error.localizedDescription)"
         print(formattedMessage)
     }
+    
+    static func logError(message: String) {
+        let formattedMessage = "❌  \(message)"
+        print(formattedMessage)
+    }
 }

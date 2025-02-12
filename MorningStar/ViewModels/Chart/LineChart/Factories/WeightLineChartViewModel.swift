@@ -9,6 +9,8 @@ import Foundation
 
 class WeightLineChartViewModel: LineChartViewModel<HealthData.WeightEntry> {
     override var currentDateLabel: DateRepresentation {
+        dateFormatter.dateFormat = "d MMM yyyy"
+        
         guard let startDate = periods[index].entries.first?.startDate,
               let endDate = periods[index].entries.last?.startDate else {
             return .single("Aucune date")
@@ -34,5 +36,12 @@ class WeightLineChartViewModel: LineChartViewModel<HealthData.WeightEntry> {
         }
         
         return previousEntry.value > currentEntry.value ? .down : .up
+    }
+    
+    override func valueGraphFormatter(_ value: Double, at date: Date) -> String {
+        dateFormatter.dateFormat = "EEEE HH:mm"
+        let dateString = dateFormatter.string(from: date)
+        
+        return "\(dateString): \(String(format: "%.2f", value)) \(unitLabel)"
     }
 }

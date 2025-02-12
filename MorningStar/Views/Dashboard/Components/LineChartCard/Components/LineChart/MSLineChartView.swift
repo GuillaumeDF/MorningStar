@@ -8,24 +8,25 @@
 import SwiftUI
 
 struct MSLineChartView: View {
-    @State private var value: Int = 0
+    @State private var value: Double = 0
+    @State private var date: Date = .now
     @State private var intersectionPoint: CGPoint = .zero
     
     @Binding var sliderPosition: CGFloat
     
     let backgroundColor: Color
-    let data: [Double]
-    let yAxisLabel: String
+    let data: ChartData
+    let valueGraphFormatter: (Double, Date) -> String
 
     private var maxValue: Double {
-        data.map { $0 }.max() ?? 0
+        data.values.map { $0 }.max() ?? 0
     }
     
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 LineChart(
-                    data: data,
+                    data: data.values,
                     maxValue: maxValue,
                     backgroundColor: backgroundColor,
                     size: geometry.size
@@ -39,55 +40,67 @@ struct MSLineChartView: View {
                 
                 IntersectionPoint(point: intersectionPoint, color: backgroundColor)
                 
-                ValueDisplay(value: value, label: yAxisLabel, position: sliderPosition, size: geometry.size)
+                ValueDisplay(text: valueGraphFormatter(value, date), position: sliderPosition, size: geometry.size)
                 Color.clear
                     .contentShape(Rectangle())
                     .gesture(
                         DragGesture(minimumDistance: 0)
                             .onChanged { value in
                                 sliderPosition = max(0, min(1, value.location.x / geometry.size.width))
-                                updateValueAndIntersection(at: sliderPosition, in: geometry)
+                                updateIntersection(at: sliderPosition, in: geometry)
+                                updateValue(at: sliderPosition)
+                                updateDate(at: sliderPosition, from: data.startDate, to: data.endDate)
                             }
                     )
             }
             .onAppear {
-                updateValueAndIntersection(at: sliderPosition, in: geometry)
+                updateIntersection(at: sliderPosition, in: geometry)
+                updateValue(at: sliderPosition)
             }
         }
     }
 
-    private func updateValueAndIntersection(at position: CGFloat, in geometry: GeometryProxy) {
+    private func updateIntersection(at position: CGFloat, in geometry: GeometryProxy) {
         let width = geometry.size.width
         let height = geometry.size.height
         let x = position * width
 
         let scaleFactor = height / CGFloat(maxValue)
-
-        let floatIndex = position * CGFloat(data.count - 1)
-        let lowerIndex = Int(floatIndex)
-        let upperIndex = min(lowerIndex + 1, data.count - 1)
-        let fraction = floatIndex - CGFloat(lowerIndex)
-
-        let lowerValue = CGFloat(data[lowerIndex])
-        let upperValue = CGFloat(data[upperIndex])
-        let interpolatedValue = lowerValue + (upperValue - lowerValue) * fraction
-
-        let y = height - interpolatedValue * scaleFactor
+        let y = height - CGFloat(value) * scaleFactor
 
         intersectionPoint = CGPoint(x: x, y: y)
-        value = Int(interpolatedValue)
+    }
+    
+    private func updateValue(at position: CGFloat) {
+        let floatIndex = position * CGFloat(data.values.count - 1)
+        let lowerIndex = Int(floatIndex)
+        let upperIndex = min(lowerIndex + 1, data.values.count - 1)
+        let fraction = floatIndex - CGFloat(lowerIndex)
+
+        let lowerValue = CGFloat(data.values[lowerIndex])
+        let upperValue = CGFloat(data.values[upperIndex])
+        let interpolatedValue = lowerValue + (upperValue - lowerValue) * fraction
+
+        value = Double(interpolatedValue)
+    }
+    
+    private func updateDate(at position: CGFloat, from startDate: Date, to endDate: Date) {
+        let totalDuration = endDate.timeIntervalSince(startDate)
+        let fraction = Double(position)
+        let interpolatedTimeInterval = totalDuration * fraction
+        date = Date(timeInterval: interpolatedTimeInterval, since: startDate)
     }
 }
 
-#Preview {
-    MSLineChartView(
-        sliderPosition: .constant(0.4),
-        backgroundColor: Color.stepColor,
-        data:
-            [
-                65, 60, 60, 60, 60, 65, 90, 150, 110, 100, 100, 120,
-                180, 130, 100, 110, 120, 200, 350, 250, 120, 90, 80, 70
-            ],
-        yAxisLabel: "Label"
-    )
-}
+//#Preview {
+//    MSLineChartView(
+//        sliderPosition: .constant(0.4),
+//        backgroundColor: Color.stepColor,
+//        data:
+//            [
+//                65, 60, 60, 60, 60, 65, 90, 150, 110, 100, 100, 120,
+//                180, 130, 100, 110, 120, 200, 350, 250, 120, 90, 80, 70
+//            ],
+//        yAxisLabel: "Label"
+//    )
+//}
