@@ -56,7 +56,8 @@ struct MSLineChartCardView<T: HealthEntry>: View {
                         sliderPosition: $sliderPosition,
                         backgroundColor: backgroundColor,
                         data: viewModel.data,
-                        valueGraphFormatter: viewModel.valueGraphFormatter
+                        valueFormatter: viewModel.valueFormatter,
+                        dateFormatter: viewModel.dateFormatter
                     )
                 }
                 .background(backgroundColor.opacity(0.3))

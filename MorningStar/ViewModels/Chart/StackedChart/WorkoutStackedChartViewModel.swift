@@ -77,7 +77,7 @@ class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, I
     
     var unitLabel: String { "" }
     
-    func valueGraphFormatter(_ value: Double, at date: Date) -> String {
-        ""
-    }
+    func valueFormatter(_ value: Double) -> String { "" }
+    
+    func dateFormatter(_ date: Date) -> String { "" }
 }

@@ -16,7 +16,8 @@ struct MSLineChartView: View {
     
     let backgroundColor: Color
     let data: ChartData
-    let valueGraphFormatter: (Double, Date) -> String
+    let valueFormatter: (Double) -> String
+    let dateFormatter: (Date) -> String
 
     private var maxValue: Double {
         data.values.map { $0 }.max() ?? 0
@@ -40,7 +41,7 @@ struct MSLineChartView: View {
                 
                 IntersectionPoint(point: intersectionPoint, color: backgroundColor)
                 
-                ValueDisplay(text: valueGraphFormatter(value, date), position: sliderPosition, size: geometry.size)
+                ValueDisplay(date: dateFormatter(date), value: valueFormatter(value), position: sliderPosition, size: geometry.size)
                 Color.clear
                     .contentShape(Rectangle())
                     .gesture(

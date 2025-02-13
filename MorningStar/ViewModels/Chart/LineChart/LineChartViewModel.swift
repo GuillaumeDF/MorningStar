@@ -116,5 +116,7 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
         return totalPreviousEntries > totalCurrentEntries ? .down : .up
     }
     
-    func valueGraphFormatter(_ value: Double, at date: Date) -> String { "" }
+    func valueFormatter(_ value: Double) -> String { "" }
+    
+    func dateFormatter(_ date: Date) -> String { "" }
 }

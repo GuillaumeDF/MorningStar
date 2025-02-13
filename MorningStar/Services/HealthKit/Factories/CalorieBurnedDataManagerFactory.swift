@@ -53,7 +53,7 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[CaloriesPeriod]>>? {
-        var utcCalendar = Calendar(identifier: .gregorian)
+        var utcCalendar = Calendar(identifier: .gregorian) // TODO: Créer un factory pour Calendar
         utcCalendar.timeZone = TimeZone(abbreviation: "UTC")!
         
         let queryDescriptor = StatisticsCollectionQueryDescriptor<[PeriodEntry<HealthData.ActivityEntry>]>(

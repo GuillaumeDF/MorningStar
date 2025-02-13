@@ -8,19 +8,23 @@
 import SwiftUI
 
 struct ValueDisplay: View {
-    let text: String
-    //let formatter: (Double, Date) -> String
+    let date: String
+    let value: String
     let position: CGFloat
     let size: CGSize
-
+    
     var body: some View {
-        Text(text)
-            .position(x: position * size.width, y: (size.height * 0.1) - 20) // TODO: A revoir le - 20
-            .font(.footnote)
-            .bold()
+        VStack(alignment: .leading, spacing: 0) {
+            Text(date)
+                .font(.caption2)
+            Text(value)
+                .font(.subheadline)
+                .bold()
+        }
+        .position(x: position * size.width, y: (size.height * 0.1) - 20) // TODO: A revoir le - 20
     }
 }
 
-//#Preview {
-//    ValueDisplay(value: 150, label: "Step", position: 10, size: CGSize(width: 50, height: 50))
-//}
+#Preview {
+    ValueDisplay(date: "16:37", value: "284 count", position: 10, size: CGSize(width: 50, height: 50))
+}

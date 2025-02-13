@@ -32,10 +32,14 @@ class SleepLineChartViewModel: LineChartViewModel<HealthData.SleepEntry> {
     
     override var unitLabel: String { "" }
     
-    override func valueGraphFormatter(_ value: Double, at date: Date) -> String {
+    override func valueFormatter(_ value: Double) -> String {
+        "\(String(format: "%.0f", (value / 60).rounded())) min"
+    }
+    
+    override func dateFormatter(_ date: Date) -> String {
         dateFormatter.dateFormat = "HH:mm"
         let dateString = dateFormatter.string(from: date)
         
-        return "\(dateString): \(String(format: "%.0f", (value / 60).rounded())) min"
+        return "\(dateString)"
     }
 }
