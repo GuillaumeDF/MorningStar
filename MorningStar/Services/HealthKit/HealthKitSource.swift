@@ -9,7 +9,7 @@ import Foundation
 import HealthKit
 
 protocol HealthKitSourceProtocol {
-    func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date) async throws -> [T.HealthDataType]
+    func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date, to endDate: Date?) async throws -> [T.HealthDataType]
 }
 
 class HealthKitSource: HealthKitSourceProtocol {
@@ -19,13 +19,13 @@ class HealthKitSource: HealthKitSourceProtocol {
         self.healthStore = healthStore
     }
     
-    func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date) async throws -> [T.HealthDataType] {
+    func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date, to endDate: Date? = nil) async throws -> [T.HealthDataType] {
        switch factory.id {
        case .workouts, .sleep, .weight:
            guard let manager = factory.createSampleQueryManager(
                for: healthStore,
                from: startDate,
-               to: Date()
+               to: endDate ?? Date()
            ) else {
                throw HealthKitError.healthKitManagerInitializationFailure
            }
@@ -36,7 +36,7 @@ class HealthKitSource: HealthKitSourceProtocol {
            guard let manager = factory.createStatisticsQueryManager(
                for: healthStore,
                from: startDate,
-               to: Date()
+               to: endDate ?? Date()
            ) else {
                throw HealthKitError.healthKitManagerInitializationFailure
            }

@@ -53,9 +53,12 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[CaloriesPeriod]>>? {
+        var utcCalendar = Calendar(identifier: .gregorian)
+        utcCalendar.timeZone = TimeZone(abbreviation: "UTC")!
+        
         let queryDescriptor = StatisticsCollectionQueryDescriptor<[PeriodEntry<HealthData.ActivityEntry>]>(
             quantityType: HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!,
-            anchorDate: Calendar.current.startOfDay(for: startDate),
+            anchorDate: utcCalendar.startOfDay(for: startDate),
             intervalComponents: DateComponents(hour: 1),
             predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
             options: .cumulativeSum

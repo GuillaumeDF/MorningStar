@@ -214,10 +214,9 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
             return coreDataEntries
         }
         
-        let calendar = Calendar.current
         var mergedEntries = coreDataEntries
         
-        if calendar.isDate(coreDataMostRecentDay, equalTo: healthDataLatestDay, toGranularity: .weekOfYear) {
+        if healthDataLatestDay.isSameWeek(as: coreDataMostRecentDay) {
             coreDataMostRecentWeek.endDate = healthDataLatestDay
             
             if coreDataLatestDay.isSameDay(as: healthDataMostRecentDay),

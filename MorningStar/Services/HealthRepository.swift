@@ -39,7 +39,7 @@ class HealthRepository: HealthRepositoryProtocol {
     }
     
     func fetchHealthKit<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date) async throws -> [T.HealthDataType] {
-        return try await healthKitSource.fetch(factory, from: startDate)
+        return try await healthKitSource.fetch(factory, from: startDate, to: nil)
     }
     
     func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) async throws -> [T.HealthDataType] {

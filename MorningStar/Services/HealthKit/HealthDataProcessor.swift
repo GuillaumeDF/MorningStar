@@ -10,12 +10,13 @@ import HealthKit
 
 struct HealthDataProcessor {
     static func groupActivitiesByDay(for statsCollection: HKStatisticsCollection, from startDate: Date, to endDate: Date, unit: HKUnit) -> [PeriodEntry<HealthData.ActivityEntry>] {
+        let calendar = Calendar.current
         var dailyActivities: [PeriodEntry<HealthData.ActivityEntry>] = []
         var currentDayActivities: [HealthData.ActivityEntry] = []
         var currentDay: Date?
         
         statsCollection.enumerateStatistics(from: startDate, to: endDate) { statistics, _ in
-            let day = Calendar.current.startOfDay(for: statistics.startDate)
+            let day = calendar.startOfDay(for: statistics.startDate)
             
             if currentDay != day {
                 if !currentDayActivities.isEmpty {
@@ -113,16 +114,15 @@ struct HealthDataProcessor {
     
     static func sortAndgroupWorkoutsByDayAndWeek(_ workouts: [Workout]) -> [WeeklyWorkouts] {
         let calendar = Calendar.current
-        
-        let sortedWorkouts = workouts.sorted {
-            ($0.startDate ?? Date.distantPast) > ($1.startDate ?? Date.distantPast)
-        }
-        
         var weeklyGroups: [WeeklyWorkouts] = []
         var currentWeekDailyGroups: WeeklyWorkouts = WeeklyWorkouts(dailyWorkouts: [])
         var currentDayWorkouts: DailyWorkouts = DailyWorkouts(workouts: [])
         var currentWeekStart: Date?
         var currentDayStart: Date?
+        
+        let sortedWorkouts = workouts.sorted {
+            ($0.startDate ?? Date.distantPast) > ($1.startDate ?? Date.distantPast)
+        }
         
         for workout in sortedWorkouts {
             guard let firstPhase = workout.phaseEntries.first else { continue }

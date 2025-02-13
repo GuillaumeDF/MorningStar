@@ -32,9 +32,12 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[StepPeriod]>>? {
+        var utcCalendar = Calendar(identifier: .gregorian)
+        utcCalendar.timeZone = TimeZone(abbreviation: "UTC")!
+        
         let queryDescriptor = StatisticsCollectionQueryDescriptor<[StepPeriod]>(
             quantityType: HKQuantityType.quantityType(forIdentifier: .stepCount)!,
-            anchorDate: Calendar.current.startOfDay(for: startDate),
+            anchorDate: utcCalendar.startOfDay(for: startDate),
             intervalComponents: DateComponents(hour: 1),
             predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
             options: .cumulativeSum

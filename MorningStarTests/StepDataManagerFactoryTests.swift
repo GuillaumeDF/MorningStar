@@ -220,6 +220,16 @@ final class StepDataManagerFactoryTests: XCTestCase {
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
     
+    func testMergeCoreDataWithHealthKitDataWhenDatesAreTheSameDay2() {
+        let coreDataEntries: [PeriodEntryMO] = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.currentDayMorning], context: context)
+        let healthKitData: [StepPeriod] = [StepPeriodTestData.currentDayNight]
+        
+        let mergedEntries = StepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
+        let expectedEntries = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.currentDayMerged], context: context)
+        
+        checkPeriodEntriesEqual(mergedEntries, expectedEntries)
+    }
+    
     func testMergeCoreDataWithHealthKitDataWithIdenticalPeriods() {
         let coreDataEntries = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.currentDayMerged], context: context)
         let healthKitData = [StepPeriodTestData.currentDayMerged]

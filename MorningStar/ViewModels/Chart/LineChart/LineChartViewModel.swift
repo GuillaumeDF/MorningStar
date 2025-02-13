@@ -29,8 +29,10 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
     
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
+        formatter.timeZone = TimeZone.current
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
+        
         return formatter
     }()
     
