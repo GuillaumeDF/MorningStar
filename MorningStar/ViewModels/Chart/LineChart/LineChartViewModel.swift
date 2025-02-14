@@ -62,15 +62,7 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
         }
         
         return ChartData(
-            values: periods[index].entries.map {
-                if let doubleValue = $0.value as? Double {
-                    return doubleValue
-                } else if let timeIntervalValue = $0.value as? TimeInterval {
-                    return Double(timeIntervalValue)
-                } else {
-                    return 0
-                }
-            },
+            values: fillGapsWithZeros(),
             startDate: startDate,
             endDate: endDate
         )
@@ -119,4 +111,31 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
     func valueFormatter(_ value: Double) -> String { "" }
     
     func dateFormatter(_ date: Date) -> String { "" }
+}
+
+extension LineChartViewModel {
+    func fillGapsWithZeros() -> [Double] {
+        guard !currentPeriod.entries.isEmpty else { return [] }
+        
+        var result: [Double] = []
+        
+        for (index, entry) in currentPeriod.entries.enumerated() {
+            if let value = Double(String(describing: entry.value)) {
+                result.append(value)
+                
+                if index < currentPeriod.entries.count - 1 {
+                    let currentEnd = entry.endDate
+                    let nextStart = currentPeriod.entries[index + 1].startDate
+                    
+                    let numberOfHours = currentEnd.hoursBetween(and: nextStart)
+                    
+                    if numberOfHours > 0 {
+                        result.append(contentsOf: repeatElement(0.0, count: numberOfHours))
+                    }
+                }
+            }
+        }
+        
+        return result
+    }
 }

@@ -19,4 +19,10 @@ extension Date {
         
         return calendar.isDate(self, equalTo: otherDate, toGranularity: .weekOfYear)
     }
+    
+    func hoursBetween(and endDate: Date) -> Int {
+        let timeInterval = endDate.timeIntervalSince(self)
+        
+        return Int(timeInterval / 3600)
+    }
 }

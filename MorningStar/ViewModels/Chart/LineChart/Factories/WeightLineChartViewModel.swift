@@ -28,6 +28,20 @@ class WeightLineChartViewModel: LineChartViewModel<HealthData.WeightEntry> {
         return String(format: "%.2f", roundedValue)
    }
     
+    override var data: ChartData {
+        guard let startDate = currentPeriod.startDate,
+              let endDate = currentPeriod.endDate else {
+            Logger.logError(message: "Could not extract startDate or endDate from currentPeriod")
+            return ChartData.empty
+        }
+        
+        return ChartData(
+            values: currentPeriod.entries.map { $0.value },
+            startDate: startDate,
+            endDate: endDate
+        )
+    }
+    
     override var activityTrend: ArrowDirection {
         guard canSelectPreviousPeriod,
               let previousEntry = periods[index + 1].entries.last,
