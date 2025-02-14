@@ -9,16 +9,14 @@ import Foundation
 
 extension Date {
     func isSameDay(as otherDate: Date) -> Bool {
-        var utcCalendar = Calendar(identifier: .gregorian)
-        utcCalendar.timeZone = TimeZone(abbreviation: "UTC")!
+        let calendar = Calendar.current
         
-        return utcCalendar.isDate(self, inSameDayAs: otherDate)
+        return calendar.isDate(self, inSameDayAs: otherDate)
     }
     
     func isSameWeek(as otherDate: Date) -> Bool {
-        var utcCalendar = Calendar(identifier: .gregorian)
-        utcCalendar.timeZone = TimeZone(abbreviation: "UTC")!
+        let calendar = Calendar.current
         
-        return utcCalendar.isDate(self, equalTo: otherDate, toGranularity: .weekOfYear)
+        return calendar.isDate(self, equalTo: otherDate, toGranularity: .weekOfYear)
     }
 }

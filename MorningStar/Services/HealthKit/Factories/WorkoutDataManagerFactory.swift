@@ -216,7 +216,7 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
         
         var mergedEntries = coreDataEntries
         
-        if healthDataLatestDay.isSameWeek(as: coreDataMostRecentDay) {
+        if coreDataLatestDay.isSameWeek(as: healthDataMostRecentDay) {
             coreDataMostRecentWeek.endDate = healthDataLatestDay
             
             if coreDataLatestDay.isSameDay(as: healthDataMostRecentDay),

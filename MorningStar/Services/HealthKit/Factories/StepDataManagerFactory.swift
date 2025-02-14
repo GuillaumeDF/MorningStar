@@ -124,7 +124,7 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         
         var mergedEntries = coreDataEntries
         
-        if coreDataMostRecentDate.isSameDay(as: healthDataLatestDate) {
+        if coreDataLatestDate.isSameDay(as: healthDataMostRecentDate) {
             coreDataMostRecentDay.endDate = healthDataLatestDate
             
             let newStepEntries = mapStepEntriesToCoreData(healthDataLatestDay.entries, parent: coreDataMostRecentDay, context: context)

@@ -120,7 +120,7 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
         
         var mergedEntries = coreDataEntries
         
-        if healthDataLatestDay.isSameWeek(as: coreDataMostRecentDay) {
+        if coreDataLatestDay.isSameWeek(as: healthDataMostRecentDay) {
             coreDataMostRecentWeek.endDate = healthDataLatestDay
             
             let newWeightEntries = mapWeightEntriesToCoreData(healthDataLatestWeek.entries, parent: coreDataMostRecentWeek, context: context)

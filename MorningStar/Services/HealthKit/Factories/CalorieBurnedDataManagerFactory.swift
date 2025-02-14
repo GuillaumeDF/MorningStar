@@ -145,7 +145,7 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
         
         var mergedEntries = coreDataEntries
         
-        if coreDataMostRecentDate.isSameDay(as: healthDataLatestDate) {
+        if coreDataLatestDate.isSameDay(as: healthDataMostRecentDate) {
             coreDataMostRecentDay.endDate = healthDataLatestDate
 
             let newCaloriesEntries = mapCalorieEntriesToCoreData(healthDataLatestDay.entries, parent: coreDataMostRecentDay, context: context)
