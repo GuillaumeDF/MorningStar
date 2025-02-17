@@ -102,40 +102,6 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
         }
     }
     
-//    static func mergeCoreDataWithHealthKitData(_ coreDataEntries: [PeriodEntryMO], with healthData: [SleepPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
-//        guard let coreDataMostRecentDay = coreDataEntries.first,
-//              let coreDataLatestDate = coreDataEntries.last?.endDate else {
-//            return mapHealthKitToCoreData(healthData, context: context)
-//        }
-//        
-//        guard let healthDataMostRecentDate = healthData.first?.startDate,
-//              let healthDataLatestDay = healthData.last,
-//              let healthDataLatestDate = healthDataLatestDay.endDate,
-//              coreDataLatestDate <= healthDataMostRecentDate else {
-//            return coreDataEntries
-//        }
-//        
-//        var mergedEntries = coreDataEntries
-//        
-//        if healthDataMostRecentDate.timeIntervalSince(coreDataLatestDate) <= TimeInterval(4) * 60 * 60 {
-//            coreDataMostRecentDay.endDate = healthDataLatestDate
-//
-//            let newSleepEntries = mapSleepEntriesToCoreData(healthDataLatestDay.entries, parent: coreDataMostRecentDay, context: context)
-//            coreDataMostRecentDay.addToSleepEntries(NSOrderedSet(array: newSleepEntries))
-//            
-//            let historicalData = Array(healthData.dropLast())
-//            if !historicalData.isEmpty {
-//                let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
-//                mergedEntries.insert(contentsOf: historicalEntries, at: 0)
-//            }
-//        } else {
-//            let newSleepEntries = mapHealthKitToCoreData(healthData, context: context)
-//            mergedEntries.insert(contentsOf: newSleepEntries, at: 0)
-//        }
-//        
-//        return mergedEntries
-//    }
-    
     static func mergeCoreDataWithHealthKitData(_ coreDataEntries: [PeriodEntryMO], with healthData: [SleepPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
         Logger.logInfo(id, message: "Starting merge process with coreData entries an healthData entries")
         guard let mostRecentCoreDataEntry = coreDataEntries.first,

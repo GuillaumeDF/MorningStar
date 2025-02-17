@@ -62,15 +62,20 @@ struct HealthMetrics {
     var sleepHistory: [SleepPeriod] = []
     var workoutHistory: [WeeklyWorkouts] = []
     
-    // TODO: A revoir la logique ne devrait pas se trouver ici
     var totalWorkoutHoursThisWeek: String {
-        let totalSeconds = workoutHistory.first?.dailyWorkouts.reduce(into: 0) { result, dailyWorkout in
+        guard let mostRecentWorkoutWWeek = workoutHistory.first,
+              let mostRecentWorkoutWWeekStartDate = mostRecentWorkoutWWeek.startDate,
+              mostRecentWorkoutWWeekStartDate.isSameWeek(as: .now) else {
+            return "0h"
+        }
+        
+        let totalSeconds = mostRecentWorkoutWWeek.dailyWorkouts.reduce(into: 0) { result, dailyWorkout in
             dailyWorkout.workouts.forEach { workout in
                 workout.phaseEntries.forEach { phase in
                     result += phase.duration
                 }
             }
-        } ?? 0
+        }
         
         let hours = Int(totalSeconds) / 3600
         let minutes = (Int(totalSeconds) % 3600) / 60
@@ -78,7 +83,19 @@ struct HealthMetrics {
         return "\(hours)h \(minutes)m"
     }
     
-    var totalStepThisWeek: Int = 0
+    var totalStepThisWeek: Int {
+        var total: Double = 0
+
+        for stepPeriod in stepCountHistory {
+            guard let startDate = stepPeriod.startDate, startDate.isSameWeek(as: .now) else {
+                break
+            }
+            
+            total += stepPeriod.entries.reduce(0) { $0 + $1.value }
+        }
+
+        return Int(total)
+    }
     
     mutating func set<T>(_ type: HealthMetricType, items: [T]) {
         switch type {

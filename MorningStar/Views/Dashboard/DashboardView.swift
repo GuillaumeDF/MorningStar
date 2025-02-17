@@ -23,14 +23,12 @@ struct DashboardView: View {
                         .foregroundStyle(Color.secondaryTextColor)
                 }
                 Spacer()
-                // TODO: Reimplenter Total workout this week en heure
                 MSDashboardHeaderMetricView(
                     title: "Total workout this week",
                     value: healthMetrics.totalWorkoutHoursThisWeek
                 )
                 MSVerticalSeparator()
                     .frame(height: 50)
-                // TODO: Reimplenter Total step this week
                 MSDashboardHeaderMetricView(
                     title: "Total step this week",
                     value: "\(healthMetrics.totalStepThisWeek)"
