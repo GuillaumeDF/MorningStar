@@ -29,7 +29,7 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
     
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.timeZone = TimeZone.current
+        formatter.timeZone = .current
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         
@@ -114,7 +114,7 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
 }
 
 extension LineChartViewModel {
-    func fillGapsWithZeros() -> [Double] {
+    func fillGapsWithZeros() -> [Double] { // TODO: Refaire une extension généric de EntryType ?
         guard !currentPeriod.entries.isEmpty else { return [] }
         
         var result: [Double] = []

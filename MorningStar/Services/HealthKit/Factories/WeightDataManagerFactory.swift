@@ -105,37 +105,42 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mergeCoreDataWithHealthKitData(_ coreDataEntries: [PeriodEntryMO], with healthData: [WeightPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        guard let coreDataMostRecentWeek = coreDataEntries.first,
-              let coreDataMostRecentDay = coreDataMostRecentWeek.startDate,
-              let coreDataLatestDay = coreDataEntries.last?.endDate else {
+        Logger.logInfo(id, message: "Starting merge process with coreData entries an healthData entries")
+        guard let mostRecentCoreDataEntry = coreDataEntries.first,
+              let mostRecentCoreDataEndDate = mostRecentCoreDataEntry.endDate else {
+            Logger.logWarning(id, message: "CoreData entries are empty or invalid, mapping HealthKit data to CoreData")
             return mapHealthKitToCoreData(healthData, context: context)
         }
-        
-        guard let healthDataMostRecentDay = healthData.first?.startDate,
-              let healthDataLatestWeek = healthData.last,
-              let healthDataLatestDay = healthDataLatestWeek.endDate,
-              coreDataLatestDay <= healthDataMostRecentDay else {
+
+        guard let oldestHealthDataEntry = healthData.last,
+              let oldestHealthDataEndDate = oldestHealthDataEntry.endDate,
+              let oldestHealthDataStartDate = oldestHealthDataEntry.startDate else {
+            Logger.logWarning(id, message: "HealthKit entries are empty or invalid, mapping HealthKit data to CoreData")
             return coreDataEntries
         }
-        
+
         var mergedEntries = coreDataEntries
-        
-        if coreDataLatestDay.isSameWeek(as: healthDataMostRecentDay) {
-            coreDataMostRecentWeek.endDate = healthDataLatestDay
-            
-            let newWeightEntries = mapWeightEntriesToCoreData(healthDataLatestWeek.entries, parent: coreDataMostRecentWeek, context: context)
-            coreDataMostRecentWeek.addToWeightEntries(NSOrderedSet(array: newWeightEntries))
-            
+
+        if mostRecentCoreDataEndDate.isSameWeek(as: oldestHealthDataStartDate) {
+            Logger.logInfo(id, message: "Updating most recent CoreData entry with HealthKit data")
+            mostRecentCoreDataEntry.endDate =  oldestHealthDataEndDate
+
+            let newWeightEntries = mapWeightEntriesToCoreData(oldestHealthDataEntry.entries, parent: mostRecentCoreDataEntry, context: context)
+            mostRecentCoreDataEntry.addToWeightEntries(NSOrderedSet(array: newWeightEntries))
+
             let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {
+                Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
                 let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
                 mergedEntries.insert(contentsOf: historicalEntries, at: 0)
             }
         } else {
+            Logger.logInfo(id, message: "Mapping all HealthKit data to CoreData")
             let newWeightEntries = mapHealthKitToCoreData(healthData, context: context)
             mergedEntries.insert(contentsOf: newWeightEntries, at: 0)
         }
-        
+
+        Logger.logInfo(id, message: "Merge process completed")
         return mergedEntries
     }
 }

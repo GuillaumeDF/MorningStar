@@ -9,7 +9,7 @@ import XCTest
 import CoreData
 @testable import MorningStar
 
-private enum WeightPeriodTestData {
+private struct WeightPeriodTestData {
     private static let formatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime]

@@ -201,48 +201,51 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func mergeCoreDataWithHealthKitData(_ coreDataEntries: [WeeklyWorkoutsMO], with healthData: [WeeklyWorkouts], in context: NSManagedObjectContext) -> [WeeklyWorkoutsMO] {
-        guard let coreDataMostRecentWeek = coreDataEntries.first,
-              let coreDataMostRecentDay = coreDataMostRecentWeek.startDate,
-              let coreDataLatestDay = coreDataEntries.last?.endDate else {
+        Logger.logInfo(id, message: "Starting merge process with coreData entries an healthData entries")
+        guard let mostRecentCoreDataEntry = coreDataEntries.first,
+              let mostRecentCoreDataEndDate = mostRecentCoreDataEntry.endDate else {
+            Logger.logWarning(id, message: "CoreData entries are empty or invalid, mapping HealthKit data to CoreData")
             return mapHealthKitToCoreData(healthData, context: context)
         }
-        
-        guard let healthDataMostRecentDay = healthData.first?.startDate,
-              let healthDataLatestWeek = healthData.last,
-              let healthDataLatestDay = healthDataLatestWeek.endDate,
-              coreDataLatestDay <= healthDataMostRecentDay else {
+
+        guard let oldestHealthDataEntry = healthData.last,
+              let oldestHealthDataEndDate = oldestHealthDataEntry.endDate,
+              let oldestHealthDataStartDate = oldestHealthDataEntry.startDate else {
+            Logger.logWarning(id, message: "HealthKit entries are empty or invalid, mapping HealthKit data to CoreData")
             return coreDataEntries
         }
-        
-        var mergedEntries = coreDataEntries
-        
-        if coreDataLatestDay.isSameWeek(as: healthDataMostRecentDay) {
-            coreDataMostRecentWeek.endDate = healthDataLatestDay
-            
-            if coreDataLatestDay.isSameDay(as: healthDataMostRecentDay),
-               let coreDataMostRecentDaily = coreDataMostRecentWeek.dailyWorkouts?.lastObject as? DailyWorkoutsMO,
-               let latestHealthKitDaily = healthDataLatestWeek.dailyWorkouts.last {
-                coreDataMostRecentDaily.endDate = latestHealthKitDaily.endDate
-               
-                let newWorkoutEntities = mapWorkoutsToCoreData(latestHealthKitDaily.workouts, parent: coreDataMostRecentDaily, context: context)
-                
-                coreDataMostRecentDaily.addToWorkouts(NSOrderedSet(array: newWorkoutEntities))
-            } else {
-                let newDailyWorkoutsEntries = mapDailyWorkoutsToCoreData(healthDataLatestWeek.dailyWorkouts, parent: coreDataMostRecentWeek, context: context)
 
-                coreDataMostRecentWeek.addToDailyWorkouts(NSOrderedSet(array: newDailyWorkoutsEntries))
-            }
+        var mergedEntries = coreDataEntries
+
+        if mostRecentCoreDataEndDate.isSameWeek(as: oldestHealthDataStartDate) {
+            Logger.logInfo(id, message: "Updating most recent CoreData entry with HealthKit data")
+            mostRecentCoreDataEntry.endDate =  oldestHealthDataEndDate
             
+            if mostRecentCoreDataEndDate.isSameDay(as: oldestHealthDataStartDate),
+               let mostRecentCoreDateDailyEntry = mostRecentCoreDataEntry.dailyWorkouts?.lastObject as? DailyWorkoutsMO,
+               let oldestHealthDataDailyEntry = oldestHealthDataEntry.dailyWorkouts.last {
+                mostRecentCoreDateDailyEntry.endDate = oldestHealthDataDailyEntry.endDate
+                
+                let newWorkoutEntries = mapWorkoutsToCoreData(oldestHealthDataDailyEntry.workouts, parent: mostRecentCoreDateDailyEntry, context: context)
+                mostRecentCoreDateDailyEntry.addToWorkouts(NSOrderedSet(array: newWorkoutEntries))
+            } else {
+                let newDailyWorkoutsEntries = mapDailyWorkoutsToCoreData(oldestHealthDataEntry.dailyWorkouts, parent: mostRecentCoreDataEntry, context: context)
+                mostRecentCoreDataEntry.addToDailyWorkouts(NSOrderedSet(array: newDailyWorkoutsEntries))
+            }
+
             let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {
+                Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
                 let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
                 mergedEntries.insert(contentsOf: historicalEntries, at: 0)
             }
         } else {
-            let newDailyWorkoutsEntries = mapHealthKitToCoreData(healthData, context: context)
-            mergedEntries.insert(contentsOf: newDailyWorkoutsEntries, at: 0)
+            Logger.logInfo(id, message: "Mapping all HealthKit data to CoreData")
+            let newCalorieEntries = mapHealthKitToCoreData(healthData, context: context)
+            mergedEntries.insert(contentsOf: newCalorieEntries, at: 0)
         }
-        
+
+        Logger.logInfo(id, message: "Merge process completed")
         return mergedEntries
     }
 }

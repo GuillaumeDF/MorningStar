@@ -37,6 +37,6 @@ enum AppConstants {
         static let syncRetryDelay: Double = 300
         
         // Time is measured in hours
-        static let isNightSleep: TimeInterval = 4
+        static let isNightSleep: Int = 4
     }
 }

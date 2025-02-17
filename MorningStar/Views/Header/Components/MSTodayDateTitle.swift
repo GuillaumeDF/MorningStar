@@ -17,6 +17,7 @@ struct MSTodayDateTitle: View {
     func todayDate() -> String {
         let formatter = DateFormatter()
         
+        formatter.timeZone = .current
         formatter.dateStyle = .long
         
         return formatter.string(from: Date())

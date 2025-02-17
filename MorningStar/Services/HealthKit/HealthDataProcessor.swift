@@ -52,7 +52,8 @@ struct HealthDataProcessor {
         for sample in samples {
             guard let categorySample = sample as? HKCategorySample else { continue }
             
-            if let lastEnd = lastSampleEndDate, categorySample.startDate.timeIntervalSince(lastEnd) > AppConstants.Duration.isNightSleep * 60 * 60 {
+            if let lastEnd = lastSampleEndDate,
+               categorySample.startDate.hoursBetween(and: lastEnd) <= AppConstants.Duration.isNightSleep {
                 if !currentNightActivities.isEmpty {
                     nightlyActivities.insert(PeriodEntry(entries: currentNightActivities), at: 0)
                     currentNightActivities = []
@@ -78,7 +79,6 @@ struct HealthDataProcessor {
     
     static func groupWeightsByWeek(from samples: [HKSample], unit: HKUnit) -> [PeriodEntry<HealthData.WeightEntry>] {
         let calendar = Calendar.current
-        
         var weeklyActivities: [PeriodEntry<HealthData.WeightEntry>] = []
         var currentWeekActivities: [HealthData.WeightEntry] = []
         var currentWeek: Date?

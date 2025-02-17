@@ -11,7 +11,7 @@ extension Date {
     func isSameDay(as otherDate: Date) -> Bool {
         let calendar = Calendar.current
         
-        return calendar.isDate(self, inSameDayAs: otherDate)
+        return calendar.isDate(self, equalTo: otherDate, toGranularity: .day)
     }
     
     func isSameWeek(as otherDate: Date) -> Bool {

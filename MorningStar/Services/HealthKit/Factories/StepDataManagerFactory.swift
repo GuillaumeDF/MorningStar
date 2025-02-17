@@ -32,7 +32,7 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[StepPeriod]>>? {
-        var utcCalendar = Calendar(identifier: .gregorian)
+        var utcCalendar = Calendar.current
         utcCalendar.timeZone = TimeZone(abbreviation: "UTC")!
         
         let queryDescriptor = StatisticsCollectionQueryDescriptor<[StepPeriod]>(
@@ -108,38 +108,44 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         }
     }
     
+
     static func mergeCoreDataWithHealthKitData(_ coreDataEntries: [PeriodEntryMO], with healthData: [StepPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        guard  let coreDataMostRecentDay = coreDataEntries.first,
-               let coreDataMostRecentDate = coreDataMostRecentDay.startDate,
-               let coreDataLatestDate = coreDataEntries.last?.endDate else {
+        Logger.logInfo(id, message: "Starting merge process with coreData entries an healthData entries")
+        guard let mostRecentCoreDataEntry = coreDataEntries.first,
+              let mostRecentCoreDataEndDate = mostRecentCoreDataEntry.endDate else {
+            Logger.logWarning(id, message: "CoreData entries are empty or invalid, mapping HealthKit data to CoreData")
             return mapHealthKitToCoreData(healthData, context: context)
         }
-        
-        guard let healthDataMostRecentDate = healthData.first?.startDate,
-              let healthDataLatestDay = healthData.last,
-              let healthDataLatestDate = healthDataLatestDay.endDate,
-              coreDataLatestDate <= healthDataMostRecentDate else {
+
+        guard let oldestHealthDataEntry = healthData.last,
+              let oldestHealthDataEndDate = oldestHealthDataEntry.endDate,
+              let oldestHealthDataStartDate = oldestHealthDataEntry.startDate else {
+            Logger.logWarning(id, message: "HealthKit entries are empty or invalid, mapping HealthKit data to CoreData")
             return coreDataEntries
         }
-        
+
         var mergedEntries = coreDataEntries
-        
-        if coreDataLatestDate.isSameDay(as: healthDataMostRecentDate) {
-            coreDataMostRecentDay.endDate = healthDataLatestDate
-            
-            let newStepEntries = mapStepEntriesToCoreData(healthDataLatestDay.entries, parent: coreDataMostRecentDay, context: context)
-            coreDataMostRecentDay.addToStepEntries(NSOrderedSet(array: newStepEntries))
-            
+
+        if mostRecentCoreDataEndDate.isSameDay(as: oldestHealthDataStartDate) {
+            Logger.logInfo(id, message: "Updating most recent CoreData entry with HealthKit data")
+            mostRecentCoreDataEntry.endDate =  oldestHealthDataEndDate
+
+            let newStepEntries = mapStepEntriesToCoreData(oldestHealthDataEntry.entries, parent: mostRecentCoreDataEntry, context: context)
+            mostRecentCoreDataEntry.addToStepEntries(NSOrderedSet(array: newStepEntries))
+
             let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {
+                Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
                 let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
                 mergedEntries.insert(contentsOf: historicalEntries, at: 0)
             }
         } else {
+            Logger.logInfo(id, message: "Mapping all HealthKit data to CoreData")
             let newStepEntries = mapHealthKitToCoreData(healthData, context: context)
             mergedEntries.insert(contentsOf: newStepEntries, at: 0)
         }
-        
+
+        Logger.logInfo(id, message: "Merge process completed")
         return mergedEntries
     }
 }

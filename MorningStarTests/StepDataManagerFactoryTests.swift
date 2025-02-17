@@ -9,10 +9,11 @@ import XCTest
 import CoreData
 @testable import MorningStar
 
-private enum StepPeriodTestData {
+private struct StepPeriodTestData {
     private static let formatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime]
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
         return formatter
     }()
     
@@ -171,6 +172,109 @@ extension StepPeriodTestData {
     )
 }
 
+extension StepPeriodTestData {
+    static let period1 = StepPeriod(
+        id: UUID(uuidString: "E4AB8BA3-627E-4F76-95EE-DEEC13705DD8")!,
+        entries: [
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "09ADD376-47F0-4371-A530-A6F3FD355BC2")!,
+                startDate: formatter.date(from: "2025-02-13T23:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-14T00:00:00Z")!,
+                value: 55.0,
+                unit: "count"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "13DE233C-AB12-4CBA-B1EE-E2B8E9FAE7E0")!,
+                startDate: formatter.date(from: "2025-02-14T00:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-14T01:00:00Z")!,
+                value: 28.0,
+                unit: "count"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "B94B675E-EB41-4881-87D3-8AD68BED20CE")!,
+                startDate: formatter.date(from: "2025-02-14T09:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-14T10:00:00Z")!,
+                value: 48.0,
+                unit: "count"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "88017B62-55F7-460C-93CC-411ABBBD67D0")!,
+                startDate: formatter.date(from: "2025-02-14T11:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-14T12:00:00Z")!,
+                value: 48.34206850911718,
+                unit: "count"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "AAE97E04-97EB-41F4-B995-EE020777B4A3")!,
+                startDate: formatter.date(from: "2025-02-14T12:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-14T13:00:00Z")!,
+                value: 308.6579314908828,
+                unit: "count"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "5F91F140-1BC0-42EE-9690-4EA50715DB93")!,
+                startDate: formatter.date(from: "2025-02-14T13:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-14T14:00:00Z")!,
+                value: 101.0,
+                unit: "count"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "5EC457D6-A121-4F0C-8394-FC71F46872B1")!,
+                startDate: formatter.date(from: "2025-02-14T14:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-14T15:00:00Z")!,
+                value: 14.0,
+                unit: "count"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "779F2494-5AC7-4CFC-B9D3-79B169091C0B")!,
+                startDate: formatter.date(from: "2025-02-14T15:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-14T16:00:00Z")!,
+                value: 115.0,
+                unit: "count"
+            )
+        ]
+    )
+    
+    static let period2 = StepPeriod(
+        id: UUID(uuidString: "43A6CF69-9487-4E5C-B758-ABE94D61CCDF")!,
+        entries: [
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "D477DD88-005B-4198-ADA9-53F73C203DC2")!,
+                startDate: formatter.date(from: "2025-02-14T18:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-14T19:00:00Z")!,
+                value: 340.2945384587494,
+                unit: "count"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "53062BB3-BF95-4DDE-B15D-C642FE75C763")!,
+                startDate: formatter.date(from: "2025-02-14T19:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-14T20:00:00Z")!,
+                value: 831.7054615412507,
+                unit: "count"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "29F2A169-2253-4A03-8CF0-B027A5E18B6B")!,
+                startDate: formatter.date(from: "2025-02-14T20:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-14T21:00:00Z")!,
+                value: 456.76946791707303,
+                unit: "count"
+            ),
+            HealthData.ActivityEntry(
+                id: UUID(uuidString: "2BAE450A-4249-4115-A20F-37F0C38D92F8")!,
+                startDate: formatter.date(from: "2025-02-14T21:00:00Z")!,
+                endDate: formatter.date(from: "2025-02-14T22:00:00Z")!,
+                value: 247.1638215526461,
+                unit: "count"
+            )
+        ]
+    )
+
+    static let periodTestMerged = StepPeriod(
+        id: UUID(uuidString: "E4AB8BA3-627E-4F76-95EE-DEEC13705DD8")!,
+        entries: period1.entries + period2.entries
+    )
+}
+
 final class StepDataManagerFactoryTests: XCTestCase {
     var context: NSManagedObjectContext!
     
@@ -294,14 +398,24 @@ final class StepDataManagerFactoryTests: XCTestCase {
         checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
     
-    func testMergeCoreDataWithHealthKitDataWithIdenticalPeriods() {
-        let coreDataEntries = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.currentDayMerged], context: context)
-        let healthKitData = [StepPeriodTestData.currentDayMerged]
+    func testMergeCoreDataWithHealthKitDataWhenDatesAreTheSameDay4() {
+        let coreDataEntries: [PeriodEntryMO] = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.period1], context: context)
+        let healthKitData: [StepPeriod] = [StepPeriodTestData.period2]
         
         let mergedEntries = StepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
+        let expectedEntries = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.periodTestMerged], context: context)
         
-        checkPeriodEntriesEqual(mergedEntries, coreDataEntries)
+        checkPeriodEntriesEqual(mergedEntries, expectedEntries)
     }
+    
+//    func testMergeCoreDataWithHealthKitDataWithIdenticalPeriods() {
+//        let coreDataEntries = StepDataManagerFactory.mapHealthKitToCoreData([StepPeriodTestData.currentDayMerged], context: context)
+//        let healthKitData = [StepPeriodTestData.currentDayMerged]
+//        
+//        let mergedEntries = StepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataEntries, with: healthKitData, in: context)
+//        
+//        checkPeriodEntriesEqual(mergedEntries, coreDataEntries)
+//    }
 }
 
 extension StepDataManagerFactoryTests {

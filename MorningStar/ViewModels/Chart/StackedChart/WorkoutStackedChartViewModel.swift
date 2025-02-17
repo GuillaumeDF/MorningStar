@@ -21,7 +21,7 @@ class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, I
     
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.timeZone = TimeZone.current
+        formatter.timeZone = .current
         formatter.dateFormat = "dd/MM"
         
         return formatter
