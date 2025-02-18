@@ -83,7 +83,7 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
         let heartRates = heartRateEntries.first?.entries ?? []
         let caloriesBurned = calorieEntries.first?.entries ?? []
         
-        let workoutsWithIntensity = WorkoutIntensityAnalyzer().generateIntensityPhases(
+        let workoutsWithIntensity = WorkoutIntensityAnalyzer().generateWorkout(
             sample: sample,
             heartRates: heartRates,
             caloriesBurned: caloriesBurned
@@ -138,6 +138,7 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
             newWorkoutEntity.id = workout.id
             newWorkoutEntity.startDate = workout.startDate
             newWorkoutEntity.endDate = workout.endDate
+            newWorkoutEntity.type = Int16(workout.type)
             newWorkoutEntity.dailyWorkouts = parent
             
             let phaseEntries = workout.phaseEntries.map { phaseEntry in
@@ -184,13 +185,13 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
                             id: phaseEntity.id,
                             startDate: startDate,
                             endDate: endDate,
-                            value: IntensityLevel(rawValue: Int(phaseEntity.value)) ?? .undetermined,
+                            value: IntensityLevel(rawValue: UInt8(phaseEntity.value)) ?? .undetermined,
                             averageHeartRate: phaseEntity.averageHeartRate,
                             caloriesBurned: phaseEntity.caloriesBurned
                         )
                     } ?? []
                     
-                    return Workout(id: workoutEntity.id, phaseEntries: phaseEntries)
+                    return Workout(id: workoutEntity.id, type: UInt16(workoutEntity.type), phaseEntries: phaseEntries)
                 } ?? []
                 
                 return DailyWorkouts(id: dailyWorkoutEntity.id, workouts: workoutEntries)

@@ -19,7 +19,7 @@ typealias WeeklyWorkouts = HealthData.WeeklyWorkouts
 typealias DailyWorkouts = HealthData.DailyWorkouts
 typealias Workout = HealthData.Workout
 
-enum IntensityLevel: Int, Hashable {
+enum IntensityLevel: UInt8, Hashable {
     case undetermined = 0
     case low = 1
     case moderate = 2
@@ -187,6 +187,7 @@ extension HealthData {
     
     struct Workout: Hashable {
         let id: UUID
+        let type: UInt16
         var phaseEntries: [WorkoutPhaseEntry]
         
         var startDate: Date? {
@@ -197,8 +198,9 @@ extension HealthData {
             phaseEntries.last?.endDate
         }
         
-        init(id: UUID? = nil, phaseEntries: [WorkoutPhaseEntry]) {
+        init(id: UUID? = nil, type: UInt16, phaseEntries: [WorkoutPhaseEntry]) {
             self.id = id ?? UUID()
+            self.type = type
             self.phaseEntries = phaseEntries
         }
     }

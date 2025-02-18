@@ -19,15 +19,16 @@ class WorkoutIntensityAnalyzer {
         static let highIntensityThreshold: Double = 1.4
     }
     
-    func generateIntensityPhases(
+    func generateWorkout(
         sample: HKSample,
         heartRates: [HealthData.HeartRateEntry],
         caloriesBurned: [HealthData.ActivityEntry]
     ) -> Workout {
+        let type = (sample as? HKWorkout)?.workoutActivityType.rawValue ?? HKWorkoutActivityType.other.rawValue
+        var workout: Workout = Workout(type: UInt16(type), phaseEntries: [])
+        
         guard !heartRates.isEmpty else {
-            let workout = Workout(
-                phaseEntries: [createUndeterminedPhase(startDate: sample.startDate, endDate: sample.endDate)]
-            )
+            workout.phaseEntries = [createUndeterminedPhase(startDate: sample.startDate, endDate: sample.endDate)]
             
             return workout
         }
@@ -37,7 +38,7 @@ class WorkoutIntensityAnalyzer {
         let thresholds = calculateThresholds(heartRates: heartRates, caloriesBurned: caloriesBurned, globalAverages: globalAverages)
         let minPhaseDuration = max(duration * Constants.minPhaseDurationFactor, Constants.minPhaseDurationSeconds)
         
-        return generatePhases(
+        let phaseEntries = generatePhases(
             sample: sample,
             heartRates: heartRates,
             caloriesBurned: caloriesBurned,
@@ -45,6 +46,10 @@ class WorkoutIntensityAnalyzer {
             thresholds: thresholds,
             minPhaseDuration: minPhaseDuration
         )
+        
+        workout.phaseEntries = phaseEntries
+        
+        return workout
     }
     
     private func createUndeterminedPhase(startDate: Date, endDate: Date) -> HealthData.WorkoutPhaseEntry {
@@ -95,8 +100,8 @@ class WorkoutIntensityAnalyzer {
         globalAverages: (heartRate: Double, calorieRate: Double),
         thresholds: (heartRate: Double, calorieRate: Double),
         minPhaseDuration: TimeInterval
-    ) -> Workout {
-        var workout: Workout = Workout(phaseEntries: [])
+    ) -> [HealthData.WorkoutPhaseEntry] {
+        var phaseEntries: [HealthData.WorkoutPhaseEntry] = []
         var currentPhaseStart = sample.startDate
         var previousStats: (heartRate: Double?, calorieRate: Double?) = (
             heartRates.first?.value,
@@ -125,8 +130,8 @@ class WorkoutIntensityAnalyzer {
             
             if shouldCreatePhase || isLastSample {
                 if isLastSample && shouldCreatePhase == false {
-                    if let lastIndex = workout.phaseEntries.indices.last {
-                        workout.phaseEntries[lastIndex].endDate = sample.endDate
+                    if let lastIndex = phaseEntries.indices.last {
+                        phaseEntries[lastIndex].endDate = sample.endDate
                     }
                 } else {
                     let phase = createWorkoutPhase(
@@ -135,7 +140,7 @@ class WorkoutIntensityAnalyzer {
                         stats: phaseStats,
                         globalAverages: globalAverages
                     )
-                    workout.phaseEntries.append(phase)
+                    phaseEntries.append(phase)
                     
                     currentPhaseStart = currentDate
                     previousStats = phaseStats
@@ -143,7 +148,7 @@ class WorkoutIntensityAnalyzer {
             }
         }
         
-        return workout
+        return phaseEntries
     }
     
     private func calculatePhaseStats(

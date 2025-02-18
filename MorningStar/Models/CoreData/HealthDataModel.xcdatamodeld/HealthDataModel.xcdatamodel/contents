@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24C101" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D70" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CalorieEntryMO" representedClassName="CalorieEntryMO" parentEntity="HealthEntryMO" syncable="YES" codeGenerationType="class">
         <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="periodEntry" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PeriodEntryMO" inverseName="calorieEntries" inverseEntity="PeriodEntryMO"/>
@@ -52,6 +52,7 @@
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="type" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="dailyWorkouts" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DailyWorkoutsMO" inverseName="workouts" inverseEntity="DailyWorkoutsMO"/>
         <relationship name="workoutPhaseEntries" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="WorkoutPhaseEntryMO" inverseName="workout" inverseEntity="WorkoutPhaseEntryMO"/>
     </entity>
