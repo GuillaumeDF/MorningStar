@@ -38,8 +38,10 @@ class HealthRepository: HealthRepositoryProtocol {
         return healthData
     }
     
-    func fetchHealthKit<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date) async throws -> [T.HealthDataType] {
-        return try await healthKitSource.fetch(factory, from: startDate, to: nil)
+    func fetchHealthKit<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType] {
+        let mostRecentDateSaved = try coreDataSource.getMostRecentDate(factory)
+        
+        return try await healthKitSource.fetch(factory, from: mostRecentDateSaved, to: nil)
     }
     
     func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) async throws -> [T.HealthDataType] {
@@ -50,7 +52,7 @@ class HealthRepository: HealthRepositoryProtocol {
     }
 
     func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType] {
-        let lastSync = await syncStorage.getLastSync(for: factory.id) ?? Date.distantPast
+        let lastSync = syncStorage.getLastSync(for: factory.id) ?? Date.distantPast
         Logger.logInfo(factory.id, message: "The last synchronization time retrieved is \(lastSync)")
         
         guard syncStrategy.shouldSync(lastSync: lastSync) else {
@@ -58,7 +60,7 @@ class HealthRepository: HealthRepositoryProtocol {
             return []
         }
         
-        let newItemsHealthKit = try await fetchHealthKit(factory, from: lastSync)
+        let newItemsHealthKit = try await fetchHealthKit(factory)
         Logger.logInfo(factory.id, message: "A new synchronization attempt has been initiated at \(lastSync).")
         guard !newItemsHealthKit.isEmpty else {
             Logger.logInfo(factory.id, message: "No new items were retrieved from HealthKit.")
@@ -68,7 +70,7 @@ class HealthRepository: HealthRepositoryProtocol {
         let dataFetched = try coreDataSource.getDataFetched(factory)
         let newItemsMerged = try await mergeCoreDataWithHealthKitData(factory, localData: dataFetched, with: newItemsHealthKit)
         
-        await syncStorage.updateLastSync(for: factory.id)
+        syncStorage.updateLastSync(for: factory.id)
         Logger.logInfo(factory.id, message: "The last synchronization time has been updated to \(Date())")
         
         return newItemsMerged

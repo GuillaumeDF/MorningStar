@@ -8,9 +8,9 @@
 import Foundation
 
 protocol SyncStorage {
-    func getLastSync(for type: HealthMetricType) async -> Date?
-    func updateLastSync(for type: HealthMetricType) async
-    func clearSyncHistory() async
+    func getLastSync(for type: HealthMetricType) -> Date?
+    func updateLastSync(for type: HealthMetricType)
+    func clearSyncHistory()
 }
 
 class LastSyncStorage: SyncStorage {
@@ -21,15 +21,15 @@ class LastSyncStorage: SyncStorage {
         self.userDefaults = userDefaults
     }
     
-    func getLastSync(for type: HealthMetricType) async -> Date? {
+    func getLastSync(for type: HealthMetricType) -> Date? {
         return userDefaults.object(forKey: makeKey(for: type)) as? Date
     }
     
-    func updateLastSync(for type: HealthMetricType) async {
+    func updateLastSync(for type: HealthMetricType) {
         userDefaults.set(Date(), forKey: makeKey(for: type))
     }
     
-    func clearSyncHistory() async {
+    func clearSyncHistory() {
         for type in HealthMetricType.allCases {
             userDefaults.removeObject(forKey: makeKey(for: type))
         }

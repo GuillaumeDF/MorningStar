@@ -27,11 +27,11 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         NSPredicate(format: "stepEntries.@count > 0")
     }
     
-    static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<SampleQueryDescriptor<[StepPeriod]>>? {
+    static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date?) -> HealthDataManager<SampleQueryDescriptor<[StepPeriod]>>? {
         nil
     }
     
-    static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[StepPeriod]>>? {
+    static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date?) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[StepPeriod]>>? {
         var utcCalendar = Calendar.current
         utcCalendar.timeZone = TimeZone(abbreviation: "UTC")!
         
@@ -39,10 +39,10 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
             quantityType: HKQuantityType.quantityType(forIdentifier: .stepCount)!,
             anchorDate: utcCalendar.startOfDay(for: startDate),
             intervalComponents: DateComponents(hour: 1),
-            predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
+            predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate]),
             options: .cumulativeSum
         ) { statisticsCollection in
-            HealthDataProcessor.groupActivitiesByDay(for: statisticsCollection, from: startDate, to: endDate, unit: HKUnit.count())
+            HealthDataProcessor.groupActivitiesByDay(for: statisticsCollection, from: startDate, to: endDate ?? Date(), unit: HKUnit.count()) // TODO: A verifier
         }
         
         return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)

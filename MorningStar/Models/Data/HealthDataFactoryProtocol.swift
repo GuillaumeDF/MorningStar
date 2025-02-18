@@ -16,8 +16,8 @@ protocol HealthDataFactoryProtocol {
     static var id: HealthMetricType { get }
     static var predicateCoreData: NSPredicate? { get }
     
-    static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<SampleQueryDescriptor<[HealthDataType]>>?
-    static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[HealthDataType]>>?
+    static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date?) -> HealthDataManager<SampleQueryDescriptor<[HealthDataType]>>?
+    static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date?) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[HealthDataType]>>?
     
     static func mapHealthKitToCoreData(_ healthData: [HealthDataType], context: NSManagedObjectContext) -> [CoreDataType]
     static func mapCoreDataToHealthKit(_ coreDataEntries: [CoreDataType]) -> [HealthDataType]

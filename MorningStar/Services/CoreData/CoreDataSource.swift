@@ -11,6 +11,7 @@ import CoreData
 protocol CoreDataSourceProtocol {
     func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, options: CoreDataSource.SortOrder) async throws -> [T.CoreDataType]
     func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> [T.CoreDataType]
+    func getMostRecentDate<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> Date
     func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) -> [T.CoreDataType]
     func save() throws
 }
@@ -45,6 +46,24 @@ class CoreDataSource: CoreDataSourceProtocol {
         
         return dataFetched
     }
+    
+    func getMostRecentDate<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> Date {
+        let entityName = String(describing: T.CoreDataType.self)
+        let fetchRequest = NSFetchRequest<T.CoreDataType>(entityName: entityName)
+
+        fetchRequest.predicate = factory.predicateCoreData
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "endDate", ascending: false)]
+        fetchRequest.fetchLimit = 1
+
+        let results = try context.fetch(fetchRequest)
+        guard let firstObject = results.first,
+              let firstDate = firstObject.value(forKey: "endDate") as? Date else {
+            return .distantPast
+        }
+
+        return firstDate.localTime
+    }
+
     
     func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) -> [T.CoreDataType] {
         context.performAndWait {

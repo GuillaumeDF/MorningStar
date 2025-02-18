@@ -25,7 +25,7 @@ class HealthKitSource: HealthKitSourceProtocol {
            guard let manager = factory.createSampleQueryManager(
                for: healthStore,
                from: startDate,
-               to: endDate ?? Date()
+               to: endDate
            ) else {
                throw HealthKitError.healthKitManagerInitializationFailure
            }
@@ -36,7 +36,7 @@ class HealthKitSource: HealthKitSourceProtocol {
            guard let manager = factory.createStatisticsQueryManager(
                for: healthStore,
                from: startDate,
-               to: endDate ?? Date()
+               to: endDate
            ) else {
                throw HealthKitError.healthKitManagerInitializationFailure
            }

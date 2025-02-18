@@ -27,10 +27,10 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
         NSPredicate(format: "calorieEntries.@count > 0")
     }
     
-    static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<SampleQueryDescriptor<[CaloriesPeriod]>>? {
+    static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date?) -> HealthDataManager<SampleQueryDescriptor<[CaloriesPeriod]>>? {
         let queryDescriptor = SampleQueryDescriptor<[CaloriesPeriod]>(
             sampleType: HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!,
-            predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
+            predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate]),
             limit: HKObjectQueryNoLimit,
             sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
         ) { samples in
@@ -52,7 +52,7 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
         return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
     }
     
-    static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[CaloriesPeriod]>>? {
+    static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date?) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[CaloriesPeriod]>>? {
         var utcCalendar = Calendar.current // TODO: Créer un factory pour Calendar
         utcCalendar.timeZone = TimeZone(abbreviation: "UTC")!
         
@@ -63,7 +63,7 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
             predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate, .strictEndDate]),
             options: .cumulativeSum
         ) { statisticsCollection in
-            HealthDataProcessor.groupActivitiesByDay(for: statisticsCollection, from: startDate, to: endDate, unit: HKUnit.kilocalorie())
+            HealthDataProcessor.groupActivitiesByDay(for: statisticsCollection, from: startDate, to: endDate ?? Date(), unit: HKUnit.kilocalorie())
         }
         
         return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
