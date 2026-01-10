@@ -7,9 +7,11 @@
 
 import HealthKit
 import CoreData
+import Observation
 
 @MainActor
-class HealthDashboardViewModel: ObservableObject {
+@Observable
+class HealthDashboardViewModel {
     enum State {
         case initial
         case loading
@@ -17,7 +19,7 @@ class HealthDashboardViewModel: ObservableObject {
         case error(Error)
     }
 
-    @Published var healthMetrics = HealthMetrics()
+    var healthMetrics = HealthMetrics()
 
     private let repository: HealthRepositoryProtocol
     private let authorizationManager: HealthKitAuthorizationManager

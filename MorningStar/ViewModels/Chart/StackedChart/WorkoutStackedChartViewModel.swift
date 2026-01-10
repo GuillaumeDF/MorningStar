@@ -6,40 +6,58 @@
 //
 
 import Foundation
+import Observation
 
+@Observable
 class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, IndexManageable {
     typealias EntryType = WeeklyWorkouts
-    
-    @Published var index: Int
-    @Published var periods: [EntryType] {
+
+    var index: Int {
         didSet {
-            isEmpty = periods.isEmpty
+            recalculateCachedValues()
         }
     }
-    
+    var periods: [EntryType] {
+        didSet {
+            isEmpty = periods.isEmpty
+            recalculateCachedValues()
+        }
+    }
+
     var isEmpty: Bool
-    
+
+    // Cached computed values
+    private(set) var currentDateLabel: DateRepresentation = .multiple([])
+    private(set) var maxTime: CGFloat = 0
+
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.timeZone = .current
         formatter.dateFormat = "dd/MM"
-        
+
         return formatter
     }()
-    
+
     init(workoutHistory: [EntryType]) {
         self.periods = workoutHistory
         self.index = 0
         self.isEmpty = workoutHistory.isEmpty
+        recalculateCachedValues()
     }
-    
+
     var currentPeriod: EntryType {
         periods[index]
     }
-    
-    
-    var currentDateLabel: DateRepresentation {
-        .multiple(
+
+    private func recalculateCachedValues() {
+        guard !periods.isEmpty, index < periods.count else {
+            currentDateLabel = .multiple([])
+            maxTime = 0
+            return
+        }
+
+        // Cache currentDateLabel
+        currentDateLabel = .multiple(
             periods[index]
                 .dailyWorkouts.flatMap { dailyWorkout in
                     dailyWorkout.workouts.map { workout in
@@ -51,10 +69,9 @@ class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, I
                     }
                 }
         )
-    }
-    
-    var maxTime: CGFloat {
-        return ceil(
+
+        // Cache maxTime
+        maxTime = ceil(
             (
                 periods[index]
                     .dailyWorkouts

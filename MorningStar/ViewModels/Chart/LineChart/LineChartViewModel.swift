@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Observation
 
 struct ChartData {
     let value: Double
@@ -15,27 +16,28 @@ struct ChartData {
     static let empty = ChartData(value: 0, startDate: .distantPast, endDate: .distantPast)
 }
 
+@Observable
 class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplayable, PeriodSelectable  {
     typealias EntryType = PeriodEntry<T>
-    
-    @Published var index: Int
-    @Published var periods: [EntryType] {
+
+    var index: Int
+    var periods: [EntryType] {
         didSet {
             isEmpty = periods.isEmpty
         }
     }
-    
+
     var isEmpty: Bool
-    
+
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.timeZone = .current
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
-        
+
         return formatter
     }()
-    
+
     init(activityPeriods: [EntryType]) {
         self.periods = activityPeriods
         self.index = 0
