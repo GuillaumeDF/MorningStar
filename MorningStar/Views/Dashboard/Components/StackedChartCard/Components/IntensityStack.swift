@@ -37,7 +37,7 @@ struct IntensityStack: View {
     }
     
     private func calculateHeight(for workoutPhaseEntry: HealthData.WorkoutPhaseEntry, with geometry: GeometryProxy, isFirstIndex: Bool) -> CGFloat {
-        (geometry.size.height * workoutPhaseEntry.duration) / (maxTime * 60) - (isFirstIndex ? 0 : Constants.dividerHeight)
+        max(0, (geometry.size.height * workoutPhaseEntry.duration) / (maxTime * 60) - (isFirstIndex ? 0 : Constants.dividerHeight))
     }
 }
 

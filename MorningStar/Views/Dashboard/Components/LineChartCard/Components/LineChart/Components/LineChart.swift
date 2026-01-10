@@ -8,41 +8,47 @@
 import SwiftUI
 
 struct LineChart: View {
-    let data: [Double]
+    let data: [ChartData]
     let maxValue: Double
     let backgroundColor: Color
     let size: CGSize
-    
+
     var body: some View {
         Path { path in
-            let scaleFactor = size.height / maxValue
+            guard let firstData = data.first, let lastData = data.last else { return }
             
-            if data.count == 1 {
-                let y = size.height - CGFloat(data[0]) * scaleFactor
-                
-                path.move(to: CGPoint(x: 0, y: y))
-                path.addLine(to: CGPoint(x: size.width, y: y))
-            } else {
-                path.move(to: CGPoint(x: 0, y: size.height - CGFloat(data[0]) * scaleFactor))
-                
-                for (index, value) in data.enumerated() {
-                    let x = size.width * CGFloat(index) / CGFloat(data.count - 1)
-                    let y = size.height - CGFloat(value) * scaleFactor
-                    
-                    if index > 0 {
-                        let prevX = size.width * CGFloat(index - 1) / CGFloat(data.count - 1)
-                        let prevY = size.height - CGFloat(data[index - 1]) * scaleFactor
-                        let controlX = (x + prevX) / 2
-                        
-                        path.addCurve(to: CGPoint(x: x, y: y),
-                                      control1: CGPoint(x: controlX, y: prevY),
-                                      control2: CGPoint(x: controlX, y: y))
-                    }
-                }
+            let totalDuration = lastData.endDate.timeIntervalSince(firstData.startDate)
+            
+            func xPosition(for date: Date) -> CGFloat {
+                let elapsedTime = date.timeIntervalSince(firstData.startDate)
+                return size.width * CGFloat(elapsedTime / totalDuration)
             }
             
-            path.addLine(to: CGPoint(x: size.width, y: size.height))
-            path.addLine(to: CGPoint(x: 0, y: size.height))
+            let scaleFactor = size.height / maxValue
+
+            path.move(to: CGPoint(x: 0, y: size.height))
+            
+            for entry in data {
+                let startX = xPosition(for: entry.startDate)
+                let endX = xPosition(for: entry.endDate)
+                
+                let steps = data.count
+                for step in 0...steps {
+                    let position = startX + (endX - startX) * CGFloat(step) / CGFloat(steps)
+                    
+                    let point = calculateCurvePoint(
+                        startX: startX,
+                        endX: endX,
+                        value: entry.value,
+                        at: position,
+                        height: size.height,
+                        scaleFactor: scaleFactor
+                    )
+                    
+                    path.addLine(to: point)
+                }
+                path.addLine(to: CGPoint(x: endX, y: size.height))
+            }
             path.closeSubpath()
         }
         .fill(
@@ -54,16 +60,29 @@ struct LineChart: View {
         )
         .stroke(backgroundColor, lineWidth: 2)
     }
+    
+    private func calculateCurvePoint(startX: CGFloat, endX: CGFloat, value: Double, at position: CGFloat, height: CGFloat, scaleFactor: CGFloat) -> CGPoint {
+        let segmentWidth = endX - startX
+        let relativePosition = (position - startX) / segmentWidth
+        
+        let boundedPosition = max(0, min(1, relativePosition))
+        let curveFactor = 4 * boundedPosition * (1 - boundedPosition)
+        
+        let y = height - CGFloat(value * curveFactor) * scaleFactor
+        let x = startX + boundedPosition * segmentWidth
+        
+        return CGPoint(x: x, y: y)
+    }
 }
 
-#Preview {
-    LineChart(
-        data:  [
-            65, 60, 60, 60, 60, 65, 90, 150, 110, 100, 100, 120,
-            180, 130, 100, 110, 120, 200, 350, 250, 120, 90, 80, 70
-        ],
-        maxValue: 350,
-        backgroundColor: Color.stepColor,
-        size: CGSize(width: 500, height: 500)
-    )
-}
+//#Preview {
+//    LineChart(
+//        data:  [
+//            65, 60, 60, 60, 60, 65, 90, 150, 110, 100, 100, 120,
+//            180, 130, 100, 110, 120, 200, 350, 250, 120, 90, 80, 70
+//        ],
+//        maxValue: 350,
+//        backgroundColor: Color.stepColor,
+//        size: CGSize(width: 500, height: 500)
+//    )
+//}

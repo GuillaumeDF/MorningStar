@@ -14,6 +14,7 @@ protocol CoreDataSourceProtocol {
     func getMostRecentDate<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> Date
     func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) -> [T.CoreDataType]
     func save() throws
+    func deleteAllEntities()
 }
 
 class CoreDataSource: CoreDataSourceProtocol {
@@ -21,10 +22,11 @@ class CoreDataSource: CoreDataSourceProtocol {
         case dateAscending
         case dateDescending
     }
-    
+
     static let shared = CoreDataSource()
     private(set) var persistentContainer: NSPersistentContainer
-    private(set) var fetchHistory: [HealthMetricType: [NSManagedObject]] = [:]
+    private var fetchHistory: [HealthMetricType: [NSManagedObject]] = [:]
+    private let fetchHistoryLock = NSLock()
 
     private init() {
         persistentContainer = NSPersistentContainer(name: "HealthDataModel")
@@ -40,10 +42,13 @@ class CoreDataSource: CoreDataSourceProtocol {
     }
     
     func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> [T.CoreDataType] {
+        fetchHistoryLock.lock()
+        defer { fetchHistoryLock.unlock() }
+
         guard let dataFetched = fetchHistory[factory.id] as? [T.CoreDataType] else {
             throw CoreDataError.unsupportedDataType
         }
-        
+
         return dataFetched
     }
     
@@ -55,20 +60,35 @@ class CoreDataSource: CoreDataSourceProtocol {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "endDate", ascending: false)]
         fetchRequest.fetchLimit = 1
 
-        let results = try context.fetch(fetchRequest)
-        guard let firstObject = results.first,
-              let firstDate = firstObject.value(forKey: "endDate") as? Date else {
-            return .distantPast
+        var resultDate: Date = .distantPast
+        var fetchError: Error?
+
+        context.performAndWait {
+            do {
+                let results = try context.fetch(fetchRequest)
+                if let firstObject = results.first,
+                   let firstDate = firstObject.value(forKey: "endDate") as? Date {
+                    resultDate = firstDate.localTime
+                }
+            } catch {
+                fetchError = error
+            }
         }
 
-        return firstDate.localTime
+        if let error = fetchError {
+            throw error
+        }
+
+        return resultDate
     }
 
     
     func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) -> [T.CoreDataType] {
-        context.performAndWait {
-           return factory.mergeCoreDataWithHealthKitData(localData, with: healthKitData, in: context)
+        var result: [T.CoreDataType] = []
+        context.performAndWait { [context] in
+            result = T.mergeCoreDataWithHealthKitData(localData, with: healthKitData, in: context)
         }
+        return result
     }
     
     func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, options: SortOrder) throws -> [T.CoreDataType] {
@@ -86,11 +106,11 @@ class CoreDataSource: CoreDataSourceProtocol {
         
         var results: [T.CoreDataType] = []
         var fetchError: Error?
+        let factoryID = factory.id
 
         context.performAndWait {
             do {
                 results = try context.fetch(fetchRequest)
-                fetchHistory[factory.id] = results
             } catch let error {
                 fetchError = error
             }
@@ -99,7 +119,11 @@ class CoreDataSource: CoreDataSourceProtocol {
         if let error = fetchError {
             throw error
         }
-        
+
+        fetchHistoryLock.lock()
+        fetchHistory[factoryID] = results
+        fetchHistoryLock.unlock()
+
         return results
     }
     
@@ -121,7 +145,7 @@ class CoreDataSource: CoreDataSourceProtocol {
         }
     }
     
-    private func deleteAllEntities() {
+    func deleteAllEntities() {
         let entities = persistentContainer.managedObjectModel.entities
         
         entities.forEach { entity in
@@ -137,3 +161,4 @@ class CoreDataSource: CoreDataSourceProtocol {
         }
     }
 }
+

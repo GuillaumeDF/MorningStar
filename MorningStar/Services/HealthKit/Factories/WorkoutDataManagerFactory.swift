@@ -72,7 +72,7 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
             throw(HealthKitError.healthKitManagerInitializationFailure)
         }
         
-        guard let calorieEntries = try await CalorieBurnedDataManagerFactory.createSampleQueryManager(
+        guard let calorieEntries = try await CalorieBurnedDataManagerFactory.createSampleQueryManagerWithoutSort(
             for: healthStore,
             from: sample.startDate,
             to: sample.endDate

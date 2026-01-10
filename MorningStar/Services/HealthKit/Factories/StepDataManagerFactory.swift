@@ -28,7 +28,16 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
     }
     
     static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date?) -> HealthDataManager<SampleQueryDescriptor<[StepPeriod]>>? {
-        nil
+        let queryDescriptor = SampleQueryDescriptor<[StepPeriod]>(
+            sampleType: HKQuantityType.quantityType(forIdentifier: .stepCount)!,
+            predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate]),
+            limit: HKObjectQueryNoLimit,
+            sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
+        ) { samples in
+            HealthDataProcessor.groupActivitiesByDay(from: samples, unit: HKUnit.count())
+        }
+        
+        return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
     }
     
     static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date?) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[StepPeriod]>>? {
@@ -116,23 +125,39 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
             Logger.logWarning(id, message: "CoreData entries are empty or invalid, mapping HealthKit data to CoreData")
             return mapHealthKitToCoreData(healthData, context: context)
         }
-
-        guard let oldestHealthDataEntry = healthData.last,
+        
+        guard var oldestHealthDataEntry = healthData.last,
               let oldestHealthDataEndDate = oldestHealthDataEntry.endDate,
               let oldestHealthDataStartDate = oldestHealthDataEntry.startDate else {
             Logger.logWarning(id, message: "HealthKit entries are empty or invalid, mapping HealthKit data to CoreData")
             return coreDataEntries
         }
-
+        
         var mergedEntries = coreDataEntries
-
+        
         if mostRecentCoreDataEndDate.isSameDay(as: oldestHealthDataStartDate) {
             Logger.logInfo(id, message: "Updating most recent CoreData entry with HealthKit data")
-            mostRecentCoreDataEntry.endDate =  oldestHealthDataEndDate
-
+            mostRecentCoreDataEntry.endDate = oldestHealthDataEndDate
+            
+            if mostRecentCoreDataEndDate.minutesBetween(and: oldestHealthDataStartDate) <= 5,
+               let mostRecentCoreDateStepEntry = mostRecentCoreDataEntry.stepEntries?.lastObject as? StepEntryMO,
+               let oldestHealthDataStepEntry = oldestHealthDataEntry.entries.first {
+                mostRecentCoreDateStepEntry.endDate = oldestHealthDataStepEntry.endDate
+                mostRecentCoreDateStepEntry.value += oldestHealthDataStepEntry.value
+                
+                oldestHealthDataEntry.entries = Array(oldestHealthDataEntry.entries.dropFirst())
+            }
+            if mostRecentCoreDataEndDate.minutesBetween(and: oldestHealthDataStartDate) > 5,
+               let mostRecentCoreDateStepEntry = mostRecentCoreDataEntry.stepEntries?.lastObject as? StepEntryMO,
+               let oldestHealthDataStepEntry = oldestHealthDataEntry.entries.first {
+                let placeholderStepEntry = HealthData.ActivityEntry(startDate: mostRecentCoreDateStepEntry.endDate!, endDate: oldestHealthDataStepEntry.startDate, value: 0, unit: mostRecentCoreDateStepEntry.unit!)
+                
+                oldestHealthDataEntry.entries.insert(placeholderStepEntry, at: 0)
+            }
+            
             let newStepEntries = mapStepEntriesToCoreData(oldestHealthDataEntry.entries, parent: mostRecentCoreDataEntry, context: context)
             mostRecentCoreDataEntry.addToStepEntries(NSOrderedSet(array: newStepEntries))
-
+            
             let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {
                 Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
@@ -144,7 +169,7 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
             let newStepEntries = mapHealthKitToCoreData(healthData, context: context)
             mergedEntries.insert(contentsOf: newStepEntries, at: 0)
         }
-
+        
         Logger.logInfo(id, message: "Merge process completed")
         return mergedEntries
     }

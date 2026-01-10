@@ -21,19 +21,8 @@ class HealthKitSource: HealthKitSourceProtocol {
     
     func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, from startDate: Date, to endDate: Date? = nil) async throws -> [T.HealthDataType] {
        switch factory.id {
-       case .workouts, .sleep, .weight:
+       case .steps, .calories, .workouts, .sleep, .weight: // TODO: retirer switch
            guard let manager = factory.createSampleQueryManager(
-               for: healthStore,
-               from: startDate,
-               to: endDate
-           ) else {
-               throw HealthKitError.healthKitManagerInitializationFailure
-           }
-               
-           return try await manager.fetchData()
-           
-       case .steps, .calories:
-           guard let manager = factory.createStatisticsQueryManager(
                for: healthStore,
                from: startDate,
                to: endDate

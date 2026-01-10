@@ -16,20 +16,31 @@ class HealthDashboardViewModel: ObservableObject {
         case loaded
         case error(Error)
     }
-    
+
     @Published var healthMetrics = HealthMetrics()
-    
+
     private let repository: HealthRepositoryProtocol
     private let authorizationManager: HealthKitAuthorizationManager
+    private var syncTask: Task<Void, Never>?
 
     init(repository: HealthRepositoryProtocol, authorizationManager: HealthKitAuthorizationManager) {
         self.repository = repository
         self.authorizationManager = authorizationManager
     }
-    
+
+    deinit {
+        syncTask?.cancel()
+    }
+
+    func stopSync() {
+        syncTask?.cancel()
+        syncTask = nil
+    }
+
     func initialize() {
         Task { [weak self] in
             guard let self = self else { return }
+            //repository.clearApp()
             do {
                 try await self.authorizationManager.requestAuthorization()
                 await self.loadAndSyncData()
@@ -58,22 +69,21 @@ class HealthDashboardViewModel: ObservableObject {
         do {
             let localData = try await repository.fetchCoreData(factory)
             Logger.logInfo(factory.id, message: "Successfully loaded local data from the repository.")
-            
-            await MainActor.run {
-                healthMetrics.set(factory.id, items: localData)
-                Logger.logInfo(factory.id, message: "Local data has been successfully displayed.")
-            }
-            
+
+            healthMetrics.set(factory.id, items: localData)
+            Logger.logInfo(factory.id, message: "Local data has been successfully displayed.")
         } catch {
             Logger.logError(factory.id, error: error)
         }
     }
     
     private func syncAllHealthData() async {
-        Task.detached { [weak self] in
-            guard let self = self else { return }
-            
-            while true {
+        syncTask?.cancel()
+
+        syncTask = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let self = self else { return }
+
                 await withTaskGroup(of: Void.self) { group in
                     for type in HealthMetricType.allCases {
                         group.addTask {
@@ -81,7 +91,12 @@ class HealthDashboardViewModel: ObservableObject {
                         }
                     }
                 }
-                try? await Task.sleep(nanoseconds: AppConstants.Duration.rateLimitSleep * 1_000_000_000)
+
+                do {
+                    try await Task.sleep(nanoseconds: AppConstants.Duration.rateLimitSleep * 1_000_000_000)
+                } catch {
+                    return
+                }
             }
         }
     }
@@ -89,11 +104,9 @@ class HealthDashboardViewModel: ObservableObject {
     private func syncHealthData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async {
         do {
             let updatedData = try await repository.syncData(factory)
-            
-            if (!updatedData.isEmpty) {
-                await MainActor.run {
-                    healthMetrics.set(factory.id, items: updatedData)
-                }
+
+            if !updatedData.isEmpty {
+                healthMetrics.set(factory.id, items: updatedData)
             }
         } catch {
             Logger.logError(factory.id, error: error)

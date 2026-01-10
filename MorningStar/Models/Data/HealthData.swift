@@ -7,7 +7,7 @@
 
 import Foundation
 import HealthKit
-import SwiftUICore
+import SwiftUI
 
 typealias WeightPeriod = PeriodEntry<HealthData.WeightEntry>
 typealias CaloriesPeriod = PeriodEntry<HealthData.ActivityEntry>

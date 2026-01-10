@@ -41,12 +41,13 @@ class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, I
     var currentDateLabel: DateRepresentation {
         .multiple(
             periods[index]
-                .dailyWorkouts
-                .map { workoutPhases in
-                    if let startDate = workoutPhases.startDate {
-                        return dateFormatter.string(from: startDate)
-                    } else {
-                        return "???"
+                .dailyWorkouts.flatMap { dailyWorkout in
+                    dailyWorkout.workouts.map { workout in
+                        if let startDate = workout.startDate {
+                            return dateFormatter.string(from: startDate)
+                        } else {
+                            return "???"
+                        }
                     }
                 }
         )
@@ -71,7 +72,7 @@ class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, I
         ) * 10
     }
     
-    var data: ChartData { ChartData.empty }
+    var data: [ChartData] { [] }
     
     var currentValueLabel: String { "" }
     

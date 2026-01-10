@@ -30,6 +30,11 @@ extension Date {
         let timeInterval = endDate.timeIntervalSince(self)
         return Int(timeInterval / 3600)
     }
+    
+    func minutesBetween(and endDate: Date) -> Int {
+        let timeInterval = endDate.timeIntervalSince(self)
+        return Int(timeInterval / 60)
+    }
 }
 
 

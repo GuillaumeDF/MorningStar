@@ -8,11 +8,11 @@
 import Foundation
 
 struct ChartData {
-    let values: [Double]
+    let value: Double
     let startDate: Date
     let endDate: Date
 
-    static let empty = ChartData(values: [], startDate: Date(), endDate: Date())
+    static let empty = ChartData(value: 0, startDate: .distantPast, endDate: .distantPast)
 }
 
 class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplayable, PeriodSelectable  {
@@ -54,18 +54,13 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
         periods[index].entries.first?.unit ?? "?"
     }
     
-    var data: ChartData {
-        guard let startDate = currentPeriod.startDate,
-                let endDate = currentPeriod.endDate else {
-            Logger.logError(message: "Could not extract startDate or endDate from currentPeriod")
-            return ChartData.empty
+    var data: [ChartData] {
+        periods[index].entries.compactMap { entry in
+            guard let value = entry.value as? Double else {
+                return nil
+            }
+            return ChartData(value: value, startDate: entry.startDate, endDate: entry.endDate)
         }
-        
-        return ChartData(
-            values: fillGapsWithZeros(),
-            startDate: startDate,
-            endDate: endDate
-        )
     }
     
     func selectPreviousPeriod() {
@@ -103,7 +98,7 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
             }
         }
         
-        let totalCurrentEntries = data.values.reduce(0, +)
+        let totalCurrentEntries = data.map { $0.value }.reduce(0, +)
         
         return totalPreviousEntries > totalCurrentEntries ? .down : .up
     }

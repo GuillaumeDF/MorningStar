@@ -240,7 +240,7 @@ extension StepPeriodTestData {
         entries: [
             HealthData.ActivityEntry(
                 id: UUID(uuidString: "D477DD88-005B-4198-ADA9-53F73C203DC2")!,
-                startDate: formatter.date(from: "2025-02-14T18:00:00Z")!,
+                startDate: formatter.date(from: "2025-02-14T16:01:00Z")!,
                 endDate: formatter.date(from: "2025-02-14T19:00:00Z")!,
                 value: 340.2945384587494,
                 unit: "count"

@@ -10,6 +10,7 @@ import Foundation
 protocol HealthRepositoryProtocol {
     func fetchCoreData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType]
     func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType]
+    func clearApp()
 }
 
 class HealthRepository: HealthRepositoryProtocol {
@@ -29,6 +30,11 @@ class HealthRepository: HealthRepositoryProtocol {
         self.healthKitSource = healthKitSource
         self.syncStrategy = syncStrategy
         self.syncStorage = syncStorage
+    }
+    
+    func clearApp() {
+        syncStorage.clearSyncHistory()
+        coreDataSource.deleteAllEntities()
     }
     
     func fetchCoreData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType] {

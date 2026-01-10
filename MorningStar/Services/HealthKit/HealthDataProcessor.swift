@@ -160,7 +160,76 @@ struct HealthDataProcessor {
         if !currentWeekDailyGroups.dailyWorkouts.isEmpty {
             weeklyGroups.append(currentWeekDailyGroups)
         }
-
+        
         return weeklyGroups
+    }
+}
+
+extension HealthDataProcessor {
+    static func groupActivitiesByDay(from samples: [HKSample], unit: HKUnit) -> [PeriodEntry<HealthData.ActivityEntry>] {
+        let calendar = Calendar.current
+        var dailyActivities: [PeriodEntry<HealthData.ActivityEntry>] = []
+        var currentDayActivities: [HealthData.ActivityEntry] = []
+        var currentDay: Date?
+        let inactivityThreshold: TimeInterval = 5 * 60 // 5 minutes
+        
+        for sample in samples {
+            guard let quantitySample = sample as? HKQuantitySample else { continue }
+            guard let device = sample.device, // TODO: A refaire
+                  let model = device.model,
+                  model.contains("Watch") else {
+                continue
+            }
+            let day = calendar.startOfDay(for: quantitySample.startDate)
+            
+            if currentDay != day {
+                if !currentDayActivities.isEmpty {
+                    dailyActivities.insert(PeriodEntry(entries: currentDayActivities), at: 0)
+                }
+                currentDay = day
+                currentDayActivities = []
+            }
+            
+            let entry = HealthData.ActivityEntry(
+                startDate: quantitySample.startDate,
+                endDate: quantitySample.endDate,
+                value: quantitySample.quantity.doubleValue(for: unit),
+                unit: unit.unitString
+            )
+            
+            if let lastEntry = currentDayActivities.last {
+                let timeDifference = entry.startDate.timeIntervalSince(lastEntry.endDate)
+                if timeDifference <= inactivityThreshold{
+                    // Fusionner avec la dernière entrée
+                    let mergedEntry = HealthData.ActivityEntry(
+                        startDate: lastEntry.startDate,
+                        endDate: entry.endDate,
+                        value: lastEntry.value + entry.value,
+                        unit: unit.unitString
+                    )
+                    currentDayActivities[currentDayActivities.count - 1] = mergedEntry
+                } else {
+                    // Ajouter une entrée avec 0 pas pour la période d'inactivité
+                    if timeDifference > inactivityThreshold {
+                        let inactivityEntry = HealthData.ActivityEntry(
+                            startDate: lastEntry.endDate,
+                            endDate: entry.startDate,
+                            value: 0,
+                            unit: unit.unitString
+                        )
+                        currentDayActivities.append(inactivityEntry)
+                    }
+                    currentDayActivities.append(entry)
+                }
+            } else {
+                currentDayActivities.append(entry)
+            }
+        }
+        
+        if !currentDayActivities.isEmpty {
+            dailyActivities.insert(PeriodEntry(entries: currentDayActivities), at: 0)
+        }
+        
+        return dailyActivities
     }
 }

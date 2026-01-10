@@ -11,6 +11,6 @@ protocol ActivityDataProvider: ObservableObject {
     associatedtype EntryType
     var periods: [EntryType] { get set }
     var currentPeriod: EntryType { get }
-    var data: ChartData { get }
+    var data: [ChartData] { get }
     var isEmpty: Bool { get }
 }

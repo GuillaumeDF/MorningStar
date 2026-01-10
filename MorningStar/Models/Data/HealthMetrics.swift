@@ -5,7 +5,7 @@
 //  Created by Guillaume Djaider Fornari on 04/02/2025.
 //
 
-import SwiftUICore
+import SwiftUI
 
 enum HealthMetricType: CaseIterable, CustomStringConvertible {
     case steps

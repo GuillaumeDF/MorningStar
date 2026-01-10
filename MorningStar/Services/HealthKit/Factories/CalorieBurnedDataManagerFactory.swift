@@ -34,19 +34,7 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
             limit: HKObjectQueryNoLimit,
             sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
         ) { samples in
-            let activities = samples.compactMap { sample -> HealthData.ActivityEntry? in
-                guard let quantitySample = sample as? HKQuantitySample else { return nil }
-                let caloriesBurned = quantitySample.quantity.doubleValue(for: HKUnit.kilocalorie())
-                
-                return HealthData.ActivityEntry(
-                    startDate: quantitySample.startDate,
-                    endDate: quantitySample.endDate,
-                    value: caloriesBurned,
-                    unit: HKUnit.kilocalorie().unitString
-                )
-            }
-            
-            return [PeriodEntry(entries: activities)]
+            HealthDataProcessor.groupActivitiesByDay(from: samples, unit: HKUnit.kilocalorie())
         }
         
         return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
@@ -64,6 +52,31 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
             options: .cumulativeSum
         ) { statisticsCollection in
             HealthDataProcessor.groupActivitiesByDay(for: statisticsCollection, from: startDate, to: endDate ?? Date(), unit: HKUnit.kilocalorie())
+        }
+        
+        return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
+    }
+    
+    static func createSampleQueryManagerWithoutSort(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date?) -> HealthDataManager<SampleQueryDescriptor<[CaloriesPeriod]>>? {
+        let queryDescriptor = SampleQueryDescriptor<[CaloriesPeriod]>(
+            sampleType: HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!,
+            predicate: HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [.strictStartDate]),
+            limit: HKObjectQueryNoLimit,
+            sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
+        ) { samples in
+            let activities = samples.compactMap { sample -> HealthData.ActivityEntry? in
+                guard let quantitySample = sample as? HKQuantitySample else { return nil }
+                let caloriesBurned = quantitySample.quantity.doubleValue(for: HKUnit.kilocalorie())
+                
+                return HealthData.ActivityEntry(
+                    startDate: quantitySample.startDate,
+                    endDate: quantitySample.endDate,
+                    value: caloriesBurned,
+                    unit: HKUnit.kilocalorie().unitString
+                )
+            }
+            
+            return [PeriodEntry(entries: activities)]
         }
         
         return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
@@ -136,23 +149,39 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
             Logger.logWarning(id, message: "CoreData entries are empty or invalid, mapping HealthKit data to CoreData")
             return mapHealthKitToCoreData(healthData, context: context)
         }
-
-        guard let oldestHealthDataEntry = healthData.last,
+        
+        guard var oldestHealthDataEntry = healthData.last,
               let oldestHealthDataEndDate = oldestHealthDataEntry.endDate,
               let oldestHealthDataStartDate = oldestHealthDataEntry.startDate else {
             Logger.logWarning(id, message: "HealthKit entries are empty or invalid, mapping HealthKit data to CoreData")
             return coreDataEntries
         }
-
+        
         var mergedEntries = coreDataEntries
-
+        
         if mostRecentCoreDataEndDate.isSameDay(as: oldestHealthDataStartDate) {
             Logger.logInfo(id, message: "Updating most recent CoreData entry with HealthKit data")
-            mostRecentCoreDataEntry.endDate =  oldestHealthDataEndDate
-
+            mostRecentCoreDataEntry.endDate = oldestHealthDataEndDate
+            
+            if mostRecentCoreDataEndDate.minutesBetween(and: oldestHealthDataStartDate) <= 5, //TODO: Constante
+               let mostRecentCoreDateCalorieEntry = mostRecentCoreDataEntry.calorieEntries?.lastObject as? CalorieEntryMO,
+               let oldestHealthDataCalorieEntry = oldestHealthDataEntry.entries.first {
+                mostRecentCoreDateCalorieEntry.endDate = oldestHealthDataCalorieEntry.endDate
+                mostRecentCoreDateCalorieEntry.value += oldestHealthDataCalorieEntry.value
+                
+                oldestHealthDataEntry.entries = Array(oldestHealthDataEntry.entries.dropFirst())
+            }
+            if mostRecentCoreDataEndDate.minutesBetween(and: oldestHealthDataStartDate) > 5,
+               let mostRecentCoreDateCalorieEntry = mostRecentCoreDataEntry.calorieEntries?.lastObject as? CalorieEntryMO,
+               let oldestHealthDataCalorieEntry = oldestHealthDataEntry.entries.first {
+                let placeholderCalorieEntry = HealthData.ActivityEntry(startDate: mostRecentCoreDateCalorieEntry.endDate!, endDate: oldestHealthDataCalorieEntry.startDate, value: 0, unit: mostRecentCoreDateCalorieEntry.unit!) // TODO: Déballage non optionel
+                
+                oldestHealthDataEntry.entries.insert(placeholderCalorieEntry, at: 0)
+            }
+            
             let newCalorieEntries = mapCalorieEntriesToCoreData(oldestHealthDataEntry.entries, parent: mostRecentCoreDataEntry, context: context)
             mostRecentCoreDataEntry.addToCalorieEntries(NSOrderedSet(array: newCalorieEntries))
-
+            
             let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {
                 Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
@@ -164,7 +193,7 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
             let newCalorieEntries = mapHealthKitToCoreData(healthData, context: context)
             mergedEntries.insert(contentsOf: newCalorieEntries, at: 0)
         }
-
+        
         Logger.logInfo(id, message: "Merge process completed")
         return mergedEntries
     }

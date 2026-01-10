@@ -28,6 +28,7 @@
 		F04A78B82C6647C100E8FB1C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B72C6647C100E8FB1C /* Constants.swift */; };
 		F04A78BA2C664A3000E8FB1C /* MSLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78B92C664A3000E8FB1C /* MSLogo.swift */; };
 		F04A78BC2C665D3300E8FB1C /* MSTodayDateTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */; };
+		F04CF6BD2D662C7F000F61EB /* ActivityGroupingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04CF6BC2D662C7F000F61EB /* ActivityGroupingTests.swift */; };
 		F0512F052C85107900FA033F /* HealthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F042C85107900FA033F /* HealthData.swift */; };
 		F0512F072C85109A00FA033F /* HealthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F062C85109A00FA033F /* HealthViewModel.swift */; };
 		F0512F0F2C8513D100FA033F /* IntersectionPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0512F082C8513D100FA033F /* IntersectionPoint.swift */; };
@@ -43,6 +44,7 @@
 		F05330442C6AA58200F628C5 /* MSImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330432C6AA58200F628C5 /* MSImage.swift */; };
 		F05330462C6AACD100F628C5 /* MSVerticalSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */; };
 		F053CF6D2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F053CF6C2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift */; };
+		F05D0A492D68FF87006706FF /* StepDataManagerFactoryTests2.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05D0A482D68FF7D006706FF /* StepDataManagerFactoryTests2.swift */; };
 		F076E42C2C7E37DF0080BA83 /* MSThemeToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E42B2C7E37DF0080BA83 /* MSThemeToggleView.swift */; };
 		F076E42F2C7E37F30080BA83 /* MSThemeToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E42E2C7E37F30080BA83 /* MSThemeToggleButton.swift */; };
 		F076E4312C7E386C0080BA83 /* ColorSheme+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */; };
@@ -131,6 +133,7 @@
 		F04A78B72C6647C100E8FB1C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F04A78B92C664A3000E8FB1C /* MSLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSLogo.swift; sourceTree = "<group>"; };
 		F04A78BB2C665D3300E8FB1C /* MSTodayDateTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSTodayDateTitle.swift; sourceTree = "<group>"; };
+		F04CF6BC2D662C7F000F61EB /* ActivityGroupingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityGroupingTests.swift; sourceTree = "<group>"; };
 		F0512F042C85107900FA033F /* HealthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthData.swift; sourceTree = "<group>"; };
 		F0512F062C85109A00FA033F /* HealthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthViewModel.swift; sourceTree = "<group>"; };
 		F0512F082C8513D100FA033F /* IntersectionPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntersectionPoint.swift; sourceTree = "<group>"; };
@@ -147,6 +150,7 @@
 		F05330432C6AA58200F628C5 /* MSImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSImage.swift; sourceTree = "<group>"; };
 		F05330452C6AACD100F628C5 /* MSVerticalSeparator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSVerticalSeparator.swift; sourceTree = "<group>"; };
 		F053CF6C2C6B968D000E2EFD /* MSDashboardHeaderMetricView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSDashboardHeaderMetricView.swift; sourceTree = "<group>"; };
+		F05D0A482D68FF7D006706FF /* StepDataManagerFactoryTests2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepDataManagerFactoryTests2.swift; sourceTree = "<group>"; };
 		F076E42B2C7E37DF0080BA83 /* MSThemeToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeToggleView.swift; sourceTree = "<group>"; };
 		F076E42E2C7E37F30080BA83 /* MSThemeToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSThemeToggleButton.swift; sourceTree = "<group>"; };
 		F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ColorSheme+Theme.swift"; sourceTree = "<group>"; };
@@ -266,12 +270,14 @@
 		F02581942C62C293006CB2E6 /* MorningStarTests */ = {
 			isa = PBXGroup;
 			children = (
+				F05D0A482D68FF7D006706FF /* StepDataManagerFactoryTests2.swift */,
 				F02581952C62C293006CB2E6 /* MorningStarTests.swift */,
 				F02755772D4C3334000B3524 /* StepDataManagerFactoryTests.swift */,
 				F02755792D4D7ADB000B3524 /* CalorieDataManagerFactoryTests.swift */,
 				F027557B2D4D80E3000B3524 /* WeightDataManagerFactoryTests.swift */,
 				F027557D2D4D9E3A000B3524 /* SleepDataManagerFactoryTests.swift */,
 				F027557F2D4E6953000B3524 /* WorkoutDataManagerFactoryTests.swift */,
+				F04CF6BC2D662C7F000F61EB /* ActivityGroupingTests.swift */,
 			);
 			path = MorningStarTests;
 			sourceTree = "<group>";
@@ -810,11 +816,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				F02755782D4C3334000B3524 /* StepDataManagerFactoryTests.swift in Sources */,
+				F04CF6BD2D662C7F000F61EB /* ActivityGroupingTests.swift in Sources */,
 				F027557E2D4D9E3A000B3524 /* SleepDataManagerFactoryTests.swift in Sources */,
 				F02755802D4E6953000B3524 /* WorkoutDataManagerFactoryTests.swift in Sources */,
 				F027557A2D4D7ADB000B3524 /* CalorieDataManagerFactoryTests.swift in Sources */,
 				F027557C2D4D80E3000B3524 /* WeightDataManagerFactoryTests.swift in Sources */,
 				F02581962C62C293006CB2E6 /* MorningStarTests.swift in Sources */,
+				F05D0A492D68FF87006706FF /* StepDataManagerFactoryTests2.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
