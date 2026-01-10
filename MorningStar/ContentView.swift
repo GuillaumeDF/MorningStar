@@ -13,16 +13,17 @@ private enum Constants {
 }
 
 struct ContentView: View {
-    @StateObject private var viewModel = HealthDashboardFactory.makeViewModel()
-    
+    @State private var viewModel = HealthDashboardFactory.makeViewModel()
+
     var body: some View {
+        @Bindable var viewModel = viewModel
         ZStack {
             Color.backgroundColor.edgesIgnoringSafeArea(.all)
             GeometryReader { geometry in
                 VStack {
                     HeaderView()
                         .frame(height: geometry.size.height * Constants.headerHeight)
-                    
+
                     DashboardView(healthMetrics: $viewModel.healthMetrics)
                         .frame(height: geometry.size.height * Constants.dashboardHeight)
                 }

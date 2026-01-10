@@ -16,17 +16,16 @@ struct MSLineChartCardView<T: HealthEntry>: View {
     let title: String
     let arrowDirection: ArrowDirection
     let backgroundColor: Color
-    
-    @ObservedObject private var viewModel: LineChartViewModel<T>
+    var viewModel: LineChartViewModel<T>
     @State private var sliderPosition: CGFloat = 0.5
-    
-     init(imageName: String, title: String, viewModel: LineChartViewModel<T>, backgroundColor: Color, arrowDirection: ArrowDirection) {
-         self.imageName = imageName
-         self.title = title
-         self.backgroundColor = backgroundColor
-         self.arrowDirection = arrowDirection
-         _viewModel = ObservedObject(wrappedValue: viewModel)
-     }
+
+    init(imageName: String, title: String, viewModel: LineChartViewModel<T>, backgroundColor: Color, arrowDirection: ArrowDirection) {
+        self.imageName = imageName
+        self.title = title
+        self.backgroundColor = backgroundColor
+        self.arrowDirection = arrowDirection
+        self.viewModel = viewModel
+    }
     
     var body: some View {
         Group {

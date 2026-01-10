@@ -26,17 +26,16 @@ private enum Constants {
 
 struct MSStackedChart: View {
     var stackWidth: CGFloat
-    
-    @ObservedObject private var viewModel: WorkoutStackedChartViewModel
-    
+    @Bindable var viewModel: WorkoutStackedChartViewModel
+
     init(
         viewModel: WorkoutStackedChartViewModel,
         stackWidth: CGFloat = Constants.Size.defaultStackWidth
     ) {
-        _viewModel = ObservedObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
         self.stackWidth = stackWidth
     }
-    
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             YAxisLabelsAndGridLines(
@@ -45,7 +44,7 @@ struct MSStackedChart: View {
                 trailingPadding: Constants.Spacing.trailingPadding
             )
             .padding(.bottom, Constants.Size.xAxisLabelHeight)
-            
+
             TabView(selection: $viewModel.index) {
                 ForEach(Array(viewModel.periods.enumerated()), id: \.offset) { index, weeklyWorkout in
                     ZStack {

@@ -17,10 +17,10 @@ struct IntensitySegment: Hashable {
 }
 
 struct MSStackedChartCardView: View {
-    @ObservedObject private var viewModel: WorkoutStackedChartViewModel
-    
+    @State private var viewModel: WorkoutStackedChartViewModel
+
     init(workoutHistory: [WeeklyWorkouts]) {
-        _viewModel = ObservedObject(wrappedValue: WorkoutStackedChartViewModel(workoutHistory: workoutHistory))
+        _viewModel = State(wrappedValue: WorkoutStackedChartViewModel(workoutHistory: workoutHistory))
     }
     
     var body: some View {
