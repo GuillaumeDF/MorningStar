@@ -26,26 +26,26 @@ class ActivityLineChartViewModel: LineChartViewModel<HealthData.ActivityEntry> {
     
     override var data: [ChartData] {
         var mappedData = super.data
-        
+
         guard let startData = mappedData.first?.startDate,
               let endData = mappedData.last?.endDate else {
             return mappedData
         }
-        
+
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: startData)
         let endOfDay = min(startOfDay.addingTimeInterval(24 * 60 * 60), Date())
-        
+
         if startData > startOfDay {
             let fillerStart = ChartData(value: 0.0, startDate: startOfDay, endDate: startData)
-            mappedData.insert(fillerStart, at: 0)
+            mappedData = [fillerStart] + mappedData
         }
-        
+
         if endData < endOfDay {
             let fillerEnd = ChartData(value: 0.0, startDate: endData, endDate: endOfDay)
             mappedData.append(fillerEnd)
         }
-        
+
         return mappedData
     }
     

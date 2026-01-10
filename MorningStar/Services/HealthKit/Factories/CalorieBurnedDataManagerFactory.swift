@@ -158,42 +158,42 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
         }
         
         var mergedEntries = coreDataEntries
-        
+
         if mostRecentCoreDataEndDate.isSameDay(as: oldestHealthDataStartDate) {
             Logger.logInfo(id, message: "Updating most recent CoreData entry with HealthKit data")
             mostRecentCoreDataEntry.endDate = oldestHealthDataEndDate
-            
+
             if mostRecentCoreDataEndDate.minutesBetween(and: oldestHealthDataStartDate) <= 5, //TODO: Constante
                let mostRecentCoreDateCalorieEntry = mostRecentCoreDataEntry.calorieEntries?.lastObject as? CalorieEntryMO,
                let oldestHealthDataCalorieEntry = oldestHealthDataEntry.entries.first {
                 mostRecentCoreDateCalorieEntry.endDate = oldestHealthDataCalorieEntry.endDate
                 mostRecentCoreDateCalorieEntry.value += oldestHealthDataCalorieEntry.value
-                
+
                 oldestHealthDataEntry.entries = Array(oldestHealthDataEntry.entries.dropFirst())
             }
             if mostRecentCoreDataEndDate.minutesBetween(and: oldestHealthDataStartDate) > 5,
                let mostRecentCoreDateCalorieEntry = mostRecentCoreDataEntry.calorieEntries?.lastObject as? CalorieEntryMO,
                let oldestHealthDataCalorieEntry = oldestHealthDataEntry.entries.first {
                 let placeholderCalorieEntry = HealthData.ActivityEntry(startDate: mostRecentCoreDateCalorieEntry.endDate!, endDate: oldestHealthDataCalorieEntry.startDate, value: 0, unit: mostRecentCoreDateCalorieEntry.unit!) // TODO: Déballage non optionel
-                
-                oldestHealthDataEntry.entries.insert(placeholderCalorieEntry, at: 0)
+
+                oldestHealthDataEntry.entries = [placeholderCalorieEntry] + oldestHealthDataEntry.entries
             }
-            
+
             let newCalorieEntries = mapCalorieEntriesToCoreData(oldestHealthDataEntry.entries, parent: mostRecentCoreDataEntry, context: context)
             mostRecentCoreDataEntry.addToCalorieEntries(NSOrderedSet(array: newCalorieEntries))
-            
+
             let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {
                 Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
                 let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
-                mergedEntries.insert(contentsOf: historicalEntries, at: 0)
+                mergedEntries = historicalEntries + mergedEntries
             }
         } else {
             Logger.logInfo(id, message: "Mapping all HealthKit data to CoreData")
             let newCalorieEntries = mapHealthKitToCoreData(healthData, context: context)
-            mergedEntries.insert(contentsOf: newCalorieEntries, at: 0)
+            mergedEntries = newCalorieEntries + mergedEntries
         }
-        
+
         Logger.logInfo(id, message: "Merge process completed")
         return mergedEntries
     }

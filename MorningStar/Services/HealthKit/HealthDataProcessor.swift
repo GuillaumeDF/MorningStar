@@ -14,18 +14,18 @@ struct HealthDataProcessor {
         var dailyActivities: [PeriodEntry<HealthData.ActivityEntry>] = []
         var currentDayActivities: [HealthData.ActivityEntry] = []
         var currentDay: Date?
-        
+
         statsCollection.enumerateStatistics(from: startDate, to: endDate) { statistics, _ in
             let day = calendar.startOfDay(for: statistics.startDate)
-            
+
             if currentDay != day {
                 if !currentDayActivities.isEmpty {
-                    dailyActivities.insert(PeriodEntry(entries: currentDayActivities), at: 0)
+                    dailyActivities.append(PeriodEntry(entries: currentDayActivities))
                 }
                 currentDay = day
                 currentDayActivities = []
             }
-            
+
             if let value = statistics.sumQuantity()?.doubleValue(for: unit) {
                 let entry = HealthData.ActivityEntry(
                     startDate: statistics.startDate,
@@ -36,45 +36,45 @@ struct HealthDataProcessor {
                 currentDayActivities.append(entry)
             }
         }
-        
+
         if !currentDayActivities.isEmpty {
-            dailyActivities.insert(PeriodEntry(entries: currentDayActivities), at: 0)
+            dailyActivities.append(PeriodEntry(entries: currentDayActivities))
         }
-        
-        return dailyActivities
+
+        return dailyActivities.reversed()
     }
     
     static func groupSleepByNight(from samples: [HKSample]) -> [PeriodEntry<HealthData.SleepEntry>] {
         var nightlyActivities: [PeriodEntry<HealthData.SleepEntry>] = []
         var currentNightActivities: [HealthData.SleepEntry] = []
         var lastSampleEndDate: Date?
-        
+
         for sample in samples {
             guard let categorySample = sample as? HKCategorySample else { continue }
-            
+
             if let lastEnd = lastSampleEndDate,
                categorySample.startDate.hoursBetween(and: lastEnd) <= AppConstants.Duration.isNightSleep {
                 if !currentNightActivities.isEmpty {
-                    nightlyActivities.insert(PeriodEntry(entries: currentNightActivities), at: 0)
+                    nightlyActivities.append(PeriodEntry(entries: currentNightActivities))
                     currentNightActivities = []
                 }
             }
-            
+
             let entry = HealthData.SleepEntry(
                 startDate: categorySample.startDate,
                 endDate: categorySample.endDate,
                 unit: HKUnit.hour().unitString
             )
-            
+
             currentNightActivities.append(entry)
             lastSampleEndDate = categorySample.endDate
         }
-        
+
         if !currentNightActivities.isEmpty {
-            nightlyActivities.insert(PeriodEntry(entries: currentNightActivities), at: 0)
+            nightlyActivities.append(PeriodEntry(entries: currentNightActivities))
         }
-        
-        return nightlyActivities
+
+        return nightlyActivities.reversed()
     }
     
     static func groupWeightsByWeek(from samples: [HKSample], unit: HKUnit) -> [PeriodEntry<HealthData.WeightEntry>] {
@@ -82,34 +82,33 @@ struct HealthDataProcessor {
         var weeklyActivities: [PeriodEntry<HealthData.WeightEntry>] = []
         var currentWeekActivities: [HealthData.WeightEntry] = []
         var currentWeek: Date?
-        
+
         for sample in samples {
             guard let quantitySample = sample as? HKQuantitySample else { continue }
             guard let week = calendar.dateInterval(of: .weekOfYear, for: quantitySample.startDate)?.start else { continue }
-            
+
             if currentWeek != week {
                 if !currentWeekActivities.isEmpty {
-                    weeklyActivities.insert(PeriodEntry(entries: currentWeekActivities), at: 0)
+                    weeklyActivities.append(PeriodEntry(entries: currentWeekActivities))
                 }
                 currentWeek = week
                 currentWeekActivities = []
             }
-            
+
             let entry = HealthData.WeightEntry(
                 startDate: sample.startDate,
                 endDate: sample.endDate,
                 value: quantitySample.quantity.doubleValue(for: unit),
                 unit: unit.unitString
-                
             )
             currentWeekActivities.append(entry)
         }
-        
+
         if !currentWeekActivities.isEmpty {
-            weeklyActivities.insert(PeriodEntry(entries: currentWeekActivities), at: 0)
+            weeklyActivities.append(PeriodEntry(entries: currentWeekActivities))
         }
-        
-        return weeklyActivities
+
+        return weeklyActivities.reversed()
     }
     
     static func sortAndgroupWorkoutsByDayAndWeek(_ workouts: [Workout]) -> [WeeklyWorkouts] {
@@ -119,48 +118,50 @@ struct HealthDataProcessor {
         var currentDayWorkouts: DailyWorkouts = DailyWorkouts(workouts: [])
         var currentWeekStart: Date?
         var currentDayStart: Date?
-        
+
         let sortedWorkouts = workouts.sorted {
             ($0.startDate ?? Date.distantPast) > ($1.startDate ?? Date.distantPast)
         }
-        
+
         for workout in sortedWorkouts {
             guard let firstPhase = workout.phaseEntries.first else { continue }
-            
+
             let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: firstPhase.startDate))!
             let dayStart = calendar.startOfDay(for: firstPhase.startDate)
-            
+
             if currentWeekStart != weekStart {
                 if !currentDayWorkouts.workouts.isEmpty {
-                    currentWeekDailyGroups.dailyWorkouts.insert(currentDayWorkouts, at: 0)
+                    currentWeekDailyGroups.dailyWorkouts.append(currentDayWorkouts)
                     currentDayWorkouts.workouts = []
                 }
                 if !currentWeekDailyGroups.dailyWorkouts.isEmpty {
+                    currentWeekDailyGroups.dailyWorkouts.reverse()
                     weeklyGroups.append(currentWeekDailyGroups)
                     currentWeekDailyGroups.dailyWorkouts = []
                 }
                 currentWeekStart = weekStart
                 currentDayStart = nil
             }
-            
+
             if currentDayStart != dayStart {
                 if !currentDayWorkouts.workouts.isEmpty {
-                    currentWeekDailyGroups.dailyWorkouts.insert(currentDayWorkouts, at: 0)
+                    currentWeekDailyGroups.dailyWorkouts.append(currentDayWorkouts)
                     currentDayWorkouts.workouts = []
                 }
                 currentDayStart = dayStart
             }
-            
+
             currentDayWorkouts.workouts.append(workout)
         }
-        
+
         if !currentDayWorkouts.workouts.isEmpty {
-            currentWeekDailyGroups.dailyWorkouts.insert(currentDayWorkouts, at: 0)
+            currentWeekDailyGroups.dailyWorkouts.append(currentDayWorkouts)
         }
         if !currentWeekDailyGroups.dailyWorkouts.isEmpty {
+            currentWeekDailyGroups.dailyWorkouts.reverse()
             weeklyGroups.append(currentWeekDailyGroups)
         }
-        
+
         return weeklyGroups
     }
 }
@@ -172,7 +173,7 @@ extension HealthDataProcessor {
         var currentDayActivities: [HealthData.ActivityEntry] = []
         var currentDay: Date?
         let inactivityThreshold: TimeInterval = 5 * 60 // 5 minutes
-        
+
         for sample in samples {
             guard let quantitySample = sample as? HKQuantitySample else { continue }
             guard let device = sample.device, // TODO: A refaire
@@ -181,25 +182,25 @@ extension HealthDataProcessor {
                 continue
             }
             let day = calendar.startOfDay(for: quantitySample.startDate)
-            
+
             if currentDay != day {
                 if !currentDayActivities.isEmpty {
-                    dailyActivities.insert(PeriodEntry(entries: currentDayActivities), at: 0)
+                    dailyActivities.append(PeriodEntry(entries: currentDayActivities))
                 }
                 currentDay = day
                 currentDayActivities = []
             }
-            
+
             let entry = HealthData.ActivityEntry(
                 startDate: quantitySample.startDate,
                 endDate: quantitySample.endDate,
                 value: quantitySample.quantity.doubleValue(for: unit),
                 unit: unit.unitString
             )
-            
+
             if let lastEntry = currentDayActivities.last {
                 let timeDifference = entry.startDate.timeIntervalSince(lastEntry.endDate)
-                if timeDifference <= inactivityThreshold{
+                if timeDifference <= inactivityThreshold {
                     // Fusionner avec la dernière entrée
                     let mergedEntry = HealthData.ActivityEntry(
                         startDate: lastEntry.startDate,
@@ -225,11 +226,11 @@ extension HealthDataProcessor {
                 currentDayActivities.append(entry)
             }
         }
-        
+
         if !currentDayActivities.isEmpty {
-            dailyActivities.insert(PeriodEntry(entries: currentDayActivities), at: 0)
+            dailyActivities.append(PeriodEntry(entries: currentDayActivities))
         }
-        
-        return dailyActivities
+
+        return dailyActivities.reversed()
     }
 }

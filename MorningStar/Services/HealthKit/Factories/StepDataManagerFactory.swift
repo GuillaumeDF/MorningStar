@@ -134,42 +134,42 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
         }
         
         var mergedEntries = coreDataEntries
-        
+
         if mostRecentCoreDataEndDate.isSameDay(as: oldestHealthDataStartDate) {
             Logger.logInfo(id, message: "Updating most recent CoreData entry with HealthKit data")
             mostRecentCoreDataEntry.endDate = oldestHealthDataEndDate
-            
+
             if mostRecentCoreDataEndDate.minutesBetween(and: oldestHealthDataStartDate) <= 5,
                let mostRecentCoreDateStepEntry = mostRecentCoreDataEntry.stepEntries?.lastObject as? StepEntryMO,
                let oldestHealthDataStepEntry = oldestHealthDataEntry.entries.first {
                 mostRecentCoreDateStepEntry.endDate = oldestHealthDataStepEntry.endDate
                 mostRecentCoreDateStepEntry.value += oldestHealthDataStepEntry.value
-                
+
                 oldestHealthDataEntry.entries = Array(oldestHealthDataEntry.entries.dropFirst())
             }
             if mostRecentCoreDataEndDate.minutesBetween(and: oldestHealthDataStartDate) > 5,
                let mostRecentCoreDateStepEntry = mostRecentCoreDataEntry.stepEntries?.lastObject as? StepEntryMO,
                let oldestHealthDataStepEntry = oldestHealthDataEntry.entries.first {
                 let placeholderStepEntry = HealthData.ActivityEntry(startDate: mostRecentCoreDateStepEntry.endDate!, endDate: oldestHealthDataStepEntry.startDate, value: 0, unit: mostRecentCoreDateStepEntry.unit!)
-                
-                oldestHealthDataEntry.entries.insert(placeholderStepEntry, at: 0)
+
+                oldestHealthDataEntry.entries = [placeholderStepEntry] + oldestHealthDataEntry.entries
             }
-            
+
             let newStepEntries = mapStepEntriesToCoreData(oldestHealthDataEntry.entries, parent: mostRecentCoreDataEntry, context: context)
             mostRecentCoreDataEntry.addToStepEntries(NSOrderedSet(array: newStepEntries))
-            
+
             let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {
                 Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
                 let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
-                mergedEntries.insert(contentsOf: historicalEntries, at: 0)
+                mergedEntries = historicalEntries + mergedEntries
             }
         } else {
             Logger.logInfo(id, message: "Mapping all HealthKit data to CoreData")
             let newStepEntries = mapHealthKitToCoreData(healthData, context: context)
-            mergedEntries.insert(contentsOf: newStepEntries, at: 0)
+            mergedEntries = newStepEntries + mergedEntries
         }
-        
+
         Logger.logInfo(id, message: "Merge process completed")
         return mergedEntries
     }

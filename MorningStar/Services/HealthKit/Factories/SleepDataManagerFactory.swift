@@ -118,26 +118,26 @@ struct SleepDataManagerFactory: HealthDataFactoryProtocol {
         }
         
         var mergedEntries = coreDataEntries
-        
+
         if mostRecentCoreDataEndDate.hoursBetween(and: oldestHealthDataStartDate) <= AppConstants.Duration.isNightSleep {
             Logger.logInfo(id, message: "Updating most recent CoreData entry with HealthKit data")
             mostRecentCoreDataEntry.endDate =  oldestHealthDataEndDate
-            
+
             let newSleepEntries = mapSleepEntriesToCoreData(oldestHealthDataEntry.entries, parent: mostRecentCoreDataEntry, context: context)
             mostRecentCoreDataEntry.addToSleepEntries(NSOrderedSet(array: newSleepEntries))
-            
+
             let historicalData = Array(healthData.dropLast())
             if !historicalData.isEmpty {
                 Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
                 let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
-                mergedEntries.insert(contentsOf: historicalEntries, at: 0)
+                mergedEntries = historicalEntries + mergedEntries
             }
         } else {
             Logger.logInfo(id, message: "Mapping all HealthKit data to CoreData")
             let newSleepEntries = mapHealthKitToCoreData(healthData, context: context)
-            mergedEntries.insert(contentsOf: newSleepEntries, at: 0)
+            mergedEntries = newSleepEntries + mergedEntries
         }
-        
+
         Logger.logInfo(id, message: "Merge process completed")
         return mergedEntries
     }

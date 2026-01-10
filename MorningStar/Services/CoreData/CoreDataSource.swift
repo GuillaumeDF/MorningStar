@@ -30,9 +30,11 @@ class CoreDataSource: CoreDataSourceProtocol {
 
     private init() {
         persistentContainer = NSPersistentContainer(name: "HealthDataModel")
-        persistentContainer.loadPersistentStores { _, error in
+        persistentContainer.loadPersistentStores { description, error in
             if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+                Logger.logError(error: CoreDataError.storeLoadFailure(error))
+            } else {
+                Logger.logInfo(message: "Persistent store loaded: \(description.url?.lastPathComponent ?? "unknown")")
             }
         }
     }

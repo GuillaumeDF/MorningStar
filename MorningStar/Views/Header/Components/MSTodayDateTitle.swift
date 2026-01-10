@@ -8,19 +8,17 @@
 import SwiftUI
 
 struct MSTodayDateTitle: View {
-    var body: some View {
-        Text(todayDate())
-            .font(.title)
-            .foregroundStyle(Color.secondaryTextColor)
-    }
-
-    func todayDate() -> String {
+    private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        
         formatter.timeZone = .current
         formatter.dateStyle = .long
-        
-        return formatter.string(from: Date())
+        return formatter
+    }()
+
+    var body: some View {
+        Text(Self.dateFormatter.string(from: Date()))
+            .font(.title)
+            .foregroundStyle(Color.secondaryTextColor)
     }
 }
 
