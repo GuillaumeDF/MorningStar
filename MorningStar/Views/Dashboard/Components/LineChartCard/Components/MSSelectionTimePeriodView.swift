@@ -30,6 +30,7 @@ struct MSSelectionTimePeriodView: View {
             Text(period.rawValue)
                 .font(.subheadline)
                 .padding(AppConstants.Padding.small)
+                .frame(minHeight: AppConstants.Accessibility.minimumTouchTarget)
                 .foregroundColor(selectedOption == period ? Color.primaryTextColor : Color.secondaryTextColor)
                 .background(selectedOption == period ? backgroundColor : Color.clear)
                 .cornerRadius(AppConstants.Radius.small)
@@ -38,6 +39,9 @@ struct MSSelectionTimePeriodView: View {
                         .stroke(Color.borderColor, lineWidth: 1)
                 )
         }
+        .accessibilityLabel("View \(period.rawValue)")
+        .accessibilityHint("Select to view metrics for this time period")
+        .accessibilityAddTraits(selectedOption == period ? .isSelected : [])
     }
 }
 

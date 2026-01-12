@@ -72,6 +72,7 @@
 		F083A0312CBF1E740085C1D0 /* HealthDataProcessor+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = F083A0302CBF1E740085C1D0 /* HealthDataProcessor+Debug.swift */; };
 		F08576522CA4180C003B2252 /* HealthData+Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08576512CA4180C003B2252 /* HealthData+Generator.swift */; };
 		F08576542CA46268003B2252 /* MSSelectionTimePeriodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08576532CA46268003B2252 /* MSSelectionTimePeriodView.swift */; };
+		F0BD91C12F158BF100BA7F4E /* HealthTypes+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0BD91C02F158BF100BA7F4E /* HealthTypes+UI.swift */; };
 		F0C7CE362D5246B8002F0CC6 /* CoreDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C7CE352D5246B8002F0CC6 /* CoreDataSource.swift */; };
 		F0C7CE382D524815002F0CC6 /* HealthKitSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C7CE372D524815002F0CC6 /* HealthKitSource.swift */; };
 		F0C7CE3A2D5248F7002F0CC6 /* HealthMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C7CE392D5248F4002F0CC6 /* HealthMetrics.swift */; };
@@ -178,6 +179,7 @@
 		F083A0302CBF1E740085C1D0 /* HealthDataProcessor+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HealthDataProcessor+Debug.swift"; sourceTree = "<group>"; };
 		F08576512CA4180C003B2252 /* HealthData+Generator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HealthData+Generator.swift"; sourceTree = "<group>"; };
 		F08576532CA46268003B2252 /* MSSelectionTimePeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSSelectionTimePeriodView.swift; sourceTree = "<group>"; };
+		F0BD91C02F158BF100BA7F4E /* HealthTypes+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HealthTypes+UI.swift"; sourceTree = "<group>"; };
 		F0C7CE352D5246B8002F0CC6 /* CoreDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataSource.swift; sourceTree = "<group>"; };
 		F0C7CE372D524815002F0CC6 /* HealthKitSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitSource.swift; sourceTree = "<group>"; };
 		F0C7CE392D5248F4002F0CC6 /* HealthMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthMetrics.swift; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 				F076E4302C7E386C0080BA83 /* ColorSheme+Theme.swift */,
 				F08576512CA4180C003B2252 /* HealthData+Generator.swift */,
 				F083A0302CBF1E740085C1D0 /* HealthDataProcessor+Debug.swift */,
+				F0BD91C02F158BF100BA7F4E /* HealthTypes+UI.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -740,6 +743,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F02581AF2C62C6F3006CB2E6 /* DashboardView.swift in Sources */,
+				F0BD91C12F158BF100BA7F4E /* HealthTypes+UI.swift in Sources */,
 				F053303F2C6A9E2C00F628C5 /* HeaderView.swift in Sources */,
 				F076E42C2C7E37DF0080BA83 /* MSThemeToggleView.swift in Sources */,
 				F0512F0F2C8513D100FA033F /* IntersectionPoint.swift in Sources */,

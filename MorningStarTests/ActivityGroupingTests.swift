@@ -10,7 +10,7 @@ import HealthKit
 @testable import MorningStar
 import CoreData
 
-class ActivityGroupingTests: XCTestCase {
+final class ActivityGroupingTests: XCTestCase {
     let unit = HKUnit.count()
      let calendar = Calendar.current
     var context: NSManagedObjectContext!
@@ -217,7 +217,8 @@ class ActivityGroupingTests: XCTestCase {
         let healthKitCore = StepDataManagerFactory.mapHealthKitToCoreData(healthKitHealth, context: context)
         let coreDataCore = StepDataManagerFactory.mapHealthKitToCoreData(coreDataHealth, context: context)
         
-        //let healthKit2 = StepDataManagerFactory.mapCoreDataToHealthKit(coreData2)
         let resultat = StepDataManagerFactory.mergeCoreDataWithHealthKitData(coreDataCore, with: healthKitHealth, in: context)
+
+        XCTAssertFalse(resultat.isEmpty, "Merged result should not be empty")
     }
  }

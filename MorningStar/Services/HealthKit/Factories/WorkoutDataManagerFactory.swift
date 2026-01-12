@@ -234,16 +234,16 @@ struct WorkoutDataManagerFactory: HealthDataFactoryProtocol {
                 mostRecentCoreDataEntry.addToDailyWorkouts(NSOrderedSet(array: newDailyWorkoutsEntries))
             }
 
-            let historicalData = Array(healthData.dropLast())
+            let historicalData = healthData.dropLast()
             if !historicalData.isEmpty {
                 Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
-                let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
-                mergedEntries = historicalEntries + mergedEntries
+                let historicalEntries = mapHealthKitToCoreData(Array(historicalData), context: context)
+                mergedEntries.insert(contentsOf: historicalEntries, at: 0)
             }
         } else {
             Logger.logInfo(id, message: "Mapping all HealthKit data to CoreData")
             let newWorkoutEntries = mapHealthKitToCoreData(healthData, context: context)
-            mergedEntries = newWorkoutEntries + mergedEntries
+            mergedEntries.insert(contentsOf: newWorkoutEntries, at: 0)
         }
 
         Logger.logInfo(id, message: "Merge process completed")

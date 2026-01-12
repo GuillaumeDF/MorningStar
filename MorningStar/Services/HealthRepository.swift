@@ -10,7 +10,7 @@ import Foundation
 protocol HealthRepositoryProtocol {
     func fetchCoreData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType]
     func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType]
-    func clearApp()
+    func clearApp() async
 }
 
 class HealthRepository: HealthRepositoryProtocol {
@@ -32,9 +32,9 @@ class HealthRepository: HealthRepositoryProtocol {
         self.syncStorage = syncStorage
     }
     
-    func clearApp() {
+    func clearApp() async {
         syncStorage.clearSyncHistory()
-        coreDataSource.deleteAllEntities()
+        await coreDataSource.deleteAllEntities()
     }
     
     func fetchCoreData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType] {
@@ -45,15 +45,15 @@ class HealthRepository: HealthRepositoryProtocol {
     }
     
     func fetchHealthKit<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType] {
-        let mostRecentDateSaved = try coreDataSource.getMostRecentDate(factory)
-        
+        let mostRecentDateSaved = try await coreDataSource.getMostRecentDate(factory)
+
         return try await healthKitSource.fetch(factory, from: mostRecentDateSaved, to: nil)
     }
     
     func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) async throws -> [T.HealthDataType] {
-        let newEntries = coreDataSource.mergeCoreDataWithHealthKitData(factory, localData: localData, with: healthKitData)
-        try coreDataSource.save()
-        
+        let newEntries = await coreDataSource.mergeCoreDataWithHealthKitData(factory, localData: localData, with: healthKitData)
+        try await coreDataSource.save()
+
         return factory.mapCoreDataToHealthKit(newEntries)
     }
 
@@ -73,7 +73,7 @@ class HealthRepository: HealthRepositoryProtocol {
             return []
         }
         
-        let dataFetched = try coreDataSource.getDataFetched(factory)
+        let dataFetched = try await coreDataSource.getDataFetched(factory)
         let newItemsMerged = try await mergeCoreDataWithHealthKitData(factory, localData: dataFetched, with: newItemsHealthKit)
         
         syncStorage.updateLastSync(for: factory.id)

@@ -5,15 +5,15 @@
 //  Created by Guillaume Djaider Fornari on 04/02/2025.
 //
 
-import SwiftUI
+import Foundation
 
-enum HealthMetricType: CaseIterable, CustomStringConvertible {
+enum HealthMetricType: CaseIterable, CustomStringConvertible, Sendable {
     case steps
     case calories
     case weight
     case sleep
     case workouts
-    
+
     var description: String {
         switch self {
         case .steps: return "steps"
@@ -23,17 +23,9 @@ enum HealthMetricType: CaseIterable, CustomStringConvertible {
         case .workouts: return "workouts"
         }
     }
-    
-    var color: Color {
-        switch self {
-        case .steps: return Color.stepColor
-        case .calories: return Color.calorieColor
-        case .weight: return Color.weightColor
-        case .sleep: return Color.blue
-        case .workouts: return Color.trainingColor
-        }
-    }
-    
+
+    // UI color property moved to HealthTypes+UI.swift for testability
+
     var debugSymbol: String {
         switch self {
         case .steps: return "👣"
@@ -43,7 +35,7 @@ enum HealthMetricType: CaseIterable, CustomStringConvertible {
         case .workouts: return "🏋️"
         }
     }
-    
+
     var healthKitFactory: any HealthDataFactoryProtocol.Type {
         switch self {
         case .steps: return StepDataManagerFactory.self

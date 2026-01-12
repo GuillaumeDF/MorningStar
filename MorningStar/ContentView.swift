@@ -31,8 +31,8 @@ struct ContentView: View {
                 .padding(AppConstants.Padding.extraLarge)
             }
         }
-        .onAppear {
-            viewModel.initialize()
+        .task {
+            await viewModel.initialize()
         }
     }
 }

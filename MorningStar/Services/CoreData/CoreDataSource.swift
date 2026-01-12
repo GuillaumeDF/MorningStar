@@ -6,27 +6,27 @@
 //
 
 import Foundation
-import CoreData
+@preconcurrency import CoreData
 
-protocol CoreDataSourceProtocol {
+protocol CoreDataSourceProtocol: Sendable {
     func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, options: CoreDataSource.SortOrder) async throws -> [T.CoreDataType]
-    func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> [T.CoreDataType]
-    func getMostRecentDate<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> Date
-    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) -> [T.CoreDataType]
-    func save() throws
-    func deleteAllEntities()
+    func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.CoreDataType]
+    func getMostRecentDate<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> Date
+    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) async -> [T.CoreDataType]
+    func save() async throws
+    func deleteAllEntities() async
 }
 
-class CoreDataSource: CoreDataSourceProtocol {
-    enum SortOrder {
+actor CoreDataSource: @preconcurrency CoreDataSourceProtocol {
+    enum SortOrder: Sendable {
         case dateAscending
         case dateDescending
     }
 
     static let shared = CoreDataSource()
-    private(set) var persistentContainer: NSPersistentContainer
+
+    private let persistentContainer: NSPersistentContainer
     private var fetchHistory: [HealthMetricType: [NSManagedObject]] = [:]
-    private let fetchHistoryLock = NSLock()
 
     private init() {
         persistentContainer = NSPersistentContainer(name: "HealthDataModel")
@@ -39,21 +39,17 @@ class CoreDataSource: CoreDataSourceProtocol {
         }
     }
 
-    var context: NSManagedObjectContext {
+    nonisolated var context: NSManagedObjectContext {
         persistentContainer.viewContext
     }
-    
-    func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> [T.CoreDataType] {
-        fetchHistoryLock.lock()
-        defer { fetchHistoryLock.unlock() }
 
+    func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> [T.CoreDataType] {
         guard let dataFetched = fetchHistory[factory.id] as? [T.CoreDataType] else {
             throw CoreDataError.unsupportedDataType
         }
-
         return dataFetched
     }
-    
+
     func getMostRecentDate<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> Date {
         let entityName = String(describing: T.CoreDataType.self)
         let fetchRequest = NSFetchRequest<T.CoreDataType>(entityName: entityName)
@@ -84,19 +80,22 @@ class CoreDataSource: CoreDataSourceProtocol {
         return resultDate
     }
 
-    
-    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) -> [T.CoreDataType] {
+    func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(
+        _ factory: T.Type,
+        localData: [T.CoreDataType],
+        with healthKitData: [T.HealthDataType]
+    ) -> [T.CoreDataType] {
         var result: [T.CoreDataType] = []
         context.performAndWait { [context] in
             result = T.mergeCoreDataWithHealthKitData(localData, with: healthKitData, in: context)
         }
         return result
     }
-    
+
     func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, options: SortOrder) throws -> [T.CoreDataType] {
         let entityName = String(describing: T.CoreDataType.self)
         let fetchRequest = NSFetchRequest<T.CoreDataType>(entityName: entityName)
-        
+
         fetchRequest.predicate = factory.predicateCoreData
 
         switch options {
@@ -105,7 +104,7 @@ class CoreDataSource: CoreDataSourceProtocol {
         case .dateDescending:
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startDate", ascending: false)]
         }
-        
+
         var results: [T.CoreDataType] = []
         var fetchError: Error?
         let factoryID = factory.id
@@ -122,16 +121,14 @@ class CoreDataSource: CoreDataSourceProtocol {
             throw error
         }
 
-        fetchHistoryLock.lock()
         fetchHistory[factoryID] = results
-        fetchHistoryLock.unlock()
 
         return results
     }
-    
+
     func save() throws {
         var saveError: Error?
-        
+
         context.performAndWait {
             if context.hasChanges {
                 do {
@@ -141,26 +138,26 @@ class CoreDataSource: CoreDataSourceProtocol {
                 }
             }
         }
-        
+
         if let error = saveError {
             throw error
         }
     }
-    
+
     func deleteAllEntities() {
         let entities = persistentContainer.managedObjectModel.entities
-        
-        entities.forEach { entity in
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity.name!)
+
+        for entity in entities {
+            guard let name = entity.name else { continue }
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: name)
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-            
+
             do {
                 try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: context)
-                print("Données supprimées pour \(entity.name!)")
+                Logger.logInfo(message: "Données supprimées pour \(name)")
             } catch {
-                print("Erreur lors de la suppression de l'entité \(entity.name!): \(error)")
+                Logger.logError(message: "Erreur lors de la suppression de l'entité \(name): \(error)")
             }
         }
     }
 }
-

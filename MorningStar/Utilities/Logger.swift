@@ -34,4 +34,14 @@ struct Logger {
         let formattedMessage = "❌  \(message)"
         print(formattedMessage)
     }
+
+    static func logInfo(message: String) {
+        let formattedMessage = "ℹ️  \(message)"
+        print(formattedMessage)
+    }
+
+    static func logWarning(message: String) {
+        let formattedMessage = "⚠️  \(message)"
+        print(formattedMessage)
+    }
 }

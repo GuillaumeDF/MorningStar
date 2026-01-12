@@ -7,7 +7,6 @@
 
 import Foundation
 import HealthKit
-import SwiftUI
 
 typealias WeightPeriod = PeriodEntry<HealthData.WeightEntry>
 typealias CaloriesPeriod = PeriodEntry<HealthData.ActivityEntry>
@@ -19,22 +18,13 @@ typealias WeeklyWorkouts = HealthData.WeeklyWorkouts
 typealias DailyWorkouts = HealthData.DailyWorkouts
 typealias Workout = HealthData.Workout
 
-enum IntensityLevel: UInt8, Hashable {
+enum IntensityLevel: UInt8, Hashable, Sendable {
     case undetermined = 0
     case low = 1
     case moderate = 2
     case high = 3
     case veryHigh = 4
-    
-    var color: Color {
-        switch self {
-        case .undetermined: return Color.undeterminedIntensityColor
-        case .low: return Color.lowIntensityColor
-        case .moderate: return Color.moderateIntensityColor
-        case .high: return Color.highIntensityColor
-        case .veryHigh: return Color.veryHighIntensityColor
-        }
-    }
+    // UI color property moved to HealthTypes+UI.swift for testability
 }
 
 protocol HealthEntry: Identifiable, Hashable {
@@ -46,7 +36,7 @@ protocol HealthEntry: Identifiable, Hashable {
     var unit: String { get }
 }
 
-struct PeriodEntry<T: HealthEntry>: Identifiable, Equatable {
+struct PeriodEntry<T: HealthEntry & Sendable>: Identifiable, Equatable, Sendable {
     let id: UUID
     var entries: [T]
     
@@ -67,7 +57,7 @@ struct PeriodEntry<T: HealthEntry>: Identifiable, Equatable {
 struct HealthData { }
 
 extension HealthData {
-    struct WeightEntry: HealthEntry {
+    struct WeightEntry: HealthEntry, Sendable {
         typealias T = Double
         
         let id: UUID
@@ -87,7 +77,7 @@ extension HealthData {
 }
 
 extension HealthData {
-    struct ActivityEntry: HealthEntry {
+    struct ActivityEntry: HealthEntry, Sendable {
         typealias T = Double
 
         let id: UUID
@@ -107,7 +97,7 @@ extension HealthData {
 }
 
 extension HealthData {
-    struct SleepEntry: HealthEntry {
+    struct SleepEntry: HealthEntry, Sendable {
         typealias T = TimeInterval
         
         let id: UUID
@@ -129,7 +119,7 @@ extension HealthData {
 }
 
 extension HealthData {
-    struct HeartRateEntry: HealthEntry {
+    struct HeartRateEntry: HealthEntry, Sendable {
         typealias T = Double
         
         let id: UUID
@@ -149,7 +139,7 @@ extension HealthData {
 }
 
 extension HealthData {
-    struct WeeklyWorkouts: Hashable {
+    struct WeeklyWorkouts: Hashable, Sendable {
         let id: UUID
         var dailyWorkouts: [DailyWorkouts]
         
@@ -167,7 +157,7 @@ extension HealthData {
         }
     }
     
-    struct DailyWorkouts: Hashable {
+    struct DailyWorkouts: Hashable, Sendable {
         let id: UUID
         var workouts: [Workout]
         
@@ -185,7 +175,7 @@ extension HealthData {
         }
     }
     
-    struct Workout: Hashable {
+    struct Workout: Hashable, Sendable {
         let id: UUID
         let type: UInt16
         var phaseEntries: [WorkoutPhaseEntry]
@@ -205,7 +195,7 @@ extension HealthData {
         }
     }
     
-    struct WorkoutPhaseEntry: HealthEntry {
+    struct WorkoutPhaseEntry: HealthEntry, Sendable {
         typealias T = IntensityLevel
         
         let id: UUID

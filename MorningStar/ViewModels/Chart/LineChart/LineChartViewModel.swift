@@ -29,14 +29,9 @@ class LineChartViewModel<T: HealthEntry>: ActivityDataProvider, ActivityDisplaya
 
     var isEmpty: Bool
 
-    let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.timeZone = .current
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-
-        return formatter
-    }()
+    var dateFormatter: DateFormatter {
+        AppConstants.DateFormatters.mediumDate
+    }
 
     init(activityPeriods: [EntryType]) {
         self.periods = activityPeriods

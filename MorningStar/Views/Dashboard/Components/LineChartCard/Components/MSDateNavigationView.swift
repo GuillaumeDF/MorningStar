@@ -42,24 +42,46 @@ struct MSDateNavigationView: View {
             Image(systemName: direction.imageName)
                 .padding(AppConstants.Padding.small)
                 .foregroundColor(Color.primaryTextColor)
+                .frame(minWidth: AppConstants.Accessibility.minimumTouchTarget, minHeight: AppConstants.Accessibility.minimumTouchTarget)
+                .contentShape(Rectangle())
                 .cornerRadius(AppConstants.Radius.medium)
                 .overlay(
                     RoundedRectangle(cornerRadius: AppConstants.Radius.medium)
                         .stroke(Color.borderColor, lineWidth: 1)
                 )
         }
+        .accessibilityLabel(direction.accessibilityLabel)
+        .accessibilityHint(direction.accessibilityHint)
     }
 }
 
 private enum NavigationDirection {
     case previous, next
-    
+
     var imageName: String {
         switch self {
         case .previous:
             return "chevron.left"
         case .next:
             return "chevron.right"
+        }
+    }
+
+    var accessibilityLabel: String {
+        switch self {
+        case .previous:
+            return "Previous period"
+        case .next:
+            return "Next period"
+        }
+    }
+
+    var accessibilityHint: String {
+        switch self {
+        case .previous:
+            return "Navigate to the previous date"
+        case .next:
+            return "Navigate to the next date"
         }
     }
 }

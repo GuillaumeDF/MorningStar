@@ -30,13 +30,9 @@ class WorkoutStackedChartViewModel: ActivityDataProvider, ActivityDisplayable, I
     private(set) var currentDateLabel: DateRepresentation = .multiple([])
     private(set) var maxTime: CGFloat = 0
 
-    let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.timeZone = .current
-        formatter.dateFormat = "dd/MM"
-
-        return formatter
-    }()
+    var dateFormatter: DateFormatter {
+        AppConstants.DateFormatters.dayMonth
+    }
 
     init(workoutHistory: [EntryType]) {
         self.periods = workoutHistory

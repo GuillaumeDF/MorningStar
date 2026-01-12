@@ -8,21 +8,24 @@
 import Foundation
 import HealthKit
 
-protocol QueryDescriptor {
-    associatedtype ResultType
-    func createQuery(completion: @escaping (Result<ResultType, Error>) -> Void) -> HKQuery
+protocol QueryDescriptor: Sendable {
+    associatedtype ResultType: Sendable
+    func createQuery(completion: @escaping @Sendable (Result<ResultType, Error>) -> Void) -> HKQuery
 }
 
-struct SampleQueryDescriptor<T>: QueryDescriptor {
+struct SampleQueryDescriptor<T: Sendable>: QueryDescriptor {
     typealias ResultType = T
-    
+
     let sampleType: HKSampleType
-    let predicate: NSPredicate?
+    nonisolated(unsafe) let predicate: NSPredicate?
     let limit: Int
-    let sortDescriptors: [NSSortDescriptor]?
-    let resultsHandler: ([HKSample]) async -> T?
-    
-    func createQuery(completion: @escaping (Result<T, Error>) -> Void) -> HKQuery {
+    nonisolated(unsafe) let sortDescriptors: [NSSortDescriptor]?
+    let resultsHandler: @Sendable ([HKSample]) async -> T?
+
+    func createQuery(completion: @escaping @Sendable (Result<T, Error>) -> Void) -> HKQuery {
+        // Capture handler before Task to avoid unsafe self capture
+        let handler = resultsHandler
+
         return HKSampleQuery(
             sampleType: sampleType,
             predicate: predicate,
@@ -32,8 +35,9 @@ struct SampleQueryDescriptor<T>: QueryDescriptor {
             if let error = error {
                 completion(.failure(HealthKitError.queryExecutionFailure(error)))
             } else if let samples = samples {
-                Task {
-                    let processedResults = await self.resultsHandler(samples)
+                // Use detached task to avoid inheriting callback's execution context
+                Task.detached {
+                    let processedResults = await handler(samples)
                     if let processedResults = processedResults {
                         completion(.success(processedResults))
                     } else {
@@ -47,17 +51,20 @@ struct SampleQueryDescriptor<T>: QueryDescriptor {
     }
 }
 
-struct StatisticsCollectionQueryDescriptor<T>: QueryDescriptor {
+struct StatisticsCollectionQueryDescriptor<T: Sendable>: QueryDescriptor {
     typealias ResultType = T
-    
+
     let quantityType: HKQuantityType
     let anchorDate: Date
     let intervalComponents: DateComponents
-    let predicate: NSPredicate?
+    nonisolated(unsafe) let predicate: NSPredicate?
     let options: HKStatisticsOptions
-    let resultsHandler: (HKStatisticsCollection) async -> T?
-    
-    func createQuery(completion: @escaping (Result<T, Error>) -> Void) -> HKQuery {
+    let resultsHandler: @Sendable (HKStatisticsCollection) async -> T?
+
+    func createQuery(completion: @escaping @Sendable (Result<T, Error>) -> Void) -> HKQuery {
+        // Capture handler before Task to avoid unsafe self capture
+        let handler = resultsHandler
+
         let query = HKStatisticsCollectionQuery(
             quantityType: quantityType,
             quantitySamplePredicate: predicate,
@@ -65,13 +72,14 @@ struct StatisticsCollectionQueryDescriptor<T>: QueryDescriptor {
             anchorDate: anchorDate,
             intervalComponents: intervalComponents
         )
-        
+
         query.initialResultsHandler = { _, results, error in
             if let error = error {
                 completion(.failure(HealthKitError.queryExecutionFailure(error)))
             } else if let statisticsCollection = results {
-                Task {
-                    let processedResults = await self.resultsHandler(statisticsCollection)
+                // Use detached task to avoid inheriting callback's execution context
+                Task.detached {
+                    let processedResults = await handler(statisticsCollection)
                     if let processedResults = processedResults {
                         completion(.success(processedResults))
                     } else {
@@ -82,7 +90,7 @@ struct StatisticsCollectionQueryDescriptor<T>: QueryDescriptor {
                 completion(.failure(HealthKitError.dataProcessingFailure))
             }
         }
-        
+
         return query
     }
 }

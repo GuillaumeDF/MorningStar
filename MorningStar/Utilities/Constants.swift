@@ -8,6 +8,33 @@
 import SwiftUI
 
 enum AppConstants {
+    enum Accessibility {
+        static let minimumTouchTarget: CGFloat = 44
+    }
+
+    enum DateFormatters {
+        static let mediumDate: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.timeZone = .current
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .none
+            return formatter
+        }()
+
+        static let dayMonth: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.timeZone = .current
+            formatter.dateFormat = "dd/MM"
+            return formatter
+        }()
+
+        static let debug: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
+            return formatter
+        }()
+    }
+
     enum Padding {
         static let extraSmall: CGFloat = 4
         static let small: CGFloat = 8

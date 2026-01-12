@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import MorningStar
 
 final class MorningStarTests: XCTestCase {
 
@@ -17,19 +18,36 @@ final class MorningStarTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    // MARK: - HealthMetricType Tests
+
+    func testHealthMetricTypeDescription() throws {
+        XCTAssertEqual(HealthMetricType.steps.description, "steps")
+        XCTAssertEqual(HealthMetricType.calories.description, "calories")
+        XCTAssertEqual(HealthMetricType.weight.description, "weight")
+        XCTAssertEqual(HealthMetricType.sleep.description, "sleep")
+        XCTAssertEqual(HealthMetricType.workouts.description, "workouts")
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
-        }
+    func testHealthMetricTypeAllCases() throws {
+        XCTAssertEqual(HealthMetricType.allCases.count, 5)
     }
 
+    // MARK: - IntensityLevel Tests
+
+    func testIntensityLevelRawValues() throws {
+        XCTAssertEqual(IntensityLevel.undetermined.rawValue, 0)
+        XCTAssertEqual(IntensityLevel.low.rawValue, 1)
+        XCTAssertEqual(IntensityLevel.moderate.rawValue, 2)
+        XCTAssertEqual(IntensityLevel.high.rawValue, 3)
+        XCTAssertEqual(IntensityLevel.veryHigh.rawValue, 4)
+    }
+
+    func testIntensityLevelFromRawValue() throws {
+        XCTAssertEqual(IntensityLevel(rawValue: 0), .undetermined)
+        XCTAssertEqual(IntensityLevel(rawValue: 1), .low)
+        XCTAssertEqual(IntensityLevel(rawValue: 2), .moderate)
+        XCTAssertEqual(IntensityLevel(rawValue: 3), .high)
+        XCTAssertEqual(IntensityLevel(rawValue: 4), .veryHigh)
+        XCTAssertNil(IntensityLevel(rawValue: 99))
+    }
 }

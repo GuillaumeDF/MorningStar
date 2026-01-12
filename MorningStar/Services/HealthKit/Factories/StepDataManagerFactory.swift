@@ -152,22 +152,22 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
                let oldestHealthDataStepEntry = oldestHealthDataEntry.entries.first {
                 let placeholderStepEntry = HealthData.ActivityEntry(startDate: mostRecentCoreDateStepEntry.endDate!, endDate: oldestHealthDataStepEntry.startDate, value: 0, unit: mostRecentCoreDateStepEntry.unit!)
 
-                oldestHealthDataEntry.entries = [placeholderStepEntry] + oldestHealthDataEntry.entries
+                oldestHealthDataEntry.entries.insert(placeholderStepEntry, at: 0)
             }
 
             let newStepEntries = mapStepEntriesToCoreData(oldestHealthDataEntry.entries, parent: mostRecentCoreDataEntry, context: context)
             mostRecentCoreDataEntry.addToStepEntries(NSOrderedSet(array: newStepEntries))
 
-            let historicalData = Array(healthData.dropLast())
+            let historicalData = healthData.dropLast()
             if !historicalData.isEmpty {
                 Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
-                let historicalEntries = mapHealthKitToCoreData(historicalData, context: context)
-                mergedEntries = historicalEntries + mergedEntries
+                let historicalEntries = mapHealthKitToCoreData(Array(historicalData), context: context)
+                mergedEntries.insert(contentsOf: historicalEntries, at: 0)
             }
         } else {
             Logger.logInfo(id, message: "Mapping all HealthKit data to CoreData")
             let newStepEntries = mapHealthKitToCoreData(healthData, context: context)
-            mergedEntries = newStepEntries + mergedEntries
+            mergedEntries.insert(contentsOf: newStepEntries, at: 0)
         }
 
         Logger.logInfo(id, message: "Merge process completed")

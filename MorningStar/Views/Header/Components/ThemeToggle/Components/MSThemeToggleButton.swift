@@ -37,7 +37,9 @@ struct MSThemeToggleButton: View {
         .blur(radius: selectedThemeMode == themeMode ? Constants.blurRadius : 0)
         .zIndex(selectedThemeMode == themeMode ? 0 : 1)
         .offset(x: themeMode == .light ? Constants.offsetLightButton : 0)
-        .accessibility(label: Text("Switch to \(themeMode.description) mode"))
+        .accessibilityLabel("Switch to \(themeMode.description) mode")
+        .accessibilityHint("Changes the app appearance to \(themeMode.description) theme")
+        .accessibilityAddTraits(selectedThemeMode == themeMode ? .isSelected : [])
     }
 }
 

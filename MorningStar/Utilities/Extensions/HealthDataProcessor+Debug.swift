@@ -9,8 +9,7 @@ import Foundation
 
 extension HealthDataProcessor {
     static func printWeeklyGroups(_ weeklyGroups: [WeeklyWorkouts]) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
+        let dateFormatter = AppConstants.DateFormatters.debug
         
         for (weekIndex, week) in weeklyGroups.enumerated() {
             print("Semaine \(weekIndex + 1)")
