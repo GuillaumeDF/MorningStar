@@ -8,11 +8,21 @@
 import Foundation
 
 class SleepLineChartViewModel: LineChartViewModel<HealthData.SleepEntry> {
+    private static let labelDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMM yyyy"
+        return formatter
+    }()
+
+    private static let timeDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter
+    }()
+
     override var currentDateLabel: DateRepresentation {
-        dateFormatter.dateFormat = "d MMM yyyy"
-        
         if let startDate = periods[index].entries.first?.startDate {
-            return .single("\(dateFormatter.string(from: startDate))")
+            return .single(Self.labelDateFormatter.string(from: startDate))
         } else {
             return .single("Aucune date")
         }
@@ -37,9 +47,6 @@ class SleepLineChartViewModel: LineChartViewModel<HealthData.SleepEntry> {
     }
     
     override func dateFormatter(_ date: Date) -> String {
-        dateFormatter.dateFormat = "HH:mm"
-        let dateString = dateFormatter.string(from: date)
-        
-        return "\(dateString)"
+        return Self.timeDateFormatter.string(from: date)
     }
 }

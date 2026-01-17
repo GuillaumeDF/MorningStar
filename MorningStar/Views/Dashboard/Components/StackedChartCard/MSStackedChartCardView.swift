@@ -20,7 +20,7 @@ struct MSStackedChartCardView: View {
     @State private var viewModel: WorkoutStackedChartViewModel
 
     init(workoutHistory: [WeeklyWorkouts]) {
-        _viewModel = State(wrappedValue: WorkoutStackedChartViewModel(workoutHistory: workoutHistory))
+        _viewModel = State(initialValue: WorkoutStackedChartViewModel(workoutHistory: workoutHistory))
     }
     
     var body: some View {

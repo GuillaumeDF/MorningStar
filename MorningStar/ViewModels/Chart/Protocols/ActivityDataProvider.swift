@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ActivityDataProvider: ObservableObject {
+protocol ActivityDataProvider {
     associatedtype EntryType
     var periods: [EntryType] { get set }
     var currentPeriod: EntryType { get }

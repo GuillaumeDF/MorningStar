@@ -162,12 +162,12 @@ struct StepDataManagerFactory: HealthDataFactoryProtocol {
             if !historicalData.isEmpty {
                 Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
                 let historicalEntries = mapHealthKitToCoreData(Array(historicalData), context: context)
-                mergedEntries.insert(contentsOf: historicalEntries, at: 0)
+                mergedEntries = historicalEntries + mergedEntries
             }
         } else {
             Logger.logInfo(id, message: "Mapping all HealthKit data to CoreData")
             let newStepEntries = mapHealthKitToCoreData(healthData, context: context)
-            mergedEntries.insert(contentsOf: newStepEntries, at: 0)
+            mergedEntries = newStepEntries + mergedEntries
         }
 
         Logger.logInfo(id, message: "Merge process completed")

@@ -186,12 +186,12 @@ struct CalorieBurnedDataManagerFactory: HealthDataFactoryProtocol {
             if !historicalData.isEmpty {
                 Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
                 let historicalEntries = mapHealthKitToCoreData(Array(historicalData), context: context)
-                mergedEntries.insert(contentsOf: historicalEntries, at: 0)
+                mergedEntries = historicalEntries + mergedEntries
             }
         } else {
             Logger.logInfo(id, message: "Mapping all HealthKit data to CoreData")
             let newCalorieEntries = mapHealthKitToCoreData(healthData, context: context)
-            mergedEntries.insert(contentsOf: newCalorieEntries, at: 0)
+            mergedEntries = newCalorieEntries + mergedEntries
         }
 
         Logger.logInfo(id, message: "Merge process completed")

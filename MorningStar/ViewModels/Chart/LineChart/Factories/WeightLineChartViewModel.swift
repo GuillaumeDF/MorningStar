@@ -8,17 +8,27 @@
 import Foundation
 
 class WeightLineChartViewModel: LineChartViewModel<HealthData.WeightEntry> {
+    private static let labelDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMM yyyy"
+        return formatter
+    }()
+
+    private static let timeDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE HH:mm"
+        return formatter
+    }()
+
     override var currentDateLabel: DateRepresentation {
-        dateFormatter.dateFormat = "d MMM yyyy"
-        
         guard let startDate = periods[index].entries.first?.startDate,
               let endDate = periods[index].entries.last?.startDate else {
             return .single("Aucune date")
         }
-        
+
         return .single(startDate == endDate
-                       ? dateFormatter.string(from: startDate)
-                       : "\(dateFormatter.string(from: startDate)) - \(dateFormatter.string(from: endDate))")
+                       ? Self.labelDateFormatter.string(from: startDate)
+                       : "\(Self.labelDateFormatter.string(from: startDate)) - \(Self.labelDateFormatter.string(from: endDate))")
     }
     
     override var currentValueLabel: String {
@@ -43,9 +53,6 @@ class WeightLineChartViewModel: LineChartViewModel<HealthData.WeightEntry> {
     }
     
     override func dateFormatter(_ date: Date) -> String {
-        dateFormatter.dateFormat = "EEEE HH:mm"
-        let dateString = dateFormatter.string(from: date)
-        
-        return "\(dateString)"
+        return Self.timeDateFormatter.string(from: date)
     }
 }

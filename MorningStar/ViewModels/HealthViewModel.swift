@@ -30,6 +30,12 @@ final class HealthDashboardViewModel {
         self.authorizationManager = authorizationManager
     }
 
+    deinit {
+        MainActor.assumeIsolated {
+            syncTask?.cancel()
+        }
+    }
+
     func stopSync() {
         syncTask?.cancel()
         syncTask = nil

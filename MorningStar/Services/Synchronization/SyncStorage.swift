@@ -13,6 +13,8 @@ protocol SyncStorage: Sendable {
     func clearSyncHistory()
 }
 
+/// Thread-safe storage for sync timestamps.
+/// Uses @unchecked Sendable because UserDefaults is documented as thread-safe by Apple.
 final class LastSyncStorage: SyncStorage, @unchecked Sendable {
     private let userDefaults: UserDefaults
     private let keyPrefix = "healthSync"
