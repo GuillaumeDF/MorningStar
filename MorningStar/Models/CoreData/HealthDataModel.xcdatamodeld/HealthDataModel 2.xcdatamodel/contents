@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D70" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="2">
+    <entity name="HealthEntryMO" representedClassName="HealthEntryMO" isAbstract="YES" syncable="YES" codeGenerationType="class">
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="unit" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="StepEntryMO" representedClassName="StepEntryMO" parentEntity="HealthEntryMO" syncable="YES" codeGenerationType="class">
+        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="CalorieEntryMO" representedClassName="CalorieEntryMO" parentEntity="HealthEntryMO" syncable="YES" codeGenerationType="class">
+        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="WeightEntryMO" representedClassName="WeightEntryMO" parentEntity="HealthEntryMO" syncable="YES" codeGenerationType="class">
+        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="SleepEntryMO" representedClassName="SleepEntryMO" parentEntity="HealthEntryMO" syncable="YES" codeGenerationType="class">
+    </entity>
+    <entity name="HeartRateEntryMO" representedClassName="HeartRateEntryMO" parentEntity="HealthEntryMO" syncable="YES" codeGenerationType="class">
+        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="WorkoutMO" representedClassName="WorkoutMO" parentEntity="HealthEntryMO" syncable="YES" codeGenerationType="class">
+        <attribute name="type" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="phases" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="WorkoutPhaseEntryMO" inverseName="workout" inverseEntity="WorkoutPhaseEntryMO"/>
+    </entity>
+    <entity name="WorkoutPhaseEntryMO" representedClassName="WorkoutPhaseEntryMO" parentEntity="HealthEntryMO" syncable="YES" codeGenerationType="class">
+        <attribute name="averageHeartRate" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="caloriesBurned" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="value" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="workout" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WorkoutMO" inverseName="phases" inverseEntity="WorkoutMO"/>
+    </entity>
+</model>

@@ -73,7 +73,7 @@ class HealthRepository: HealthRepositoryProtocol {
             return []
         }
         
-        let dataFetched = try await coreDataSource.getDataFetched(factory)
+        let dataFetched = try await coreDataSource.fetch(factory, options: .dateAscending)
         let newItemsMerged = try await mergeCoreDataWithHealthKitData(factory, localData: dataFetched, with: newItemsHealthKit)
         
         await syncStorage.updateLastSync(for: factory.id)

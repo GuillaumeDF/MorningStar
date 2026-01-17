@@ -10,7 +10,6 @@ import Foundation
 
 protocol CoreDataSourceProtocol: Sendable {
     func fetch<T: HealthDataFactoryProtocol>(_ factory: T.Type, options: CoreDataSource.SortOrder) async throws -> [T.CoreDataType]
-    func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.CoreDataType]
     func getMostRecentDate<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> Date
     func mergeCoreDataWithHealthKitData<T: HealthDataFactoryProtocol>(_ factory: T.Type, localData: [T.CoreDataType], with healthKitData: [T.HealthDataType]) async -> [T.CoreDataType]
     func save() async throws
@@ -26,10 +25,14 @@ actor CoreDataSource: @preconcurrency CoreDataSourceProtocol {
     static let shared = CoreDataSource()
 
     private let persistentContainer: NSPersistentContainer
-    private var fetchHistory: [HealthMetricType: [NSManagedObject]] = [:]
 
     private init() {
         persistentContainer = NSPersistentContainer(name: "HealthDataModel")
+
+        let description = persistentContainer.persistentStoreDescriptions.first
+        description?.shouldMigrateStoreAutomatically = true
+        description?.shouldInferMappingModelAutomatically = false
+
         persistentContainer.loadPersistentStores { description, error in
             if let error = error as NSError? {
                 Logger.logError(error: CoreDataError.storeLoadFailure(error))
@@ -43,18 +46,10 @@ actor CoreDataSource: @preconcurrency CoreDataSourceProtocol {
         persistentContainer.viewContext
     }
 
-    func getDataFetched<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> [T.CoreDataType] {
-        guard let dataFetched = fetchHistory[factory.id] as? [T.CoreDataType] else {
-            throw CoreDataError.unsupportedDataType
-        }
-        return dataFetched
-    }
-
     func getMostRecentDate<T: HealthDataFactoryProtocol>(_ factory: T.Type) throws -> Date {
         let entityName = String(describing: T.CoreDataType.self)
         let fetchRequest = NSFetchRequest<T.CoreDataType>(entityName: entityName)
 
-        fetchRequest.predicate = factory.predicateCoreData
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "endDate", ascending: false)]
         fetchRequest.fetchLimit = 1
 
@@ -96,8 +91,6 @@ actor CoreDataSource: @preconcurrency CoreDataSourceProtocol {
         let entityName = String(describing: T.CoreDataType.self)
         let fetchRequest = NSFetchRequest<T.CoreDataType>(entityName: entityName)
 
-        fetchRequest.predicate = factory.predicateCoreData
-
         switch options {
         case .dateAscending:
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startDate", ascending: true)]
@@ -107,7 +100,6 @@ actor CoreDataSource: @preconcurrency CoreDataSourceProtocol {
 
         var results: [T.CoreDataType] = []
         var fetchError: Error?
-        let factoryID = factory.id
 
         context.performAndWait {
             do {
@@ -120,8 +112,6 @@ actor CoreDataSource: @preconcurrency CoreDataSourceProtocol {
         if let error = fetchError {
             throw error
         }
-
-        fetchHistory[factoryID] = results
 
         return results
     }

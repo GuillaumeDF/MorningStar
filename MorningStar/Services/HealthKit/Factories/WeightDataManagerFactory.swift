@@ -10,23 +10,15 @@ import HealthKit
 import CoreData
 
 struct WeightDataManagerFactory: HealthDataFactoryProtocol {
-    typealias HealthDataType =  WeightPeriod
-    typealias CoreDataType = PeriodEntryMO
-    
+    typealias HealthDataType = WeightPeriod
+    typealias CoreDataType = WeightEntryMO
+
     static var requiredHealthKitAuthorizationType: [HKSampleType?] {
-        [
-            HKQuantityType.quantityType(forIdentifier: .bodyMass)
-        ]
+        [HKQuantityType.quantityType(forIdentifier: .bodyMass)]
     }
-    
-    static var id: HealthMetricType {
-        .weight
-    }
-    
-    static var predicateCoreData: NSPredicate? {
-        NSPredicate(format: "weightEntries.@count > 0")
-    }
-    
+
+    static var id: HealthMetricType { .weight }
+
     static func createSampleQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date?) -> HealthDataManager<SampleQueryDescriptor<[WeightPeriod]>>? {
         let queryDescriptor = SampleQueryDescriptor<[WeightPeriod]>(
             sampleType: HKQuantityType.quantityType(forIdentifier: .bodyMass)!,
@@ -36,111 +28,71 @@ struct WeightDataManagerFactory: HealthDataFactoryProtocol {
         ) { samples in
             HealthDataProcessor.groupWeightsByWeek(from: samples, unit: .gramUnit(with: .kilo))
         }
-        
+
         return HealthDataManager(healthStore: healthStore, queryDescriptor: queryDescriptor)
     }
-    
+
     static func createStatisticsQueryManager(for healthStore: HKHealthStore, from startDate: Date, to endDate: Date?) -> HealthDataManager<StatisticsCollectionQueryDescriptor<[WeightPeriod]>>? {
         nil
     }
-    
-    static func mapHealthKitToCoreData(_ healthData: [WeightPeriod], context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        healthData.compactMap { weightPeriod in
-            guard let startDate = weightPeriod.entries.first?.startDate,
-                  let endDate = weightPeriod.entries.last?.endDate else {
-                Logger.logWarning(id, message: "Can't retry startDate or endDate WeightPeriod \(weightPeriod.id)")
-                return nil
+
+    static func mapHealthKitToCoreData(_ healthData: [WeightPeriod], context: NSManagedObjectContext) -> [WeightEntryMO] {
+        healthData.flatMap { period in
+            period.entries.map { entry in
+                let mo = WeightEntryMO(context: context)
+                mo.id = entry.id
+                mo.startDate = entry.startDate
+                mo.endDate = entry.endDate
+                mo.value = entry.value
+                mo.unit = entry.unit
+                return mo
             }
-            
-            let periodEntity = PeriodEntryMO(context: context)
-            
-            periodEntity.id = weightPeriod.id
-            periodEntity.startDate = startDate
-            periodEntity.endDate = endDate
-            
-            let weightEntries = mapWeightEntriesToCoreData(weightPeriod.entries, parent: periodEntity, context: context)
-            periodEntity.addToWeightEntries(NSOrderedSet(array: weightEntries))
-            
-            return periodEntity
         }
     }
-    
-    private static func mapWeightEntriesToCoreData(_ weightEntries: [HealthData.WeightEntry],
-                                                   parent: PeriodEntryMO,
-                                                   context: NSManagedObjectContext) -> [WeightEntryMO] {
-        weightEntries.map { weightEntry in
-            let newWeightEntity = WeightEntryMO(context: context)
-            
-            newWeightEntity.id = weightEntry.id
-            newWeightEntity.startDate = weightEntry.startDate
-            newWeightEntity.endDate = weightEntry.endDate
-            newWeightEntity.value = weightEntry.value
-            newWeightEntity.unit = weightEntry.unit
-            newWeightEntity.periodEntry = parent
-            
-            return newWeightEntity
-        }
-    }
-    
-    static func mapCoreDataToHealthKit(_ coreDataEntries: [PeriodEntryMO]) -> [WeightPeriod] {
-        return coreDataEntries.map { periodEntity in
-            let weightEntries: [HealthData.WeightEntry] = (periodEntity.weightEntries)?.compactMap { entry in
-                guard let weightEntity = entry as? WeightEntryMO,
-                      let startDate = weightEntity.startDate,
-                      let endDate = weightEntity.endDate else {
-                    return nil
-                }
-                
-                return HealthData.WeightEntry(
-                    id: weightEntity.id,
-                    startDate: startDate,
-                    endDate: endDate,
-                    value: weightEntity.value,
-                    unit: weightEntity.unit ?? ""
-                )
-            } ?? []
-            
-            return PeriodEntry(id: periodEntity.id, entries: weightEntries)
-        }
-    }
-    
-    static func mergeCoreDataWithHealthKitData(_ coreDataEntries: [PeriodEntryMO], with healthData: [WeightPeriod], in context: NSManagedObjectContext) -> [PeriodEntryMO] {
-        Logger.logInfo(id, message: "Starting merge process with coreData entries an healthData entries")
-        guard let mostRecentCoreDataEntry = coreDataEntries.first,
-              let mostRecentCoreDataEndDate = mostRecentCoreDataEntry.endDate else {
-            Logger.logWarning(id, message: "CoreData entries are empty or invalid, mapping HealthKit data to CoreData")
-            return mapHealthKitToCoreData(healthData, context: context)
+
+    static func mapCoreDataToHealthKit(_ coreDataEntries: [WeightEntryMO]) -> [WeightPeriod] {
+        let calendar = Calendar.current
+        let grouped = Dictionary(grouping: coreDataEntries) { entry in
+            calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: entry.startDate ?? Date())
         }
 
-        guard let oldestHealthDataEntry = healthData.last,
-              let oldestHealthDataEndDate = oldestHealthDataEntry.endDate,
-              let oldestHealthDataStartDate = oldestHealthDataEntry.startDate else {
-            Logger.logWarning(id, message: "HealthKit entries are empty or invalid, mapping HealthKit data to CoreData")
-            return coreDataEntries
-        }
-
-        var mergedEntries = coreDataEntries
-
-        if mostRecentCoreDataEndDate.isSameWeek(as: oldestHealthDataStartDate) {
-            Logger.logInfo(id, message: "Updating most recent CoreData entry with HealthKit data")
-            mostRecentCoreDataEntry.endDate =  oldestHealthDataEndDate
-
-            let newWeightEntries = mapWeightEntriesToCoreData(oldestHealthDataEntry.entries, parent: mostRecentCoreDataEntry, context: context)
-            mostRecentCoreDataEntry.addToWeightEntries(NSOrderedSet(array: newWeightEntries))
-
-            let historicalData = healthData.dropLast()
-            if !historicalData.isEmpty {
-                Logger.logInfo(id, message: "Adding historical HealthKit data to CoreData")
-                let historicalEntries = mapHealthKitToCoreData(Array(historicalData), context: context)
-                mergedEntries = historicalEntries + mergedEntries
+        return grouped
+            .sorted { lhs, rhs in
+                let lhsDate = calendar.date(from: lhs.key) ?? .distantPast
+                let rhsDate = calendar.date(from: rhs.key) ?? .distantPast
+                return lhsDate > rhsDate
             }
-        } else {
-            Logger.logInfo(id, message: "Mapping all HealthKit data to CoreData")
-            let newWeightEntries = mapHealthKitToCoreData(healthData, context: context)
-            mergedEntries = newWeightEntries + mergedEntries
+            .map { (_, entries) in
+                let healthEntries = entries
+                    .sorted { ($0.startDate ?? .distantPast) < ($1.startDate ?? .distantPast) }
+                    .map { entry in
+                        HealthData.WeightEntry(
+                            id: entry.id,
+                            startDate: entry.startDate ?? Date(),
+                            endDate: entry.endDate ?? Date(),
+                            value: entry.value,
+                            unit: entry.unit ?? ""
+                        )
+                    }
+                return PeriodEntry(entries: healthEntries)
+            }
+    }
+
+    static func mergeCoreDataWithHealthKitData(_ coreDataEntries: [WeightEntryMO], with healthData: [WeightPeriod], in context: NSManagedObjectContext) -> [WeightEntryMO] {
+        let existingIds = Set(coreDataEntries.compactMap { $0.id })
+        let newEntries = healthData.flatMap { $0.entries }
+        let entriesToAdd = newEntries.filter { !existingIds.contains($0.id) }
+
+        let addedEntries = entriesToAdd.map { entry -> WeightEntryMO in
+            let mo = WeightEntryMO(context: context)
+            mo.id = entry.id
+            mo.startDate = entry.startDate
+            mo.endDate = entry.endDate
+            mo.value = entry.value
+            mo.unit = entry.unit
+            return mo
         }
 
-        Logger.logInfo(id, message: "Merge process completed")
-        return mergedEntries
+        return addedEntries + coreDataEntries
     }
 }
