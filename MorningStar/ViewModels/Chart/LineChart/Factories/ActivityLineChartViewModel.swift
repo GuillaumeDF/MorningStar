@@ -8,32 +8,20 @@
 import Foundation
 
 class ActivityLineChartViewModel: LineChartViewModel<HealthData.ActivityEntry> {
-    private static let labelDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d MMM yyyy"
-        return formatter
-    }()
-
-    private static let timeDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter
-    }()
-
     override var currentDateLabel: DateRepresentation {
         if let startDate = periods[index].entries.first?.startDate {
-            return .single(Self.labelDateFormatter.string(from: startDate))
+            return .single(DateFormatters.dayMonthYear.string(from: startDate))
         } else {
             return .single("Aucune date")
         }
     }
-    
+
     override var currentValueLabel: String {
         let totalValue = periods[index].entries.reduce(0) { $0 + $1.value }
-        
+
         return String(Int(totalValue))
     }
-    
+
     override var data: [ChartData] {
         var mappedData = super.data
 
@@ -58,12 +46,12 @@ class ActivityLineChartViewModel: LineChartViewModel<HealthData.ActivityEntry> {
 
         return mappedData
     }
-    
+
     override func valueFormatter(_ value: Double) -> String {
         "\(String(format: "%.0f", value.rounded())) \(unitLabel)"
     }
-    
+
     override func dateFormatter(_ date: Date) -> String {
-        return Self.timeDateFormatter.string(from: date)
+        return DateFormatters.time.string(from: date)
     }
 }

@@ -89,6 +89,7 @@
 		F0FF79D12C7E958D00DA3A54 /* XAxisLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FF79D02C7E958D00DA3A54 /* XAxisLabels.swift */; };
 		F0FF79D32C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FF79D22C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift */; };
 		F0FF79D52C7E973000DA3A54 /* IntensityStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FF79D42C7E973000DA3A54 /* IntensityStack.swift */; };
+		F0DF01182F16A00100BA7F4E /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DF01172F16A00100BA7F4E /* DateFormatters.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -196,6 +197,7 @@
 		F0FF79D02C7E958D00DA3A54 /* XAxisLabels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XAxisLabels.swift; sourceTree = "<group>"; };
 		F0FF79D22C7E967B00DA3A54 /* YAxisLabelsAndGridLines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YAxisLabelsAndGridLines.swift; sourceTree = "<group>"; };
 		F0FF79D42C7E973000DA3A54 /* IntensityStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntensityStack.swift; sourceTree = "<group>"; };
+		F0DF01172F16A00100BA7F4E /* DateFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -356,6 +358,7 @@
 			children = (
 				F03AA6DD2C64268F003C1BB3 /* Extensions */,
 				F04A78B72C6647C100E8FB1C /* Constants.swift */,
+				F0DF01172F16A00100BA7F4E /* DateFormatters.swift */,
 				F0205FC22D55037400910753 /* Logger.swift */,
 				F077C4192CC9684B00A88556 /* WorkoutMockData.swift */,
 			);
@@ -812,6 +815,7 @@
 				F0C7CE3A2D5248F7002F0CC6 /* HealthMetrics.swift in Sources */,
 				F077C4162CC82C5800A88556 /* WorkoutStackedChartViewModel.swift in Sources */,
 				F0205FC32D55037600910753 /* Logger.swift in Sources */,
+				F0DF01182F16A00100BA7F4E /* DateFormatters.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

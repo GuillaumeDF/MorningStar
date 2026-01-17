@@ -8,14 +8,12 @@
 import Foundation
 
 protocol SyncStorage: Sendable {
-    func getLastSync(for type: HealthMetricType) -> Date?
-    func updateLastSync(for type: HealthMetricType)
-    func clearSyncHistory()
+    func getLastSync(for type: HealthMetricType) async -> Date?
+    func updateLastSync(for type: HealthMetricType) async
+    func clearSyncHistory() async
 }
 
-/// Thread-safe storage for sync timestamps.
-/// Uses @unchecked Sendable because UserDefaults is documented as thread-safe by Apple.
-final class LastSyncStorage: SyncStorage, @unchecked Sendable {
+actor LastSyncStorage: SyncStorage {
     private let userDefaults: UserDefaults
     private let keyPrefix = "healthSync"
 

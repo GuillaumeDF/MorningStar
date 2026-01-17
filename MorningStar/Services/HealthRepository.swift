@@ -33,7 +33,7 @@ class HealthRepository: HealthRepositoryProtocol {
     }
     
     func clearApp() async {
-        syncStorage.clearSyncHistory()
+        await syncStorage.clearSyncHistory()
         await coreDataSource.deleteAllEntities()
     }
     
@@ -58,7 +58,7 @@ class HealthRepository: HealthRepositoryProtocol {
     }
 
     func syncData<T: HealthDataFactoryProtocol>(_ factory: T.Type) async throws -> [T.HealthDataType] {
-        let lastSync = syncStorage.getLastSync(for: factory.id) ?? Date.distantPast
+        let lastSync = await syncStorage.getLastSync(for: factory.id) ?? Date.distantPast
         Logger.logInfo(factory.id, message: "The last synchronization time retrieved is \(lastSync)")
         
         guard syncStrategy.shouldSync(lastSync: lastSync) else {
@@ -76,7 +76,7 @@ class HealthRepository: HealthRepositoryProtocol {
         let dataFetched = try await coreDataSource.getDataFetched(factory)
         let newItemsMerged = try await mergeCoreDataWithHealthKitData(factory, localData: dataFetched, with: newItemsHealthKit)
         
-        syncStorage.updateLastSync(for: factory.id)
+        await syncStorage.updateLastSync(for: factory.id)
         Logger.logInfo(factory.id, message: "The last synchronization time has been updated to \(Date())")
         
         return newItemsMerged

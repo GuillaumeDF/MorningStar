@@ -17,10 +17,8 @@ struct SampleQueryDescriptor<T: Sendable>: QueryDescriptor {
     typealias ResultType = T
 
     let sampleType: HKSampleType
-    /// HealthKit predicates are immutable after creation, safe to access across isolation boundaries.
     nonisolated(unsafe) let predicate: NSPredicate?
     let limit: Int
-    /// Sort descriptors are effectively immutable value semantics despite being reference types.
     nonisolated(unsafe) let sortDescriptors: [NSSortDescriptor]?
     let resultsHandler: @Sendable ([HKSample]) async -> T?
 
@@ -59,7 +57,6 @@ struct StatisticsCollectionQueryDescriptor<T: Sendable>: QueryDescriptor {
     let quantityType: HKQuantityType
     let anchorDate: Date
     let intervalComponents: DateComponents
-    /// HealthKit predicates are immutable after creation, safe to access across isolation boundaries.
     nonisolated(unsafe) let predicate: NSPredicate?
     let options: HKStatisticsOptions
     let resultsHandler: @Sendable (HKStatisticsCollection) async -> T?
