@@ -7,7 +7,10 @@
 
 import XCTest
 import CoreData
+import HealthKit
 @testable import MorningStar
+
+private let runningType = UInt16(HKWorkoutActivityType.running.rawValue)
 
 private struct WorkoutPeriodTestData {
     private static let formatter: ISO8601DateFormatter = {
@@ -25,6 +28,7 @@ private struct WorkoutPeriodTestData {
                 workouts: [
                     HealthData.Workout(
                         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440011")!,
+                        type: runningType,
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440012")!,
@@ -59,6 +63,7 @@ private struct WorkoutPeriodTestData {
                 workouts: [
                     HealthData.Workout(
                         id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440014")!,
+                        type: runningType,
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "550e8400-e29b-41d4-a716-446655440015")!,
@@ -100,6 +105,7 @@ private struct WorkoutPeriodTestData {
                 workouts: [
                     HealthData.Workout(
                         id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440021")!,
+                        type: runningType,
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440022")!,
@@ -146,6 +152,7 @@ private struct WorkoutPeriodTestData {
                 workouts: [
                     HealthData.Workout(
                         id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440031")!,
+                        type: runningType,
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440032")!,
@@ -180,6 +187,7 @@ private struct WorkoutPeriodTestData {
                 workouts: [
                     HealthData.Workout(
                         id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440034")!,
+                        type: runningType,
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440035")!,
@@ -221,6 +229,7 @@ private struct WorkoutPeriodTestData {
                 workouts: [
                     HealthData.Workout(
                         id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440021")!,
+                        type: runningType,
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "660e8400-e29b-41d4-a716-446655440022")!,
@@ -255,6 +264,7 @@ private struct WorkoutPeriodTestData {
                 workouts: [
                     HealthData.Workout(
                         id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440031")!,
+                        type: runningType,
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440032")!,
@@ -289,6 +299,7 @@ private struct WorkoutPeriodTestData {
                 workouts: [
                     HealthData.Workout(
                         id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440034")!,
+                        type: runningType,
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440035")!,
@@ -329,6 +340,7 @@ private struct WorkoutPeriodTestData {
                 workouts: [
                     HealthData.Workout(
                         id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440034")!,
+                        type: runningType,
                         phaseEntries: [
                             HealthData.WorkoutPhaseEntry(
                                 id: UUID(uuidString: "770e8400-e29b-41d4-a716-446655440035")!,
